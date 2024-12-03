@@ -2,8 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import PayrollPeriod, { NULL_PERIOD } from './PayrollPeriod';
 import { Menu, Button } from '@mantine/core';
 import './styles.css'
-import { render } from '@testing-library/react';
-import { sep } from 'path';
 
 interface PeriodHeaderProps {
     period_no?:number
