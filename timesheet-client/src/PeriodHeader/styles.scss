@@ -4,7 +4,6 @@
     display: grid;
     width: fit-content;
     grid-template-columns: 1fr 50px;
-    gap: 0 10px;
 
     & > span {
         margin-right: auto;
@@ -16,9 +15,17 @@
     }
 }
 
+.period-container.small {
+    gap: 0 10px;
+}
+
+.period-container.large {
+    gap: 0 20px;
+}
+
 span.large {
-    font-size: 1.25rem;
-    line-height: 1.1rem;
+    font-size: 1.5rem;
+    line-height: 1.4rem;
 }
 
 span.small {

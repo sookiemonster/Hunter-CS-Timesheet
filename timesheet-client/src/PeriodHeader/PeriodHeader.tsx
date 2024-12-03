@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import PayrollPeriod, { NULL_PERIOD } from './PayrollPeriod';
 import { Menu, Button } from '@mantine/core';
 import './styles.css'
+import { render } from '@testing-library/react';
 
 interface PeriodHeaderProps {
     period_no?:number
@@ -82,15 +83,15 @@ function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JS
 
     }, [period_no]);
     
-    let stringify = (date:Date) => {
+    let stringifyDate = (date:Date) => {
         return date.toLocaleString('default', { month: 'long', day:"numeric", year: 'numeric' })
     }
 
     return (
-        <div className='period-container'>
+        <div className={'period-container ' + render_size}>
             <span className={render_size}>
                 { show_current && period.is_current ? "Currently, " : "" }
-                <b>{ stringify(period.start) } - { stringify(period.end) }</b>
+                <b>{ stringifyDate(period.start) } - { stringifyDate(period.end) }</b>
             </span>
             <h1 className={render_size}>Payroll Period #{ period.period_no }</h1>
             <PeriodSelector periods={allPeriods} size={render_size}/>
