@@ -10,7 +10,7 @@ function App() {
     
     <MantineProvider theme={theme}>
       <div className="App">
-        <PeriodHeader show_current={true} font_size={'small'}/>
+        <PeriodHeader show_current={false} font_size={'small'}/>
       </div>
     </MantineProvider>
   );

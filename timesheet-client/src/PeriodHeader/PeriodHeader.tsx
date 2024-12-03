@@ -1,12 +1,54 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import PayrollPeriod, { NULL_PERIOD } from './PayrollPeriod';
-import { Title } from '@mantine/core';
+import { Menu, Button } from '@mantine/core';
 import './styles.css'
 
 interface PeriodHeaderProps {
     period_no?:number
     font_size?: 'small' | 'large',
     show_current?:Boolean
+}
+
+interface PeriodSelectorProps {
+    periods:number[],
+    size:'small' | 'large',
+}
+
+function PeriodSelector({periods, size}:PeriodSelectorProps):JSX.Element {
+    const half = Math.ceil(periods.length / 2); // Calculate the halfway point
+    const firstColumn = periods.slice(0, half);
+    const secondColumn = periods.slice(half);
+
+    return <Menu shadow='md' width='200'>
+    <Menu.Target>
+        <div className={`open-selector ${size}`} >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <polygon points="0 0, 100 0, 50 100"/>
+        </svg>
+        </div>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr', // Two equal-width columns
+          }}
+        >
+          {/* First Column */}
+          <div>
+            {firstColumn.map((item, index) => (
+              <Menu.Item key={index}>{item}</Menu.Item>
+            ))}
+          </div>
+          {/* Second Column */}
+          <div>
+            {secondColumn.map((item, index) => (
+              <Menu.Item key={index}>{item}</Menu.Item>
+            ))}
+          </div>
+        </div>
+      </Menu.Dropdown>
+    </Menu>
 }
 
 function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JSX.Element {
@@ -51,7 +93,7 @@ function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JS
                 <b>{ stringify(period.start) } - { stringify(period.end) }</b>
             </span>
             <h1 className={render_size}>Payroll Period #{ period.period_no }</h1>
-            <div>DropDown</div>
+            <PeriodSelector periods={allPeriods} size={render_size}/>
         </div>
     )
 }

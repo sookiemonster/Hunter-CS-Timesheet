@@ -1,7 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+h1 {
+  color: #4f5eff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 .period-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  width: fit-content;
+  grid-template-columns: 1fr 50px;
+  gap: 0 10px;
+}
+.period-container > span {
+  margin-right: auto;
+  grid-column: -1/1;
+}
+.period-container .open-selector {
+  align-self: center;
 }
 
 span.large {
@@ -25,6 +42,35 @@ h1.large {
 
 h1.small {
   font-size: 2rem;
+  line-height: 1.8rem;
+}
+
+.open-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.open-selector:hover {
+  background-color: #1a1a1a;
+}
+.open-selector svg {
+  color: white;
+  fill: white;
+  width: 50%;
+  height: 50%;
+}
+
+.open-selector.small {
+  width: 21px;
+  height: 21px;
+}
+
+.open-selector.large {
+  width: 51px;
+  height: 51px;
 }
 
 /*# sourceMappingURL=styles.css.map */

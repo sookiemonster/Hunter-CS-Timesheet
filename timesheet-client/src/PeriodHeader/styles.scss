@@ -1,7 +1,19 @@
+@use '../Theme/styles' as *;
+
 .period-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    display: grid;
+    width: fit-content;
+    grid-template-columns: 1fr 50px;
+    gap: 0 10px;
+
+    & > span {
+        margin-right: auto;
+        grid-column: -1/1;
+    }
+
+    .open-selector {
+        align-self: center;
+    }
 }
 
 span.large {
@@ -24,5 +36,38 @@ h1.large {
 }
 
 h1.small {
-    font-size: calc(2rem);
+    font-size: 2rem;
+    line-height: 1.8rem;
+}
+
+.open-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $dark-gray;
+    }
+
+    svg {
+        $dim: 50%;
+        color: white;
+        fill: white;
+
+        width: $dim;
+        height: $dim;
+    }
+}
+
+.open-selector.small {
+    width: 21px;
+    height: 21px;
+}
+
+.open-selector.large {
+    width: 51px;
+    height: 51px;
 }
