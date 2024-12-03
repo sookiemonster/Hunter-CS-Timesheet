@@ -2,7 +2,6 @@ import React from "react";
 import './styles.css'
 import { useState, useEffect } from 'react';
 import { Burger, Text, Group, Title, Button } from '@mantine/core';
-import { useLocation } from 'react-router-dom';
 
 import { useDisclosure } from '@mantine/hooks';
 import User from "../../state/User";
