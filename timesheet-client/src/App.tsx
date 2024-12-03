@@ -1,13 +1,18 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import PeriodHeader from './PeriodHeader';
+import { MantineProvider } from '@mantine/core';
+import theme from './Theme';
 
 function App() {
   return (
-    <div className="App">
-      <PeriodHeader />
-    </div>
+    
+    <MantineProvider theme={theme}>
+      <div className="App">
+        <PeriodHeader show_current={true} font_size={'small'}/>
+      </div>
+    </MantineProvider>
   );
 }
 

@@ -1,16 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import PayrollPeriod, { NULL_PERIOD } from './PayrollPeriod';
-import './style.css'
+import { Title } from '@mantine/core';
+import './styles.css'
 
 interface PeriodHeaderProps {
     period_no?:number
-    font_size?:string,
+    font_size?: 'small' | 'large',
     show_current?:Boolean
 }
 
 function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JSX.Element {
-    const default_size = '1rem';
-    font_size = font_size || default_size;
+    const render_size = (font_size == 'small') ? "small" : "large";
     
     const [isLoading, setIsLoading] = useState(true);
     const [period, setPeriod] = useState(NULL_PERIOD);
@@ -39,18 +39,18 @@ function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JS
         setIsLoading(false);
 
     }, [period_no]);
+    
+    let stringify = (date:Date) => {
+        return date.toLocaleString('default', { month: 'long', day:"numeric", year: 'numeric' })
+    }
 
     return (
         <div className='period-container'>
-            { show_current && period.is_current ? "Currently, " : "" }
-            <span>
-            { period.start.toLocaleString('default', { month: 'long' }) }
-            to 
-            { period.end.toLocaleString('default', { month: 'long' }) }
+            <span className={render_size}>
+                { show_current && period.is_current ? "Currently, " : "" }
+                <b>{ stringify(period.start) } - { stringify(period.end) }</b>
             </span>
-            <span>
-                Payroll Period #{ period.period_no }
-            </span>
+            <h1 className={render_size}>Payroll Period #{ period.period_no }</h1>
             <div>DropDown</div>
         </div>
     )
