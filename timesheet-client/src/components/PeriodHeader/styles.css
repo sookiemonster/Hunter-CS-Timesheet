@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+h1 {
+  color: #4f5eff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.period-container {
+  display: grid;
+  width: fit-content;
+  grid-template-columns: 1fr 50px;
+}
+.period-container > span {
+  margin-right: auto;
+  grid-column: -1/1;
+}
+.period-container .open-selector {
+  align-self: center;
+}
+
+.period-container.small {
+  gap: 0 10px;
+}
+
+.period-container.large {
+  gap: 0 20px;
+}
+
+span.large {
+  font-size: 1.5rem;
+  line-height: 1.4rem;
+}
+
+span.small {
+  font-size: 0.9rem;
+}
+
+h1 {
+  margin: 0;
+  padding: 0;
+}
+
+h1.large {
+  font-size: calc(3vw + 4rem);
+  line-height: calc(3vw + 4rem);
+}
+
+h1.small {
+  font-size: 2rem;
+  line-height: 1.8rem;
+}
+
+.open-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.open-selector:hover {
+  background-color: #1a1a1a;
+}
+.open-selector svg {
+  color: white;
+  fill: white;
+  width: 50%;
+  height: 50%;
+}
+
+.open-selector.small {
+  width: 21px;
+  height: 21px;
+}
+
+.open-selector.large {
+  width: 51px;
+  height: 51px;
+}
+
+.selector-item {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+/*# sourceMappingURL=styles.css.map */

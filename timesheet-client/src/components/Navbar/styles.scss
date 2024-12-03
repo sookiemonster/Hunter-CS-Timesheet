@@ -1,0 +1,81 @@
+@use '../../Theme/variables' as *;
+
+$background: rgba(255, 255, 255, 0.7);
+
+header {
+    height: 70px;
+    background-color: $background;
+    width: 100vw;
+    display: flex;
+    padding: 10px calc(20px + 1vw);
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}
+
+#nav-title {
+    margin-right: auto;
+}
+
+.link {
+
+    position: relative;
+    display: block;
+    line-height: 1;
+    padding: 8px 12px;
+    border-radius: var(--mantine-radius-sm);
+    text-decoration: none;
+    color: black;
+    font-size: var(--mantine-font-size-sm);
+    font-weight: bold;
+    opacity: 0.8;
+
+    &::after {
+        // transition: ;
+        content: ' ';
+        position: absolute;
+        
+        bottom: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        display: block;
+        height: 1px;
+        width: 0;
+        opacity: 1;
+        background-color: $primary;
+        transition: width 0.1s cubic-bezier(.17,.67,.7,1.31);
+    }
+
+    [data-mantine-color-scheme] &[data-active] {
+        color: $primary;
+        font-weight: bold;
+
+        &::after {
+            width: 90%;
+        }
+    }
+}
+
+#logout-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 5px;
+    height: 90%;
+    aspect-ratio: 1/1;
+    transition: background-color 0.1s ease-out;
+    background-color: rgba(0,0,0,0);
+
+    svg {
+        width: 25px;
+        height: 25px;
+        fill: black;
+    }
+
+    &:hover {
+        background-color: rgba(0,0,0,0.1);
+    }
+}
+
