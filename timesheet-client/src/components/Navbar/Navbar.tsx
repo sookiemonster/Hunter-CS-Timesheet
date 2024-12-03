@@ -56,9 +56,11 @@ function Navbar({user, initial_active}:NavbarProps):JSX.Element {
             <Text color="gray" size="sm">
                 {user.email}
             </Text>
+            <a href="/logout">
             <Button variant="transparent">
                 <LogoutIcon/>
             </Button>
+            </a>
             {/* <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" /> */}
         </header>
     );
