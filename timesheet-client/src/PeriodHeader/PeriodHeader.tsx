@@ -3,6 +3,7 @@ import PayrollPeriod, { NULL_PERIOD } from './PayrollPeriod';
 import { Menu, Button } from '@mantine/core';
 import './styles.css'
 import { render } from '@testing-library/react';
+import { sep } from 'path';
 
 interface PeriodHeaderProps {
     period_no?:number
@@ -13,9 +14,10 @@ interface PeriodHeaderProps {
 interface PeriodSelectorProps {
     periods:number[],
     size:'small' | 'large',
+    select:any
 }
 
-function PeriodSelector({periods, size}:PeriodSelectorProps):JSX.Element {
+function PeriodSelector({periods, size, select}:PeriodSelectorProps):JSX.Element {
     const half = Math.ceil(periods.length / 2); // Calculate the halfway point
     const firstColumn = periods.slice(0, half);
     const secondColumn = periods.slice(half);
@@ -34,17 +36,17 @@ function PeriodSelector({periods, size}:PeriodSelectorProps):JSX.Element {
             display: 'grid',
             gridTemplateColumns: '50px 50px', // Two equal-width columns
           }}
-        >
+          >
           {/* First Column */}
           <div>
             {firstColumn.map((item, index) => (
-              <Menu.Item className='selector-item' component='div' key={index}>{item}</Menu.Item>
+              <Menu.Item onClick={() => select(item)} className='selector-item' component='div' key={index}>{item}</Menu.Item>
             ))}
           </div>
           {/* Second Column */}
           <div>
             {secondColumn.map((item, index) => (
-              <Menu.Item className='selector-item' component='div' key={index}>{item}</Menu.Item>
+              <Menu.Item onClick={() => select(item)} className='selector-item' component='div' key={index}>{item}</Menu.Item>
             ))}
           </div>
         </div>
@@ -62,17 +64,32 @@ function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JS
         // getAllPeriods();
         return [1,2,3,4,5,6,7,8,9,10,11];
     }, []);
+
+    const selectPeriod = (n:number) => {
+      setIsLoading(true);
+      const rendered_period:PayrollPeriod = {
+        period_no: 7,
+        start: new Date("10/4/2024"),
+        end: new Date("10/4/2024"),
+        is_current: true
+      }
+      // rendered_period = await getPeriod(period_no);
+      // then...
+      setPeriod(rendered_period);
+      setIsLoading(false);
+    }
     
     useEffect(() => {
         // Get current period on load, if not provided
-        
+        let rendered_period = NULL_PERIOD;
         if (period_no) {
             // rendered_period = await getPeriod(period_no);
+        } else {
+            // rendered_period = await getCurrentPeriod();
         }
 
-        // const rendered_period = await getCurrentPeriod();
         // period_no =
-        const rendered_period:PayrollPeriod = {
+        rendered_period = {
             period_no: 8,
             start: new Date("10/06/2024"),
             end: new Date("10/06/2024"),
@@ -94,7 +111,7 @@ function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JS
                 <b>{ stringifyDate(period.start) } - { stringifyDate(period.end) }</b>
             </span>
             <h1 className={render_size}>Payroll Period #{ period.period_no }</h1>
-            <PeriodSelector periods={allPeriods} size={render_size}/>
+            <PeriodSelector periods={allPeriods} size={render_size} select={selectPeriod} />
         </div>
     )
 }
