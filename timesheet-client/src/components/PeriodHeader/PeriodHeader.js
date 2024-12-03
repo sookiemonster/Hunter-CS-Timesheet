@@ -1,3 +1,4 @@
+/*
 import React, { useEffect, useMemo, useState } from 'react';
 import PayrollPeriod, { NULL_PERIOD } from './PayrollPeriod';
 import { Menu, Button } from '@mantine/core';
@@ -35,13 +36,13 @@ function PeriodSelector({periods, size, select}:PeriodSelectorProps):JSX.Element
             gridTemplateColumns: '50px 50px', // Two equal-width columns
           }}
           >
-          {/* First Column */}
+          
           <div>
             {firstColumn.map((item, index) => (
               <Menu.Item onClick={() => select(item)} className='selector-item' component='div' key={index}>{item}</Menu.Item>
             ))}
           </div>
-          {/* Second Column */}
+          
           <div>
             {secondColumn.map((item, index) => (
               <Menu.Item onClick={() => select(item)} className='selector-item' component='div' key={index}>{item}</Menu.Item>
@@ -114,4 +115,4 @@ function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JS
     )
 }
 
-export default PeriodHeader;
+export default PeriodHeader; */

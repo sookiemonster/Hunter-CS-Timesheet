@@ -1,3 +1,4 @@
+/*
 import './styles.css';
 import { createTheme, MantineColorsTuple } from "@mantine/core";
 
@@ -26,4 +27,4 @@ const theme = createTheme({
 });
 
 
-export default theme;
+export default theme; */

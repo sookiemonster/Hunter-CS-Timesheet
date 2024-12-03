@@ -1,3 +1,5 @@
+//COMMENTED Out Must change from TS to Js 
+/*
 import React from "react";
 import './styles.css'
 import { useState, useEffect } from 'react';
@@ -61,9 +63,10 @@ function Navbar({user, initial_active}:NavbarProps):JSX.Element {
                 <LogoutIcon/>
             </Button>
             </a>
-            {/* <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" /> */}
+             { /*<Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" /> }
         </header>
     );
 }
 
 export default Navbar;
+*/
