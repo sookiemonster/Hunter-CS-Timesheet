@@ -1,0 +1,32 @@
+@use '../../Theme/variables' as *;
+
+.boxed-stat {
+    font-weight: bold;
+
+    &.big {
+        font-size: 1.5rem;
+    }
+}
+
+.stat-container {
+    display: flex;
+    aspect-ratio: 1/1;
+    height: 2rem;
+
+    background-color: $primary;
+    border-radius: 5px;
+    color: white;
+
+    align-items: center;
+    justify-content: center;
+
+    &.circle {
+        border-radius: 50%;
+    }
+
+    &.big {
+        font-size: 1.75rem;
+        height: 3rem
+    }
+}
+

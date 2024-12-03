@@ -1,0 +1,26 @@
+.boxed-stat {
+  font-weight: bold;
+}
+.boxed-stat.big {
+  font-size: 1.5rem;
+}
+
+.stat-container {
+  display: flex;
+  aspect-ratio: 1/1;
+  height: 2rem;
+  background-color: #4f5eff;
+  border-radius: 5px;
+  color: white;
+  align-items: center;
+  justify-content: center;
+}
+.stat-container.circle {
+  border-radius: 50%;
+}
+.stat-container.big {
+  font-size: 1.75rem;
+  height: 3rem;
+}
+
+/*# sourceMappingURL=styles.css.map */
