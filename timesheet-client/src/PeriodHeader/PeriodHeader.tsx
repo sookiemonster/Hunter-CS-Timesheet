@@ -19,7 +19,7 @@ function PeriodSelector({periods, size}:PeriodSelectorProps):JSX.Element {
     const firstColumn = periods.slice(0, half);
     const secondColumn = periods.slice(half);
 
-    return <Menu shadow='md' width='200'>
+    return <Menu shadow='md' width='110'>
     <Menu.Target>
         <div className={`open-selector ${size}`} >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
@@ -31,19 +31,19 @@ function PeriodSelector({periods, size}:PeriodSelectorProps):JSX.Element {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr', // Two equal-width columns
+            gridTemplateColumns: '50px 50px', // Two equal-width columns
           }}
         >
           {/* First Column */}
           <div>
             {firstColumn.map((item, index) => (
-              <Menu.Item key={index}>{item}</Menu.Item>
+              <Menu.Item className='selector-item' component='div' key={index}>{item}</Menu.Item>
             ))}
           </div>
           {/* Second Column */}
           <div>
             {secondColumn.map((item, index) => (
-              <Menu.Item key={index}>{item}</Menu.Item>
+              <Menu.Item className='selector-item' component='div' key={index}>{item}</Menu.Item>
             ))}
           </div>
         </div>

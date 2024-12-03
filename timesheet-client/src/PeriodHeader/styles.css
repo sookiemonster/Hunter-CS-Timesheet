@@ -73,4 +73,10 @@ h1.small {
   height: 51px;
 }
 
+.selector-item {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
 /*# sourceMappingURL=styles.css.map */

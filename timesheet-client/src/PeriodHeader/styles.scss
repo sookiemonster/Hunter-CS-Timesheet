@@ -71,3 +71,9 @@ h1.small {
     width: 51px;
     height: 51px;
 }
+
+.selector-item {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
