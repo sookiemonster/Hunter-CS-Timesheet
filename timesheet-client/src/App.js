@@ -25,12 +25,19 @@ export default App;
 */
 import React from 'react';
 import './App.css';
+import { Auth } from "./components/auth";
 
 function App() {
   return (
     
     <div className="App">
-      <header className="App-header">
+      {/* importing auth component*/} 
+      <Auth />
+
+
+
+      
+        <header className="App-header">
         <h1>Welcome to React, testing Firebase</h1>
         <p>Edit <code>src/App.js</code> and save to reload.</p>
         <a
