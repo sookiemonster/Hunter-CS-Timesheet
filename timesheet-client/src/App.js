@@ -28,9 +28,10 @@ import './App.css';
 
 function App() {
   return (
+    
     <div className="App">
       <header className="App-header">
-        <h1>Welcome to React</h1>
+        <h1>Welcome to React, testing Firebase</h1>
         <p>Edit <code>src/App.js</code> and save to reload.</p>
         <a
           className="App-link"
