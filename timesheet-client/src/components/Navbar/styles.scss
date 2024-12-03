@@ -56,3 +56,26 @@ header {
         }
     }
 }
+
+#logout-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 5px;
+    height: 90%;
+    aspect-ratio: 1/1;
+    transition: background-color 0.1s ease-out;
+    background-color: rgba(0,0,0,0);
+
+    svg {
+        width: 25px;
+        height: 25px;
+        fill: black;
+    }
+
+    &:hover {
+        background-color: rgba(0,0,0,0.1);
+    }
+}
+

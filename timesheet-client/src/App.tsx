@@ -12,7 +12,7 @@ function App() {
     
     <MantineProvider theme={theme}>
       <div className="App">
-        <Navbar user={SAMPLE_USER}/>
+        <Navbar user={SAMPLE_USER} initial_active={1}/>
         {/* <PeriodHeader show_current={false} font_size={'large'}/> */}
       </div>
     </MantineProvider>

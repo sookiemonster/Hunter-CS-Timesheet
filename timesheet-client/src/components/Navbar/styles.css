@@ -46,4 +46,23 @@ header {
   width: 90%;
 }
 
+#logout-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  height: 90%;
+  aspect-ratio: 1/1;
+  transition: background-color 0.1s ease-out;
+  background-color: rgba(0, 0, 0, 0);
+}
+#logout-icon svg {
+  width: 25px;
+  height: 25px;
+  fill: black;
+}
+#logout-icon:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 /*# sourceMappingURL=styles.css.map */
