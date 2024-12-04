@@ -13,6 +13,7 @@ import BoxedStat from './components/Stats';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
+import { Timesheet } from './pages/Timesheet';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           <Route path ="/" element = {<Login />} /> 
           <Route path ="/Home" element = {<Home />} /> 
+          <Route path ="/Timesheet" element = {<Timesheet />} /> 
           <Route path="*" element = {<h1>Page Not Found</h1>} />
         </Routes>
       </Router>
