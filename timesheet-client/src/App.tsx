@@ -9,9 +9,27 @@ import { SAMPLE_USER } from './state/sample';
 import { ApproveButton, ArrowButton, SubmitButton } from './components/Buttons';
 import BoxedStat from './components/Stats';
 
+//routing imports 
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { Login } from './pages/Login';
+import { Timesheet } from './pages/Timesheet';
+
 function App() {
   return (
+    <div className = "App">
+      <Router>
+        <Routes>
+          <Route path ="/" element = {<Login />} /> 
+          <Route path ="/Home" element = {<Home />} /> 
+          <Route path ="/Timesheet" element = {<Timesheet />} /> 
+          <Route path="*" element = {<h1>Page Not Found</h1>} />
+        </Routes>
+      </Router>
+    </div>
     
+
+  /*
     <MantineProvider theme={theme}>
       <div className="App">
         <Navbar user={SAMPLE_USER} initial_active={1}/>
@@ -19,9 +37,10 @@ function App() {
         <SubmitButton/>
         <BoxedStat size='big' variant='box' stat='13' label='Total Hours Worked'/>
         <ArrowButton direction='left'/>
-        {/* <PeriodHeader show_current={false} font_size={'large'}/> */}
+        {/* <PeriodHeader show_current={false} font_size={'large'}/> }
       </div>
     </MantineProvider>
+  */
   );
 }
 
