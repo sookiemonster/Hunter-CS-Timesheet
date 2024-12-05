@@ -5,7 +5,7 @@ import { signInWithPopup,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   createUserWithEmailAndPassword } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useContext } from "react";
 import { AppContext } from "../App";
@@ -43,6 +43,7 @@ export const Login = () =>{
 
     }catch(error){
       console.log("error logging in");
+      setloginStatus(false);
 
     }
     
@@ -96,7 +97,8 @@ export const Login = () =>{
 
       <button type = "submit"> Login</button>
     </form>
-    
+    {loginStatus == false && <p>Error logging in. Please make sure password and email is correct or click option to reset password</p>}
+    <Link to="/forgot-password">Forgot Password?</Link>
     <p>Sign In With Google</p>
     <button onClick={signInWithGoogle}>Sign in With Google</button>
 

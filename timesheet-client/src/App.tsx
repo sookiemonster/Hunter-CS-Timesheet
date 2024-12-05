@@ -16,6 +16,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Timesheet } from './pages/Timesheet';
 import { useState, createContext } from 'react';
+import { ForgotPassword } from './pages/ForgotPassword';
 
 //----Creating global context to hold all info want to pass fown---//
 export const AppContext = createContext({
@@ -26,13 +27,14 @@ export const AppContext = createContext({
 function App() {
   /* Create a state for the components so each one home, profile, contact can access the state */
   const [email, setEmail] = useState("");
-  const [loginStatus, setloginStatus] = useState(false);
+  const [loginStatus, setloginStatus] = useState(null);
   return (
     <div className = "App">
     <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus}}>
     <Router>
         <Routes>
           <Route path ="/login" element = {<Login />} /> 
+          <Route path ="/forgot-password" element = {<ForgotPassword />} /> 
           <Route path ="/register" element = {<Register />} /> 
           <Route path ="/" element = {<Home />} /> 
           <Route path ="/timesheet" element = {<Timesheet />} /> 

@@ -22,3 +22,7 @@ export const doSignInWithEmailAndPassword = async (email, password) =>{
   return signInWithEmailAndPassword(auth, email, password);
 }
 
+export const doResetPassword = async (email) =>{
+  return sendPasswordResetEmail(auth, email);
+}
+
