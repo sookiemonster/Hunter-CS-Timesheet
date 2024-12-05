@@ -2,7 +2,7 @@ import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import PeriodHeader from './components/PeriodHeader';
-import { MantineProvider } from '@mantine/core';
+import { MantineProvider, useSafeMantineTheme } from '@mantine/core';
 import theme from './Theme';
 import Navbar from './components/Navbar';
 import { SAMPLE_USER } from './state/sample';
@@ -13,19 +13,34 @@ import BoxedStat from './components/Stats';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
+import { Register } from './pages/Register';
 import { Timesheet } from './pages/Timesheet';
+import { useState, createContext } from 'react';
+
+//----Creating global context to hold all info want to pass fown---//
+export const AppContext = createContext({
+
+});
+
 
 function App() {
+  /* Create a state for the components so each one home, profile, contact can access the state */
+  const [email, setEmail] = useState("");
   return (
     <div className = "App">
-      <Router>
+    <AppContext.Provider value={{email, setEmail}}>
+    <Router>
         <Routes>
-          <Route path ="/" element = {<Login />} /> 
-          <Route path ="/Home" element = {<Home />} /> 
+          <Route path ="/Login" element = {<Login />} /> 
+          <Route path ="/Register" element = {<Register />} /> 
+          <Route path ="/" element = {<Home />} /> 
           <Route path ="/Timesheet" element = {<Timesheet />} /> 
           <Route path="*" element = {<h1>Page Not Found</h1>} />
         </Routes>
       </Router>
+
+    </AppContext.Provider>
+
     </div>
     
 
