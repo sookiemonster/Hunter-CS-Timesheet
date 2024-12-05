@@ -26,15 +26,16 @@ export const AppContext = createContext({
 function App() {
   /* Create a state for the components so each one home, profile, contact can access the state */
   const [email, setEmail] = useState("");
+  const [loginStatus, setloginStatus] = useState(false);
   return (
     <div className = "App">
-    <AppContext.Provider value={{email, setEmail}}>
+    <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus}}>
     <Router>
         <Routes>
-          <Route path ="/Login" element = {<Login />} /> 
-          <Route path ="/Register" element = {<Register />} /> 
+          <Route path ="/login" element = {<Login />} /> 
+          <Route path ="/register" element = {<Register />} /> 
           <Route path ="/" element = {<Home />} /> 
-          <Route path ="/Timesheet" element = {<Timesheet />} /> 
+          <Route path ="/timesheet" element = {<Timesheet />} /> 
           <Route path="*" element = {<h1>Page Not Found</h1>} />
         </Routes>
       </Router>
