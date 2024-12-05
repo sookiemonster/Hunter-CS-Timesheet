@@ -6,7 +6,7 @@ import { signInWithPopup,
   sendPasswordResetEmail,
   createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useContext } from "react";
 import { AppContext } from "../App";
 import { doSignInWithEmailAndPassword} from '../config/auth';
@@ -19,6 +19,15 @@ export const Login = () =>{
   const {loginStatus} = useContext(AppContext);
   const {setloginStatus} = useContext(AppContext);
 
+  //---makes sure login status is updated before navigating---//
+  useEffect(() => {
+    if (loginStatus) {
+      console.log(loginStatus);
+      console.log("Login status updated to true, navigating to timesheet...");
+      navigate('/timesheet');
+    }
+  }, [loginStatus, navigate]);
+
   //----sign in with registered email and password----//
   const signIn = async (e) => {
     e.preventDefault()
@@ -26,12 +35,13 @@ export const Login = () =>{
     try{
       const result = await doSignInWithEmailAndPassword(email, password);
       const user = result.user;
+      console.log("user found!");
       //check if user verified their email if so redirect to timesheet page 
       if(user.emailVerified){
-        console.log("user is verified");
         setloginStatus(true);
-        console.log("login status:", loginStatus)
-        navigate('/timesheet');
+        console.log("user is verified");
+        //console.log("login status:", loginStatus)
+       // navigate('/timesheet');
       }
       else{
         alert("Please verify your email. A link has been sent. Then try logging in again")
@@ -43,7 +53,7 @@ export const Login = () =>{
 
     }catch(error){
       console.log("error logging in");
-      setloginStatus(false);
+    
 
     }
     
@@ -66,6 +76,7 @@ export const Login = () =>{
       
     } catch (error) {
       console.error('Error signing in with Google:', error);
+      alert("Error logging in. Please make sure password and email is correct or click option to reset password")
     }
   };
 ///onSubmit={(e) => { e.preventDefault(); register(); }}
@@ -97,7 +108,7 @@ export const Login = () =>{
 
       <button type = "submit"> Login</button>
     </form>
-    {loginStatus == false && <p>Error logging in. Please make sure password and email is correct or click option to reset password</p>}
+    
     <Link to="/forgot-password">Forgot Password?</Link>
     <p>Sign In With Google</p>
     <button onClick={signInWithGoogle}>Sign in With Google</button>

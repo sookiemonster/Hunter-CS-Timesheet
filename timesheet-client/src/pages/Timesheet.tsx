@@ -8,7 +8,11 @@ import { SAMPLE_USER } from '../state/sample';
 import { ApproveButton, ArrowButton, SubmitButton } from '../components/Buttons';
 import BoxedStat from '../components/Stats';
 
+import { useContext } from "react";
+import { AppContext } from "../App";
+
 export const Timesheet = () =>{
+  
   return     <MantineProvider theme={theme}>
   <div className="App">
     <Navbar user={SAMPLE_USER} initial_active={1}/>
