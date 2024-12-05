@@ -55,7 +55,7 @@ function Navbar({user, initial_active}:NavbarProps):JSX.Element {
             <Text color="gray" size="sm">
                 {user.email}
             </Text>
-            <a href="/logout">
+            <a href="/login">
             <Button variant="transparent">
                 <LogoutIcon/>
             </Button>
