@@ -27,10 +27,11 @@ export const AppContext = createContext({
 function App() {
   /* Create a state for the components so each one home, profile, contact can access the state */
   const [email, setEmail] = useState("");
+  const [user, setUser] = useState({}); //empty obhect for now but meant to store firebase user info
   const [loginStatus, setloginStatus] = useState(null);
   return (
     <div className = "App">
-    <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus}}>
+    <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
     <Router>
         <Routes>
           <Route path ="/login" element = {<Login />} /> 

@@ -18,15 +18,18 @@ export const Login = () =>{
   const [password, setPassword] = useState('');
   const {loginStatus} = useContext(AppContext);
   const {setloginStatus} = useContext(AppContext);
+  const {setUser} = useContext(AppContext);
+  const {user} = useContext(AppContext);
 
   //---makes sure login status is updated before navigating---//
   useEffect(() => {
     if (loginStatus) {
       console.log(loginStatus);
-      console.log("Login status updated to true, navigating to timesheet...");
+      console.log("user: ", user?.email);
+      console.log("Login status updated to true, and user updated navigating to timesheet...");
       navigate('/timesheet');
     }
-  }, [loginStatus, navigate]);
+  }, [loginStatus, navigate, user]);
 
   //----sign in with registered email and password----//
   const signIn = async (e) => {
@@ -35,10 +38,12 @@ export const Login = () =>{
     try{
       const result = await doSignInWithEmailAndPassword(email, password);
       const user = result.user;
+
       console.log("user found!");
       //check if user verified their email if so redirect to timesheet page 
       if(user.emailVerified){
         setloginStatus(true);
+        setUser(user);
         console.log("user is verified");
         //console.log("login status:", loginStatus)
        // navigate('/timesheet');
