@@ -1,8 +1,12 @@
 import React from "react";
 import { Button } from '@mantine/core';
 
-function ApproveButton():JSX.Element {
-    return <Button color='softpurple.4' className="approve-button">Approve</Button>
+interface ApproveButtonProps {
+    onClick?:any
+}
+
+function ApproveButton({onClick}:ApproveButtonProps):JSX.Element {
+    return <Button onClick={onClick} color='softpurple.4' className="approve-button">Approve</Button>
 }
 
 export default ApproveButton;
