@@ -4,8 +4,8 @@ import User from "../../state/User";
 import PeriodHeader from "../../components/PeriodHeader";
 import TypeDropdown from "../../components/TypeDropdown";
 import LandingBackround from "./LandingBackground";
-import { Group } from "@mantine/core";
-import { DefaultButton } from "../../components/Buttons";
+import { Group, Indicator } from "@mantine/core";
+import { DefaultButton, IndicatorSymbol } from "../../components/Buttons";
 
 interface LandingProps {
     user:User
@@ -24,14 +24,15 @@ function LandingPageUser():JSX.Element {
     return (
     <div id="landing-container">
         <PeriodHeader font_size="large"/>
-        <Group gap={20} style={{ paddingTop: "10px "}} align="center">
+        <Group gap={50} style={{ paddingTop: "10px "}} align="center">
             <DefaultButton onClick={() => redirect()} text={hasSubmitted ? "Edit" : "Submit" } />
-            <h4>
+            <h3 style={{ color: (hasSubmitted) ? "green" : "red"}}>
                 { hasSubmitted
                     ? "You've already submitted for this period."
                     : "You still need to submit for this period."
                 }
-            </h4>
+            </h3>
+            <IndicatorSymbol value={hasSubmitted ? "yes" : "no"}/>
         </Group>
     </div>
     )
