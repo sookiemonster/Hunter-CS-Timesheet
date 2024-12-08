@@ -1,0 +1,58 @@
+@use '../../Theme/variables' as *;
+
+#landing-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0px;
+
+    width: 100vw;
+    height: 100vh;
+    padding: 5vh 5vw;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+a {
+    color: $primary;
+}
+
+.blob-container {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: -3;
+    overflow: hidden;
+    $shrank: min(50vw, 50vh);
+    $expand: min(70vw, 70vh);
+    @keyframes pulse {
+        0% { width: $shrank; }
+        50% { width: $expand }
+        100% { width: $shrank; }
+    }
+
+    div {
+        $move_rate: 5s;
+        position: absolute;
+        transform: translate3D(-50%, -50%, 0);
+        transition: top $move_rate ease-in-out, left $move_rate ease-in-out;
+
+        display: block;
+        background-color: orangered;
+        filter: blur(100px);
+        opacity: 0.3;
+
+        width: $shrank;
+        border-radius: 50%;
+        aspect-ratio: 1/1;
+
+        animation: ease-in-out 10s infinite pulse;
+    }   
+}

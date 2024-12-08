@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import PayrollPeriod, { NULL_PERIOD } from './PayrollPeriod';
-import { Menu, Button } from '@mantine/core';
+import { Menu, Button, Group } from '@mantine/core';
 import './styles.css'
 
 interface PeriodHeaderProps {
@@ -108,8 +108,12 @@ function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JS
                 { show_current && period.is_current ? "Currently, " : "" }
                 <b>{ stringifyDate(period.start) } - { stringifyDate(period.end) }</b>
             </span>
-            <h1 className={render_size}>Payroll Period #{ period.period_no }</h1>
-            <PeriodSelector periods={allPeriods} size={render_size} select={selectPeriod} />
+                <h1 className={render_size}>Payroll&nbsp;	
+                    <Group style={{display: 'inline-flex'}}>
+                        Period #{ period.period_no }
+                        <PeriodSelector periods={allPeriods} size={render_size} select={selectPeriod} />
+                    </Group>
+                </h1>
         </div>
     )
 }

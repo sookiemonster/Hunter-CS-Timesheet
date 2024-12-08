@@ -1,2 +1,18 @@
-@use '../../Theme/variables';
+@use '../../Theme/variables' as *;
 
+.indicator {
+    display: grid;
+    align-content: center;
+    justify-content: center;
+
+    width: 1.5rem;
+    height: 1.5rem;
+
+    font-weight: bold;
+    border-radius: 50%;
+    background-color: black;
+    color: white;
+
+    &.no { background-color: $red; }
+    &.yes { background-color: $green; }
+}
