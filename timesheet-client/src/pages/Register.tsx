@@ -1,7 +1,7 @@
 //@ts-nocheck
 import {auth, provider, db} from '../config/firebase'
 import {  sendEmailVerification, } from 'firebase/auth';
-import { addDoc, collection } from 'firebase/firestore';
+import { setDoc, addDoc, collection } from 'firebase/firestore';
 
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -25,12 +25,16 @@ export const Register = () =>{
       const result = await doCreateUserWithEmailAndPassword(email, password);
       const user = result.user
 
-      //register as ta 
+      //register as ta
+      
       await addDoc(roleRef, {
         email: user.email,
         id: user.uid,
         role: "ta"
       })
+      
+
+     
 
       console.log("verification status: ", user.emailVerified)
       if(!user.emailVerified){
