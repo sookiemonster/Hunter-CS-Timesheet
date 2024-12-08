@@ -3,75 +3,47 @@ import './styles.css'
 import User from "../../state/User";
 import PeriodHeader from "../../components/PeriodHeader";
 import TypeDropdown from "../../components/TypeDropdown";
+import LandingBackround from "./LandingBackground";
 import { Group } from "@mantine/core";
-import { randomInt } from "crypto";
-
+import { DefaultButton } from "../../components/Buttons";
 
 interface LandingProps {
     user:User
 }
 
-interface Point {
-    x:number,
-    y:number
-}
-
-// Inspired by: 
-// https://codepen.io/arindam404/pen/qBLVwPd
-// https://codepen.io/christinastep/pen/eXypvq
-
-function Blob({x, y}: Point) {
-    const [position, setPosition] = useState({"x": x, "y": y});
-    const redrawRate = 5000; // ms
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const newPosition = {
-                "x" : (Math.random()) * 80,
-                "y" : (Math.random()) * 80
-            }
-            console.log(newPosition);
-            setPosition(newPosition);
-        }, redrawRate);
-    
-        return () => clearInterval(interval);
-      }, []);
-
-    return (
-        <div style={{
-            left: `${position.x}vw`,
-            top: `${position.y}vh`,
-        }} className="blob">
-        </div>
-    )
-}
-
-function LandingBackround():JSX.Element {
-    const startPositions = [[0,0],[50,40], [100,100]];
-    
-    return (
-    <div className="blob-container">
-        { startPositions.map(pair => {
-            return <Blob x={pair[0]} y={pair[1]} />
-        })}
-    </div>
-    );
-}
-
 
 function LandingPageUser():JSX.Element {
-    
+    let hasSubmitted = false;
+
+    const redirect = () => console.log("redirect");
+
+    useEffect(() => {
+        // set hasSubmitted
+    }, []);
+
     return (
     <div id="landing-container">
-        
+        <PeriodHeader font_size="large"/>
+        <Group gap={20} style={{ paddingTop: "10px "}} align="center">
+            <DefaultButton onClick={() => redirect()} text={hasSubmitted ? "Edit" : "Submit" } />
+            <h4>
+                { hasSubmitted
+                    ? "You've already submitted for this period."
+                    : "You still need to submit for this period."
+                }
+            </h4>
+        </Group>
     </div>
     )
 }
 
 
 function LandingPageAdmin():JSX.Element {
+    let all_employees = Array.from({length: 10}, (v, k) => `employee ${k+1}`); 
 
-    const sample_list = Array.from({length: 10}, (v, k) => `employee ${k+1}`); 
+    useEffect(() => {
+        // set all employees
+    }, []);
 
     const foo = (s:string) => {
         console.log(s);
@@ -82,8 +54,7 @@ function LandingPageAdmin():JSX.Element {
         <PeriodHeader font_size="large"/>
         <Group className="standard-prompt">
             <h2>Select an <span className="underline">Employee</span> to get started</h2>
-            <TypeDropdown list={sample_list} onSelect={foo} placeholder="Employee"/>
-
+            <TypeDropdown list={all_employees} onSelect={foo} placeholder="Employee"/>
         </Group>
         <span className="alternate-prompt">
             or <a href="/timesheets">view all timesheets submitted for this period</a>

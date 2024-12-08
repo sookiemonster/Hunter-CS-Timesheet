@@ -6,7 +6,6 @@ import { MantineProvider } from '@mantine/core';
 import theme from './Theme';
 import Navbar from './components/Navbar';
 import { SAMPLE_USER } from './state/sample';
-import { ApproveButton, ArrowButton, SubmitButton } from './components/Buttons';
 // import { ApproveButton, ArrowButton, SubmitButton } from './components/Buttons';
 import BoxedStat from './components/Stats';
 import LandingPage from './pages/LandingPage/LandingPage';
