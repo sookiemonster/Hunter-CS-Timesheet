@@ -10,6 +10,34 @@ interface LandingProps {
     user:User;
 }
 
+interface BlobProps {
+    x:number,
+    y:number
+}
+
+function Blob({x, y}: BlobProps) {
+    return (
+        <div style={{
+            left: `${x}vw`,
+            top: `${y}vh`,
+        }} className="blob">
+        </div>
+    )
+}
+
+function LandingBackround():JSX.Element {
+    const startPositions = [[0,0], [100,100]];
+    
+    return (
+    <div className="blob-container">
+        { startPositions.map(pair => {
+            return <Blob x={pair[0]} y={pair[1]} />
+        })}
+    </div>
+    );
+}
+
+
 function LandingPageUser():JSX.Element {
     
     return (
@@ -45,6 +73,7 @@ function LandingPageAdmin():JSX.Element {
 
 function LandingPage({user}:LandingProps):JSX.Element {
     return <>
+    <LandingBackround/>
     {user.isAdmin ? <LandingPageAdmin/> : <LandingPageUser/>}
     </>
 }

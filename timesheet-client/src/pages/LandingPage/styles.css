@@ -6,21 +6,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 10px;
+  gap: 0px;
   width: 100vw;
   height: 100vh;
   padding: 5vh 5vw;
 }
-
-.standard-prompt {
-  margin-top: 30px;
-
-  h2 {
-    margin: 0;
-  }
-
-}
-
 
 .underline {
   text-decoration: underline;
@@ -28,6 +18,37 @@
 
 a {
   color: #4f5eff;
+}
+
+.blob-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: -3;
+  overflow: hidden;
+}
+@keyframes pulse {
+  0% {
+    width: min(50vw, 50vh);
+  }
+  50% {
+    width: min(70vw, 70vh);
+  }
+  100% {
+    width: min(50vw, 50vh);
+  }
+}
+.blob-container div {
+  position: absolute;
+  transform: translate3D(-50%, -50%, 0);
+  display: block;
+  background-color: orangered;
+  filter: blur(100px);
+  opacity: 0.3;
+  width: min(50vw, 50vh);
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  animation: ease-in-out 10s infinite pulse;
 }
 
 /*# sourceMappingURL=styles.css.map */

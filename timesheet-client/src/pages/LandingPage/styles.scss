@@ -23,3 +23,36 @@
 a {
     color: $primary;
 }
+
+.blob-container {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: -3;
+    overflow: hidden;
+    $shrank: min(50vw, 50vh);
+    $expand: min(70vw, 70vh);
+    @keyframes pulse {
+        0% { width: $shrank; }
+        50% { width: $expand }
+        100% { width: $shrank; }
+    }
+
+    div {
+        position: absolute;
+        transform: translate3D(-50%, -50%, 0);
+
+        display: block;
+        background-color: orangered;
+        filter: blur(100px);
+        opacity: 0.3;
+
+        width: $shrank;
+        border-radius: 50%;
+        aspect-ratio: 1/1;
+
+        animation: ease-in-out 10s infinite pulse;
+    }
+    
+    
+}
