@@ -39,8 +39,10 @@ a {
     }
 
     div {
+        $move_rate: 5s;
         position: absolute;
         transform: translate3D(-50%, -50%, 0);
+        transition: top $move_rate ease-in-out, left $move_rate ease-in-out;
 
         display: block;
         background-color: orangered;

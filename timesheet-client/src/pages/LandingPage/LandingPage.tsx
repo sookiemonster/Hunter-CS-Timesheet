@@ -1,32 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import './styles.css'
 import User from "../../state/User";
 import PeriodHeader from "../../components/PeriodHeader";
 import TypeDropdown from "../../components/TypeDropdown";
-import { Group, Stack } from "@mantine/core";
+import { Group } from "@mantine/core";
+import { randomInt } from "crypto";
 
 
 interface LandingProps {
-    user:User;
+    user:User
 }
 
-interface BlobProps {
+interface Point {
     x:number,
     y:number
 }
 
-function Blob({x, y}: BlobProps) {
+// Inspired by: 
+// https://codepen.io/arindam404/pen/qBLVwPd
+// https://codepen.io/christinastep/pen/eXypvq
+
+function Blob({x, y}: Point) {
+    const [position, setPosition] = useState({"x": x, "y": y});
+    const redrawRate = 5000; // ms
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const newPosition = {
+                "x" : (Math.random()) * 80,
+                "y" : (Math.random()) * 80
+            }
+            console.log(newPosition);
+            setPosition(newPosition);
+        }, redrawRate);
+    
+        return () => clearInterval(interval);
+      }, []);
+
     return (
         <div style={{
-            left: `${x}vw`,
-            top: `${y}vh`,
+            left: `${position.x}vw`,
+            top: `${position.y}vh`,
         }} className="blob">
         </div>
     )
 }
 
 function LandingBackround():JSX.Element {
-    const startPositions = [[0,0], [100,100]];
+    const startPositions = [[0,0],[50,40], [100,100]];
     
     return (
     <div className="blob-container">
