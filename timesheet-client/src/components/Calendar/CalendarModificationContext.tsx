@@ -82,7 +82,7 @@ export function CalendarModificationProvider(props: PropsWithChildren) {
         weekOneEvents, weekTwoEvents,
         selected, setSelected, deleteSelected,
         opened, open, close, saveEdits, 
-        selectedWeekOne, selectWeek, temporaryEvents, clearTemp };
+        selectedWeekOne, selectWeek, temporaryEvents, clearTemp, updateTemp };
     return <CalendarModificationContext.Provider value={value}>
         {props.children}
     </CalendarModificationContext.Provider>
