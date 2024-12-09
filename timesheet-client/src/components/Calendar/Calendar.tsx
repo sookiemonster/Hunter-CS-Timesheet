@@ -1,5 +1,61 @@
-import React from "react";
+//@ts-nocheck
+import React, {useState, useEffect, useMemo } from "react";
+import './styles.css'
 
-export default function Calendar():JSX.Element {
-    return <></>
+import { Calendar, Views, dateFnsLocalizer } from 'react-big-calendar'
+
+import {format} from 'date-fns/format'
+import {parse} from 'date-fns/parse'
+import {startOfWeek} from 'date-fns/startOfWeek'
+import {getDay} from 'date-fns/getDay'
+import {enUS} from 'date-fns/locale/en-US'
+
+const locales = {
+  'en-US': enUS,
+}
+
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+})
+
+interface Event {
+    title:string,
+    start: Date,
+    end: Date,
+    allDay?: boolean
+}
+
+export default function ScheduleCalendar():JSX.Element {
+    // We simulate the date periods here.
+
+    const { formats } = useMemo(
+        () => ({
+          formats: {
+            dayFormat: (date, culture, localizer) =>
+              localizer.format(date, 'EE', culture),
+          }
+        }),
+        []
+      )
+
+    return <>
+    <Calendar
+      localizer={localizer}
+      toolbar={false}
+      formats={formats}
+      drilldownView={Views.WEEK}
+      defaultView={Views.WEEK}
+      dayPropGetter={(d) => {
+        
+      }
+      }
+    //   events={myEventsList}
+      startAccessor="start"
+      endAccessor="end"
+      style={{ height: 500 }}
+    /></>
 }

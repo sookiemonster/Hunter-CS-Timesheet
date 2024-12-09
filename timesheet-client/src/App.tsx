@@ -18,6 +18,7 @@ import { Register } from './pages/Register';
 import { Timesheet } from './pages/Timesheet';
 import { useState, createContext } from 'react';
 import { ForgotPassword } from './pages/ForgotPassword';
+import ScheduleCalendar from './components/Calendar';
 
 //----Creating global context to hold all info want to pass fown---//
 export const AppContext = createContext({
@@ -33,8 +34,9 @@ function App() {
   return (
     <MantineProvider theme={theme}>
     <div className = "App">
-      <Navbar user={SAMPLE_USER} initial_active={0}/>
-        <LandingPage user={SAMPLE_USER} />
+      {/* <Navbar user={SAMPLE_USER} initial_active={0}/>
+        <LandingPage user={SAMPLE_USER} /> */}
+      <ScheduleCalendar />
       <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
         {/* <Router>
           <Routes>
