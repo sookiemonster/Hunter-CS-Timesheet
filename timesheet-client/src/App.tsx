@@ -3,6 +3,8 @@ import React from 'react';
 import './App.css';
 import PeriodHeader from './components/PeriodHeader';
 import { MantineProvider, useSafeMantineTheme } from '@mantine/core';
+import { CalendarModificationProvider } from './components/Calendar/CalendarModificationContext';
+
 import theme from './Theme';
 import Navbar from './components/Navbar';
 import { SAMPLE_USER } from './state/sample';
@@ -36,7 +38,10 @@ function App() {
     <div className = "App">
       {/* <Navbar user={SAMPLE_USER} initial_active={0}/>
         <LandingPage user={SAMPLE_USER} /> */}
-      <ScheduleCalendar />
+        <CalendarModificationProvider>
+        <ScheduleCalendar />
+
+        </CalendarModificationProvider>
       <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
         {/* <Router>
           <Routes>
