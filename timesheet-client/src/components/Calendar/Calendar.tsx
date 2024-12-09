@@ -37,6 +37,8 @@ export default function ScheduleCalendar():JSX.Element {
           formats: {
             dayFormat: (date, culture, localizer) =>
               localizer.format(date, 'EE', culture),
+            timeGutterFormat: (date, culture, localizer) => 
+                localizer.format(date, 'h a', culture),
           }
         }),
         []
@@ -49,10 +51,8 @@ export default function ScheduleCalendar():JSX.Element {
       formats={formats}
       drilldownView={Views.WEEK}
       defaultView={Views.WEEK}
-      dayPropGetter={(d) => {
-        
-      }
-      }
+      allDayMaxRows={0}
+      defaultDate={new Date(2020,1,1)} // So we don't have any weird highlighting
     //   events={myEventsList}
       startAccessor="start"
       endAccessor="end"
