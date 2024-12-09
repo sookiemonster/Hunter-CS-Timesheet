@@ -4,6 +4,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { Modal, Button } from '@mantine/core';
 
 import {CalendarModificationProvider, CalendarModificationContext} from "./CalendarModificationContext";
+import EditorSheet from "./EditorSheet";
 
 // import { useMouse } from '@mantine/hooks';
 import './styles.css'
@@ -32,28 +33,11 @@ const localizer = dateFnsLocalizer({
 // Adapted from: 
 // https://github.com/jquense/react-big-calendar/blob/master/stories/demos/exampleCode/selectable.js
 
-function EditorSheet() {
-    const { selected, saveEdits } = useContext(CalendarModificationContext);
-
-    const [title, setTitle] = useState(selected?.title);
-    const [start, setStart] = useState(selected?.start);
-    const [end, Setend] = useState(selected?.end);
-
-    const submit = () => {
-        saveEdits(start, end, "APPLE");
-    }
-
-    return<>
-        <Button onClick={() => submit()}>MODIFY</Button>
-    </>
-}
-
 export default function ScheduleCalendar():JSX.Element {
-    const {weekOneEvents, weekTwoEvents,
-        selected, setSelected, 
-        opened, open, finish, saveEdits, 
+    const {weekOneEvents, weekTwoEvents, temporaryEvents,
+        setSelected,
+        open, saveEdits, 
         selectedWeekOne, selectWeek } = useContext(CalendarModificationContext);
-    // We'll simulate the date periods here.
     
     // Config
     const { defaultDate, formats, scrollToTime } = useMemo(
@@ -69,19 +53,21 @@ export default function ScheduleCalendar():JSX.Element {
         }),[]
       )
 
-    const handleSelectSlot = useCallback(
-    ({ start, end }) => {
-        const title = window.prompt('New Event name')
-        const uniqueId = crypto.randomUUID();
-        
-        if (title) { saveEdits(start, end, title); }
-        },[]
-    )
+    const handleSelectSlot = useCallback(({ start, end }) => {
+        const newEvent = {
+            "name": 'New Event',
+            "start": start,
+            "end": end,
+            id: crypto.randomUUID()
+        }
+        setSelected(newEvent);
+        open();
+    })
     
-    const handleSelectEvent = (event) => {
+    const handleSelectEvent = useCallback((event) => {
         setSelected(event);
         open();
-    }
+    }, [])
 
     return <>
         <Calendar
@@ -92,7 +78,10 @@ export default function ScheduleCalendar():JSX.Element {
             defaultView={Views.WEEK}
             allDayMaxRows={0}
             defaultDate={defaultDate} // So we don't have any weird highlighting
+            
             events={(selectedWeekOne) ? weekOneEvents : weekTwoEvents}
+            backgroundEvents={temporaryEvents}
+
             onSelectEvent={handleSelectEvent}
             onSelectSlot={handleSelectSlot}
             popup
@@ -103,11 +92,6 @@ export default function ScheduleCalendar():JSX.Element {
 
             style={{ height: 500 }}
         />
-
-        <Modal opened={opened} onClose={finish} centered>
-            <EditorSheet />
-        </Modal>
-
-      {/* <Button onClick={open}>Open centered Modal</Button> */}
+        <EditorSheet />
     </>
 };
