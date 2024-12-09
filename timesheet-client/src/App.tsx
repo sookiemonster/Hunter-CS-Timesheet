@@ -30,12 +30,13 @@ function App() {
   const [email, setEmail] = useState("");
   const [user, setUser] = useState({}); //empty obhect for now but meant to store firebase user info
   const [loginStatus, setloginStatus] = useState(null);
+  const [role, setRole] = useState("");
   return (
     <MantineProvider theme={theme}>
     <div className = "App">
       <Navbar user={SAMPLE_USER} initial_active={0}/>
         <LandingPage user={SAMPLE_USER} />
-      <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
+      <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser, role, setRole}}>
         {/* <Router>
           <Routes>
             <Route path ="/login" element = {<Login />} /> 
