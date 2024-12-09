@@ -76,11 +76,14 @@ export function CalendarModificationProvider(props: PropsWithChildren) {
     const clearTemp= () => {
         setTemporaryEvents([]);
     }
-    // 
+
+    const clearSelected = () => {
+        setSelected(NullEvent);
+    }
 
     const value = { 
         weekOneEvents, weekTwoEvents,
-        selected, setSelected, deleteSelected,
+        selected, setSelected, deleteSelected, clearSelected,
         opened, open, close, saveEdits, 
         selectedWeekOne, selectWeek, temporaryEvents, clearTemp, updateTemp };
     return <CalendarModificationContext.Provider value={value}>

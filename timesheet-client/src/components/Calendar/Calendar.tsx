@@ -30,9 +30,6 @@ const localizer = dateFnsLocalizer({
   locales,
 })
 
-// Adapted from: 
-// https://github.com/jquense/react-big-calendar/blob/master/stories/demos/exampleCode/selectable.js
-
 export default function ScheduleCalendar():JSX.Element {
     const {weekOneEvents, weekTwoEvents, temporaryEvents,
         setSelected,

@@ -41,9 +41,7 @@ export default function TimePicker({label, setter}:TimePickerProps) {
         if (!hours || !minutes || !AM) { return; }
 
         updatedStart.setHours(
-            (AM === 'AM') 
-            ?   parseInt(hours) % 12
-            :   parseInt(hours)
+            (parseInt(hours) % 12) + ((AM === 'AM') ? 0 : 12)
         );
         updatedStart.setMinutes(parseInt(minutes));
         console.log("NEW START", updatedStart)

@@ -4,13 +4,13 @@ import { Modal, Button, TextInput } from '@mantine/core';
 import TimePicker from "./TimePicker";
 
 export default function EditorSheet() {
-    const { selected, saveEdits, opened, close, deleteSelected, updateTemp, clearTemp } = useContext(CalendarModificationContext);
+    const { selected, saveEdits, opened, close, deleteSelected, updateTemp, clearTemp, clearSelected } = useContext(CalendarModificationContext);
 
     const [title, setTitle] = useState('');
     const [start, setStart] = useState(new Date(1990,1,1,9,0,0));
     const [end, setEnd] = useState(new Date(1990,1,1,10,0,0));
 
-    useEffect (() => {
+    useEffect (() => {        
         setTitle(selected?.title || 'New Event')
         setStart(selected.start)
         setEnd(selected.end)
@@ -18,18 +18,16 @@ export default function EditorSheet() {
 
 
     useEffect(() => {
-        if (!opened) { return; }
-        if (!selected) { console.error("NO SELECTION"); return; }
-        updateTemp(selected.start, selected.end, selected.title);
-
-    }, [opened])
+        if (!opened || !selected) { clearTemp(); return; }
+        updateTemp(start, end, title);
+    }, [opened, start, end])
 
     const submit = () => {
         saveEdits(start, end, title);
     }
 
     return(
-    <Modal opened={opened} onClose={() => { close(); clearTemp() }} centered>
+    <Modal opened={opened} onClose={() => { close(); clearSelected(); }} centered>
         <TextInput 
             label = "Activity" 
             description="" 
@@ -37,8 +35,9 @@ export default function EditorSheet() {
             value={title}
             onChange={(event) => setTitle(event.currentTarget.value)}></TextInput>
         <TimePicker label="start" setter={setStart}/>
-        <Button onClick={() => submit()}>MODIFY</Button>
-        <Button onClick={() => deleteSelected()}>DELETE</Button>
+        <TimePicker label="end" setter={setEnd}/>
+        <Button onClick={() => submit()}>Save</Button>
+        <Button onClick={() => deleteSelected()}>Delete</Button>
         {/* <Button onClick={() => submit()}>MODIFY</Button> */}
     </Modal>
     )
