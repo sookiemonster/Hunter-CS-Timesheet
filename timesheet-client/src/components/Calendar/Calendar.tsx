@@ -1,11 +1,8 @@
 //@ts-nocheck
 import React, {useState, useEffect, useMemo, useCallback } from "react";
 import './styles.css'
-import './dndSass/styles.css'
 
 import { Calendar, Views, dateFnsLocalizer } from 'react-big-calendar'
-import withDragAndDrop from './dragAndDrop'
-
 
 import {format} from 'date-fns/format'
 import {parse} from 'date-fns/parse'
@@ -32,12 +29,8 @@ interface Event {
     allDay?: boolean
 }
 
-// const DragAndDropCalendar = withDragAndDrop(Calendar)
-
-
 // Adapted from: 
 // https://github.com/jquense/react-big-calendar/blob/master/stories/demos/exampleCode/selectable.js
-// https://github.com/jquense/react-big-calendar/blob/master/stories/demos/exampleCode/dnd.js
 
 export default function ScheduleCalendar():JSX.Element {
     // We simulate the date periods here.
@@ -56,48 +49,33 @@ export default function ScheduleCalendar():JSX.Element {
         }),[]
       )
 
-      const moveEvent = useCallback(
-        ({ event, start, end, isAllDay: droppedOnAllDaySlot = false }) => {
-          const { allDay } = event
-          if (!allDay && droppedOnAllDaySlot) {
-            event.allDay = true
-          }
-          if (allDay && !droppedOnAllDaySlot) {
-              event.allDay = false;
-          }
-    
-          setEvents((prev) => {
-            const existing = prev.find((ev) => ev.id === event.id) ?? {}
-            const filtered = prev.filter((ev) => ev.id !== event.id)
-            return [...filtered, { ...existing, start, end, allDay: event.allDay }]
-          })
-        },
-        [setEvents]
-      )
-    
-      const resizeEvent = useCallback(
-        ({ event, start, end }) => {
-            setEvents((prev) => {
-            const existing = prev.find((ev) => ev.id === event.id) ?? {}
-            const filtered = prev.filter((ev) => ev.id !== event.id)
-            return [...filtered, { ...existing, start, end }]
-          })
-        },
-        [setEvents]
-      )
-
     const handleSelectSlot = useCallback(
     ({ start, end }) => {
         const title = window.prompt('New Event name')
+        const uniqueId = crypto.randomUUID();
+        
         if (title) {
-        setEvents((prev) => [...prev, { start, end, title }])
+        setEvents((prev) => {
+            console.log(prev);
+            return [...prev, { "start": start, "end": end, "title": title, "id": uniqueId }]
+        })
         }
     },
     [setEvents]
     )
     
     const handleSelectEvent = useCallback(
-        (event) => window.alert(event.title),
+        (event) => {
+            const title = window.prompt('new event title')
+            console.log(event.id)
+            if (!title) { return; }
+            
+            setEvents((prev) => {
+                const updated_events = prev.filter(itr => itr.id !== event.id);
+                event.title = title;
+                return [...updated_events, event];
+            })
+        },
         []
     )
 
@@ -113,9 +91,6 @@ export default function ScheduleCalendar():JSX.Element {
         events={events}
         onSelectEvent={handleSelectEvent}
         onSelectSlot={handleSelectSlot}
-
-        onEventDrop={moveEvent}
-        onEventResize={resizeEvent}
         popup
         selectable
         startAccessor="start"
