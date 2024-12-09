@@ -1,5 +1,7 @@
 import React, {useContext, useEffect, useMemo, useState} from "react";
 import { CalendarModificationContext } from "./CalendarModificationContext";
+
+import { useHotkeys  } from '@mantine/hooks';
 import { Modal, Button, TextInput } from '@mantine/core';
 import TimePicker from "./TimePicker";
 
@@ -9,6 +11,13 @@ export default function EditorSheet() {
     const [title, setTitle] = useState('');
     const [start, setStart] = useState(new Date(1990,1,1,9,0,0));
     const [end, setEnd] = useState(new Date(1990,1,1,10,0,0));
+
+    useHotkeys([
+        ['Enter', () => {
+            if (!selected || !opened) { return; }
+            submit();
+        }]
+    ]);
 
     useEffect (() => {        
         setTitle(selected?.title || 'New Event')
@@ -38,7 +47,6 @@ export default function EditorSheet() {
         <TimePicker label="end" setter={setEnd}/>
         <Button onClick={() => submit()}>Save</Button>
         <Button onClick={() => deleteSelected()}>Delete</Button>
-        {/* <Button onClick={() => submit()}>MODIFY</Button> */}
     </Modal>
     )
 }
