@@ -1,6 +1,6 @@
 import React from "react";
 import ArrowButton from "./ArrowButton";
-import ApproveButton from "./ApproveButton";
-import SubmitButton from "./SubmitButton";
+import DefaultButton from "./DefaultButton";
+import IndicatorSymbol from "./IndicatorSymbol";
 
-export { ArrowButton, ApproveButton, SubmitButton };
+export { ArrowButton, DefaultButton, IndicatorSymbol };

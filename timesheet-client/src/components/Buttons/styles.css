@@ -1,0 +1,19 @@
+.indicator {
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-weight: bold;
+  border-radius: 50%;
+  background-color: black;
+  color: white;
+}
+.indicator.no {
+  background-color: #f54747;
+}
+.indicator.yes {
+  background-color: #50b438;
+}
+
+/*# sourceMappingURL=styles.css.map */

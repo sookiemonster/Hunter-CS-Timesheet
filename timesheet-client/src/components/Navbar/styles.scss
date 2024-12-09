@@ -3,6 +3,9 @@
 $background: rgba(255, 255, 255, 0.7);
 
 header {
+    position: absolute;
+    left: 0;
+    right: 0;
     height: 70px;
     background-color: $background;
     width: 100vw;
@@ -11,6 +14,7 @@ header {
     justify-content: space-between;
     gap: 10px;
     align-items: center;
+    z-index: 99;
 }
 
 #nav-title {
