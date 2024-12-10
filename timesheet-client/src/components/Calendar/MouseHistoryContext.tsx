@@ -29,14 +29,11 @@ export function MouseHistoryProvider(props: PropsWithChildren) {
             'x': x + ( mouseOnLeft() ? padding : -modalWidth -padding ),
             'y': y
         })
-        console.log(storedMousePosition);
     }
 
     const clearMouseStorage = () => {
         setStoredMousePosition(NullPosition);
     }
-
-    console.log(x);
     
     const value = {
         storedMousePosition, storeCurrentPosition, clearMouseStorage, mouseOnLeft };
