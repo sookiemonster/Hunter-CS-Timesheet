@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Select, SegmentedControl, Stack, Text } from '@mantine/core';
+import { Select, SegmentedControl, Stack } from '@mantine/core';
 import { CalendarModificationContext } from "./CalendarModificationContext";
-import './modalStyles/modalStyles.css';
+import './modalStyles/styles.css';
 
 interface TimePickerProps {
     label: 'start' | 'end',
@@ -22,33 +22,33 @@ export default function TimePicker({label, setter, hasError, showError}:TimePick
             : 'PM'
     );
 
-    const hoursOptions = Array.from({ length: 12 }, (_, i) => ({
-        label: `${i + 1}`,
-        value: `${i + 1}`,
-    }));
+    const hoursOptions = useMemo(
+        () => Array.from({ length: 12 }, (_, i) => ({
+            label: `${i + 1}`,
+            value: `${i + 1}`,
+        })), []
+    )
     
-    const minutesOptions = Array.from({ length: 6 }, (_, i) => ({
-        label: `${i === 0 ? '0' : ''}${i*10}`,
-        value: `${i === 0 ? '0' : ''}${i*10}`,
-    }));
-    
-    const ampmOptions = [
-        { label: 'AM', value: 'AM' },
-        { label: 'PM', value: 'PM' },
-    ];
+    const minutesOptions = useMemo(
+        () => Array.from({ length: 6 }, (_, i) => ({
+            label: `${i === 0 ? '0' : ''}${i*10}`,
+            value: `${i === 0 ? '0' : ''}${i*10}`,
+        })), []
+    )
 
     useEffect(() => {
         if (!selected) { return ;}
-        const updatedStart = new Date(selected.start);
-        console.log("OLD START", updatedStart)
+        // Get current date that is selected
+        const updatedTime = new Date(selected.start);
         if (!hours || !minutes || !AM) { return; }
-
-        updatedStart.setHours(
+        
+        // Create new time object
+        updatedTime.setHours(
             (parseInt(hours) % 12) + ((AM === 'AM') ? 0 : 12)
         );
-        updatedStart.setMinutes(parseInt(minutes));
-        console.log("NEW START", updatedStart)
-        setter(updatedStart);
+        updatedTime.setMinutes(parseInt(minutes));
+        
+        setter(updatedTime);
     }, [hours, minutes, AM])
     
     return (

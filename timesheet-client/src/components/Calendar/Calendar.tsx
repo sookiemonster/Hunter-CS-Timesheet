@@ -1,9 +1,8 @@
 //@ts-nocheck
-import React, {useState, useEffect, useMemo, useCallback, useContext, useRef } from "react";
-import { useDisclosure } from '@mantine/hooks';
-import { Modal, Button, SegmentedControl, Group, Stack } from '@mantine/core';
+import React, { useEffect, useMemo, useCallback, useContext } from "react";
+import { SegmentedControl, Group, Stack } from '@mantine/core';
 
-import {CalendarModificationProvider, CalendarModificationContext} from "./CalendarModificationContext";
+import { CalendarModificationContext } from "./CalendarModificationContext";
 import EditorSheet from "./EditorSheet";
 
 // import { useMouse } from '@mantine/hooks';
@@ -32,8 +31,7 @@ const localizer = dateFnsLocalizer({
 
 export default function ScheduleCalendar():JSX.Element {
     const {weekOneEvents, weekTwoEvents, temporaryEvents,
-        setSelected,
-        open, saveEdits, 
+        setSelected, open, 
         selectedWeekOne, selectWeek } = useContext(CalendarModificationContext);
     
     // Config

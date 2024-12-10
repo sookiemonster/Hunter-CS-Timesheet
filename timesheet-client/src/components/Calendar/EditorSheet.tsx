@@ -1,15 +1,14 @@
-import React, {useContext, useEffect, useMemo, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { CalendarModificationContext } from "./CalendarModificationContext";
 
 import { useHotkeys  } from '@mantine/hooks';
-import { Modal, Button, TextInput, Divider, Group, Stack, ActionIcon } from '@mantine/core';
+import { Modal, Button, Divider, Group, Stack } from '@mantine/core';
 import TimePicker from "./TimePicker";
 import { TrashButton } from "../Buttons";
 
 export default function EditorSheet() {
     const { selected, saveEdits, opened, close, deleteSelected, updateTemp, clearTemp, clearSelected, selectedWeekOne } = useContext(CalendarModificationContext);
 
-    const [title, setTitle] = useState('');
     const [start, setStart] = useState(new Date(1990,1,1,9,0,0));
     const [end, setEnd] = useState(new Date(1990,1,1,10,0,0));
 
@@ -34,7 +33,7 @@ export default function EditorSheet() {
         if (!opened || !selected) { clearTemp(); return; }
         if (start > end) { setError(true); }
         else { setError(false); }
-        updateTemp(start, end, title);
+        updateTemp(start, end, '');
     }, [opened, start, end])
 
     const submit = () => {
@@ -44,7 +43,7 @@ export default function EditorSheet() {
     }
 
     return(
-    <Modal opened={opened} onClose={() => { close(); clearSelected(); }} centered>
+    <Modal opened={opened} onClose={() => { clearSelected(); close(); clearTemp(); }} centered>
         <Stack>
         <Stack gap={0}>
             <h3 style={{margin: 0, padding: 0}}>Shift</h3>
