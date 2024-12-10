@@ -6,8 +6,9 @@ import { MantineProvider, useSafeMantineTheme } from '@mantine/core';
 import theme from './Theme';
 import Navbar from './components/Navbar';
 import { SAMPLE_USER } from './state/sample';
-import { ApproveButton, ArrowButton, SubmitButton } from './components/Buttons';
+// import { ApproveButton, ArrowButton, SubmitButton } from './components/Buttons';
 import BoxedStat from './components/Stats';
+import LandingPage from './pages/LandingPage/LandingPage';
 
 //routing imports 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
@@ -29,25 +30,14 @@ function App() {
   const [email, setEmail] = useState("");
   const [user, setUser] = useState({}); //empty obhect for now but meant to store firebase user info
   const [loginStatus, setloginStatus] = useState(null);
+  const [role, setRole] = useState("");
   return (
+    <MantineProvider theme={theme}>
     <div className = "App">
-<<<<<<< Updated upstream
-    <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
-    <Router>
-        <Routes>
-          <Route path ="/login" element = {<Login />} /> 
-          <Route path ="/forgot-password" element = {<ForgotPassword />} /> 
-          <Route path ="/register" element = {<Register />} /> 
-          <Route path ="/" element = {<Home />} /> 
-          <Route path ="/timesheet" element = {<Timesheet />} /> 
-          <Route path="*" element = {<h1>Page Not Found</h1>} />
-        </Routes>
-      </Router>
-=======
       <Navbar user={SAMPLE_USER} initial_active={0}/>
-        {/*<LandingPage user={SAMPLE_USER} /> */}
-      <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
-        <Router>
+        <LandingPage user={SAMPLE_USER} />
+      <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser, role, setRole}}>
+        {/* <Router>
           <Routes>
             <Route path ="/login" element = {<Login />} /> 
             <Route path ="/forgot-password" element = {<ForgotPassword />} /> 
@@ -56,27 +46,11 @@ function App() {
             <Route path ="/timesheet" element = {<Timesheet />} /> 
             <Route path="*" element = {<h1>Page Not Found</h1>} />
           </Routes>
-        </Router> 
+        </Router> */}
       </AppContext.Provider>
->>>>>>> Stashed changes
 
-    </AppContext.Provider>
-
-    </div>
-    
-
-  /*
-    <MantineProvider theme={theme}>
-      <div className="App">
-        <Navbar user={SAMPLE_USER} initial_active={1}/>
-        <ApproveButton/>
-        <SubmitButton/>
-        <BoxedStat size='big' variant='box' stat='13' label='Total Hours Worked'/>
-        <ArrowButton direction='left'/>
-        {/* <PeriodHeader show_current={false} font_size={'large'}/> }
       </div>
     </MantineProvider>
-  */
   );
 }
 
