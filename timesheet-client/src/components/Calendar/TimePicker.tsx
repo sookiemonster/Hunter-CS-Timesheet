@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Group, Select } from '@mantine/core';
+import { Select, SegmentedControl } from '@mantine/core';
 import { CalendarModificationContext } from "./CalendarModificationContext";
+import './modalStyles.css';
 
 interface TimePickerProps {
     label: 'start' | 'end',
@@ -24,9 +25,9 @@ export default function TimePicker({label, setter}:TimePickerProps) {
         value: `${i + 1}`,
     }));
     
-    const minutesOptions = Array.from({ length: 60 }, (_, i) => ({
-        label: `${i < 10 ? '0' : ''}${i}`,
-        value: `${i < 10 ? '0' : ''}${i}`,
+    const minutesOptions = Array.from({ length: 6 }, (_, i) => ({
+        label: `${i === 0 ? '0' : ''}${i*10}`,
+        value: `${i === 0 ? '0' : ''}${i*10}`,
     }));
     
     const ampmOptions = [
@@ -49,40 +50,39 @@ export default function TimePicker({label, setter}:TimePickerProps) {
     }, [hours, minutes, AM])
     
     return (
-    <Group>
+    <div className="time-container">
         <Select
-        label="Hour"
-        placeholder="Select Hours"
+        placeholder="Select Hour"
         data={hoursOptions}
         value={hours}
         onChange={(value) => setHours(value)}
-
-        checkIconPosition="right"
-        allowDeselect={false}
-        searchable
-        />
-        <Select
-        label="Minutes"
-        placeholder="Select Minutes"
-        data={minutesOptions}
-        value={minutes}
-        onChange={(value) => setMinutes(value)}
-
-        checkIconPosition="right"
-        allowDeselect={false}
-        searchable
-        />
-        <Select
-        label="AM/PM"
-        placeholder="Select AM/PM"
-        data={ampmOptions}
-        value={AM}
-        onChange={(value) => setAM(value)}
+        variant="filled"
+        size="sm"
         
         checkIconPosition="right"
         allowDeselect={false}
         searchable
         />
-    </Group>
+
+        <Select
+        placeholder="Select Minutes"
+        data={minutesOptions}
+        value={minutes}
+        onChange={(value) => setMinutes(value)}
+        variant="filled"
+        size="sm"        
+        
+        checkIconPosition="right"
+        allowDeselect={false}
+        searchable
+        />
+
+        <SegmentedControl 
+            data={['AM', 'PM']} 
+            onChange={(value) => setAM(value)}
+            color="softpurple.4"
+            size="sm"
+            />
+    </div>
     );
 }

@@ -2,8 +2,9 @@ import React, {useContext, useEffect, useMemo, useState} from "react";
 import { CalendarModificationContext } from "./CalendarModificationContext";
 
 import { useHotkeys  } from '@mantine/hooks';
-import { Modal, Button, TextInput } from '@mantine/core';
+import { Modal, Button, TextInput, Divider, Group, Stack, ActionIcon } from '@mantine/core';
 import TimePicker from "./TimePicker";
+import { TrashButton } from "../Buttons";
 
 export default function EditorSheet() {
     const { selected, saveEdits, opened, close, deleteSelected, updateTemp, clearTemp, clearSelected } = useContext(CalendarModificationContext);
@@ -37,16 +38,30 @@ export default function EditorSheet() {
 
     return(
     <Modal opened={opened} onClose={() => { close(); clearSelected(); }} centered>
-        <TextInput 
-            label = "Activity" 
-            description="" 
-            placeholder="Please enter what these hours are for" 
-            value={title}
-            onChange={(event) => setTitle(event.currentTarget.value)}></TextInput>
-        <TimePicker label="start" setter={setStart}/>
-        <TimePicker label="end" setter={setEnd}/>
-        <Button onClick={() => submit()}>Save</Button>
-        <Button onClick={() => deleteSelected()}>Delete</Button>
+        <Stack>
+        <Group>
+            <h3>Shift</h3>
+            <TextInput 
+                description="" 
+                placeholder="Activity" 
+                value={title}
+                onChange={(event) => setTitle(event.currentTarget.value)}></TextInput>
+            
+        </Group>
+            <div>
+                <small><b>in</b></small>
+                <TimePicker label="start" setter={setStart}/>
+            </div>
+            <Divider/>
+            <div>
+                <small><b>out</b></small>
+                <TimePicker label="end" setter={setEnd}/>
+            </div>
+            <Group>
+                <Button color="softpurple" onClick={() => submit()}>Save</Button>
+                <TrashButton onClick={() => deleteSelected()} />
+            </Group>
+        </Stack>
     </Modal>
     )
 }
