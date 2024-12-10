@@ -5,7 +5,7 @@ import PeriodHeader from "../../components/PeriodHeader";
 import { Button, Divider, Group, Space, Stack } from "@mantine/core";
 import ScheduleCalendar from "../../components/Calendar";
 import BoxedStat from "../../components/Stats";
-import { ArrowButton, DefaultButton } from "../../components/Buttons";
+import { ArrowButton, DefaultButton, IndicatorSymbol } from "../../components/Buttons";
 import './styles/styles.css'
 
 interface StatTextProps {
@@ -24,6 +24,8 @@ function StatText({label,text,completionState}:StatTextProps) {
 export default function TimesheetPageAdmin():JSX.Element {
     const viewedUser = "DANIEL";
     const isDefault = true;
+    const isEdited = true;
+    const isApproved = false;
     
     const h1 = 10;
     const h2 = 10;
@@ -40,6 +42,16 @@ export default function TimesheetPageAdmin():JSX.Element {
         <Group>
             <PeriodHeader font_size="small"/>
             <StatText label="Employee" text={viewedUser} />
+            <Divider orientation="vertical" />
+            <Group gap={10}>
+                <b>Edited? </b>
+                <IndicatorSymbol showValue={true} value={isEdited ? 'yes' : 'no'} />
+            </Group>
+            <Divider orientation="vertical" />
+            <Group gap={10}>
+                <b>Approved? </b>
+                <IndicatorSymbol showValue={true} value={isApproved ? 'yes' : 'no'} />
+            </Group>
         </Group>
         <Space h='xs'/>
         <div id="calendar-container">
