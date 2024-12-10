@@ -2,12 +2,20 @@
   display: grid;
   align-content: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  padding-right: 1px;
   font-weight: bold;
+  font-size: 0.8rem;
   border-radius: 50%;
   background-color: black;
   color: white;
+}
+.indicator.invert.no {
+  background-color: #50b438;
+}
+.indicator.invert.yes {
+  background-color: #f54747;
 }
 .indicator.no {
   background-color: #f54747;

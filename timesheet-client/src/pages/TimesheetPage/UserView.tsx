@@ -21,10 +21,8 @@ export default function TimesheetPageAdmin():JSX.Element {
     const hoursWorked = h1 + h2;
     const timestamp = new Date();
 
-    const goToPrevious = () => {}
-    const goToNext = () => {}
-    const enableChanges = () => {}
-    const approve = () => {}
+    const revert = () => {}
+    const submit = () => {}
 
     return (
     <div id="timesheet-container">
@@ -34,12 +32,12 @@ export default function TimesheetPageAdmin():JSX.Element {
             <Divider orientation="vertical" />
             <Group gap={10}>
                 <b>Edited by admin? </b>
-                <IndicatorSymbol showValue={true} value={isEdited ? 'yes' : 'no'} />
+                <IndicatorSymbol invert={true} showValue={true} value={isEdited ? 'yes' : 'no'} />
             </Group>
             <Divider orientation="vertical" />
             
         </Group>
-        <Space h='xs'/>
+        <Space h='md'/>
         <div id="calendar-container">
             <ScheduleCalendar />
         </div>
@@ -50,17 +48,15 @@ export default function TimesheetPageAdmin():JSX.Element {
                 <BoxedStat variant="circle" size="small" stat={hoursWorked.toString()} label="Total Hours Worked"/>
                 <Space h='md' />
                 <Group>
-                    <ArrowButton direction="left" onClick={() => goToPrevious()} />
-                    <Button variant="outline" onClick={() => enableChanges()}>Edit</Button>
-                    <DefaultButton text="Approve" onClick={() => approve()} />
-                    <ArrowButton direction="right" onClick={() => goToNext()} />
+                    <Button variant="outline" onClick={() => revert()}>Discard</Button>
+                    <DefaultButton text="Submit" onClick={() => submit()} />
                 </Group>
             </Stack>
             <Divider orientation="vertical" />
             <Stack gap={2} align="flex-start">
                 <StatText label="Hours (Week 1)" text={h1.toString()}/>
                 <StatText label="Hours (Week 2)" text={h2.toString()}/>
-                <i>{timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString() }</i>
+                <i>{ timestamp ? "Submitted: " : "" }{timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString() }</i>
             </Stack>
         </Group>
     </div>
