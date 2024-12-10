@@ -1,13 +1,14 @@
 import React, {useContext, useEffect, useState} from "react";
 import { CalendarModificationContext } from "./CalendarModificationContext";
-
 import { useHotkeys  } from '@mantine/hooks';
-import { Modal, Button, Divider, Group, Stack } from '@mantine/core';
+import { Modal, Button, Divider, Group, Stack, Popover } from '@mantine/core';
 import TimePicker from "./TimePicker";
 import { TrashButton } from "../Buttons";
+import { MouseHistoryContext } from "./MouseHistoryContext";
 
 export default function EditorSheet() {
     const { selected, saveEdits, opened, close, deleteSelected, updateTemp, clearTemp, clearSelected, selectedWeekOne } = useContext(CalendarModificationContext);
+    const { storedMousePosition } = useContext(MouseHistoryContext);
 
     const [start, setStart] = useState(new Date(1990,1,1,9,0,0));
     const [end, setEnd] = useState(new Date(1990,1,1,10,0,0));
@@ -43,7 +44,11 @@ export default function EditorSheet() {
     }
 
     return(
-    <Modal opened={opened} onClose={() => { clearSelected(); close(); clearTemp(); }} centered>
+    <Popover offset={storedMousePosition.x} position={"right"} opened={opened} onClose={() => { clearSelected(); close(); clearTemp(); }}>
+        <Popover.Target>
+            <div style={{ position: "absolute", top: storedMousePosition.y, left: 0, width: 0}}></div>
+        </Popover.Target>
+        <Popover.Dropdown>
         <Stack>
         <Stack gap={0}>
             <h3 style={{margin: 0, padding: 0}}>Shift</h3>
@@ -63,6 +68,7 @@ export default function EditorSheet() {
                 <TrashButton onClick={() => { clearTemp(); deleteSelected(); close();  } } />
             </Group>
         </Stack>
-    </Modal>
+        </Popover.Dropdown>
+    </Popover>
     )
 }

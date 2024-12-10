@@ -21,6 +21,7 @@ import { Timesheet } from './pages/Timesheet';
 import { useState, createContext } from 'react';
 import { ForgotPassword } from './pages/ForgotPassword';
 import ScheduleCalendar from './components/Calendar';
+import { MouseHistoryProvider } from './components/Calendar/MouseHistoryContext';
 
 //----Creating global context to hold all info want to pass fown---//
 export const AppContext = createContext({
@@ -38,10 +39,12 @@ function App() {
     <div className = "App">
       {/* <Navbar user={SAMPLE_USER} initial_active={0}/>
         <LandingPage user={SAMPLE_USER} /> */}
-        <CalendarModificationProvider>
-        <ScheduleCalendar />
+        <MouseHistoryProvider>
+          <CalendarModificationProvider>
+          <ScheduleCalendar />
 
-        </CalendarModificationProvider>
+          </CalendarModificationProvider>
+        </MouseHistoryProvider>
       <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
         {/* <Router>
           <Routes>

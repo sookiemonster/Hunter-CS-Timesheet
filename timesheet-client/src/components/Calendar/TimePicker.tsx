@@ -13,14 +13,22 @@ interface TimePickerProps {
 export default function TimePicker({label, setter, hasError, showError}:TimePickerProps) {
     const { selected } = useContext(CalendarModificationContext);
     const time = (label === 'start') ? selected.start : selected.end;
+    
+    const extractHours = useMemo(() => (time.getHours() % 12 || 12).toString(), [time])
+    const extractMinutes = useMemo(() => (time.getMinutes() || '00') .toString(), [time])
+    const extractZone = useMemo(() => (time.getHours() < 12) ? 'AM': 'PM', [time])
+    
+    const [hours, setHours] = useState<string | null>(extractHours);
+    const [minutes, setMinutes] = useState<string | null>(extractMinutes);
+    const [AM, setAM] = useState<string | null> (extractZone);
 
-    const [hours, setHours] = useState<string | null>((time.getHours() % 12 || 12).toString());
-    const [minutes, setMinutes] = useState<string | null>((time.getMinutes() || '00') .toString());
-    const [AM, setAM] = useState<string | null> (
-        (time.getHours() < 12) 
-            ? 'AM'
-            : 'PM'
-    );
+    useEffect(() => {
+        setHours(extractHours)
+        setMinutes(extractMinutes)
+        setAM(extractZone)
+    }, 
+    [selected])
+
 
     const hoursOptions = useMemo(
         () => Array.from({ length: 12 }, (_, i) => ({

@@ -16,6 +16,7 @@ import {startOfWeek} from 'date-fns/startOfWeek'
 import {getDay} from 'date-fns/getDay'
 import {enUS} from 'date-fns/locale/en-US'
 import { sub } from "date-fns";
+import { MouseHistoryContext } from "./MouseHistoryContext";
 
 const locales = {
   'en-US': enUS,
@@ -31,8 +32,9 @@ const localizer = dateFnsLocalizer({
 
 export default function ScheduleCalendar():JSX.Element {
     const {weekOneEvents, weekTwoEvents, temporaryEvents,
-        setSelected, open, 
+        setSelected, open, close,
         selectedWeekOne, selectWeek } = useContext(CalendarModificationContext);
+    const { storeCurrentPosition, storedMousePosition } = useContext(MouseHistoryContext);
     
     // Config
     const { defaultDate, formats, scrollToTime } = useMemo(
@@ -68,11 +70,13 @@ export default function ScheduleCalendar():JSX.Element {
             "end": end,
             id: crypto.randomUUID()
         }
+        storeCurrentPosition();
         setSelected(newEvent);
         open();
     })
     
     const handleSelectEvent = useCallback((event) => {
+        storeCurrentPosition();
         setSelected(event);
         open();
     }, [])

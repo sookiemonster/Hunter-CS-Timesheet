@@ -1,8 +1,5 @@
 import React, {useState, useCallback, PropsWithChildren } from "react";
 import { useDisclosure } from '@mantine/hooks';
-import { UUID } from "crypto";
-import { title } from "process";
-
 
 interface Event {
     title:string,
