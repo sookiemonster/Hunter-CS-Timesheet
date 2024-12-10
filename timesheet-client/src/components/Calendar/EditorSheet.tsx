@@ -60,7 +60,7 @@ export default function EditorSheet() {
             </div>
             <Group>
                 <Button color="softpurple" onClick={() => submit()}>Save</Button>
-                <TrashButton onClick={() => deleteSelected()} />
+                <TrashButton onClick={() => { clearTemp(); deleteSelected(); close();  } } />
             </Group>
         </Stack>
     </Modal>

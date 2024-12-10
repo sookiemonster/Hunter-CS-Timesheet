@@ -57,6 +57,7 @@ export function CalendarModificationProvider(props: PropsWithChildren) {
                 const updatedList = prev.filter(itr => itr.id !== selected.id);
                 return [...updatedList];
             })
+            clearSelected();
             close();
         }, [selected]
     );
