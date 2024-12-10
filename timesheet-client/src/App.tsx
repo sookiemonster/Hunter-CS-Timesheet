@@ -31,6 +31,7 @@ function App() {
   const [loginStatus, setloginStatus] = useState(null);
   return (
     <div className = "App">
+<<<<<<< Updated upstream
     <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
     <Router>
         <Routes>
@@ -42,6 +43,22 @@ function App() {
           <Route path="*" element = {<h1>Page Not Found</h1>} />
         </Routes>
       </Router>
+=======
+      <Navbar user={SAMPLE_USER} initial_active={0}/>
+        {/*<LandingPage user={SAMPLE_USER} /> */}
+      <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
+        <Router>
+          <Routes>
+            <Route path ="/login" element = {<Login />} /> 
+            <Route path ="/forgot-password" element = {<ForgotPassword />} /> 
+            <Route path ="/register" element = {<Register />} /> 
+            <Route path ="/" element = {<Home />} /> 
+            <Route path ="/timesheet" element = {<Timesheet />} /> 
+            <Route path="*" element = {<h1>Page Not Found</h1>} />
+          </Routes>
+        </Router> 
+      </AppContext.Provider>
+>>>>>>> Stashed changes
 
     </AppContext.Provider>
 

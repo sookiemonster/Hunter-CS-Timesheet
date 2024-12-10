@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS period_1_2024 (
  submitted_timestamp TIMESTAMP,
  total_hours NUMERIC,
  submitted_schedule_id INT REFERENCES regular_schedule(schedule_id)
+ CONSTRAINT email_unique UNIQUE(email) -- i added this after. It should work though. Haven't ran it. I punched in an alter statement.
 );
 
 /* 
