@@ -7,13 +7,15 @@ import TimePicker from "./TimePicker";
 import { TrashButton } from "../Buttons";
 
 export default function EditorSheet() {
-    const { selected, saveEdits, opened, close, deleteSelected, updateTemp, clearTemp, clearSelected } = useContext(CalendarModificationContext);
+    const { selected, saveEdits, opened, close, deleteSelected, updateTemp, clearTemp, clearSelected, selectedWeekOne } = useContext(CalendarModificationContext);
 
     const [title, setTitle] = useState('');
     const [start, setStart] = useState(new Date(1990,1,1,9,0,0));
     const [end, setEnd] = useState(new Date(1990,1,1,10,0,0));
 
     const [error, setError] = useState(false);
+    
+    const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
     useHotkeys([
         ['Enter', () => {
@@ -23,7 +25,6 @@ export default function EditorSheet() {
     ]);
 
     useEffect (() => {        
-        setTitle(selected?.title || 'New Event')
         setStart(selected.start)
         setEnd(selected.end)
     }, [selected])
@@ -38,22 +39,17 @@ export default function EditorSheet() {
 
     const submit = () => {
         if (start < end) {
-            saveEdits(start, end, title);
+            saveEdits(start, end, '');
         }
     }
 
     return(
     <Modal opened={opened} onClose={() => { close(); clearSelected(); }} centered>
         <Stack>
-        <Group>
+        <Stack gap={0}>
             <h3 style={{margin: 0, padding: 0}}>Shift</h3>
-            <TextInput 
-                description="" 
-                placeholder="Activity" 
-                value={title}
-                onChange={(event) => setTitle(event.currentTarget.value)}></TextInput>
-                
-        </Group>
+            <small>{ weekdays[start.getDay()] } { selectedWeekOne ? '1' : '2'}</small>
+        </Stack>
             <div>
                 <small><b>in</b></small>
                 <TimePicker hasError={error} label="start" setter={setStart}/>
