@@ -230,7 +230,7 @@ button.rbc-input::-moz-focus-inner {
   box-shadow: none;
   margin: 0;
   padding: 2px 5px;
-  background-color: #3174ad;
+  background-color: #0036aa;
   border-radius: 5px;
   color: #fff;
   cursor: pointer;
@@ -242,14 +242,15 @@ button.rbc-input::-moz-focus-inner {
   pointer-events: none;
 }
 .rbc-event.rbc-selected, .rbc-day-slot .rbc-selected.rbc-background-event {
-  background-color: rgb(37.7432432432, 89.3513513514, 133.2567567568);
+  background-color: #0036aa, 0%;
 }
 .rbc-event:focus, .rbc-day-slot .rbc-background-event:focus {
   outline: 5px auto #3b99fc;
 }
 
 .rbc-event-label {
-  font-size: 60%;
+  display: block;
+  font-size: calc(50% + 0.2vw);
 }
 
 .rbc-event-overlaps {
@@ -295,10 +296,10 @@ button.rbc-input::-moz-focus-inner {
   font-size: 85%;
   height: auto;
   line-height: normal;
-  color: #3174ad;
+  color: #0036aa;
 }
 .rbc-show-more:hover, .rbc-show-more:focus {
-  color: rgb(37.7432432432, 89.3513513514, 133.2567567568);
+  color: rgb(0, 37.8, 119);
 }
 
 .rbc-month-view {
@@ -482,7 +483,7 @@ button.rbc-input::-moz-focus-inner {
   right: 0;
 }
 .rbc-day-slot .rbc-event, .rbc-day-slot .rbc-background-event {
-  border: 1px solid rgb(37.7432432432, 89.3513513514, 133.2567567568);
+  border: 1px solid #0036aa;
   display: flex;
   max-height: 100%;
   min-height: 20px;
@@ -695,7 +696,7 @@ button.rbc-input::-moz-focus-inner {
   box-shadow: none;
   margin: 0;
   padding: 2px 5px;
-  background-color: #3174ad;
+  background-color: #0036aa;
   border-radius: 5px;
   color: #fff;
   cursor: pointer;
@@ -707,14 +708,15 @@ button.rbc-input::-moz-focus-inner {
   pointer-events: none;
 }
 .rbc-event.rbc-selected {
-  background-color: rgb(37.7432432432, 89.3513513514, 133.2567567568);
+  background-color: #0036aa, 0%;
 }
 .rbc-event:focus {
   outline: 5px auto #3b99fc;
 }
 
 .rbc-event-label {
-  font-size: 60%;
+  display: block;
+  font-size: calc(50% + 0.2vw);
 }
 
 .rbc-event-overlaps {
@@ -782,7 +784,7 @@ button.rbc-input::-moz-focus-inner {
   right: 0;
 }
 .rbc-day-slot .rbc-event, .rbc-day-slot .rbc-background-event {
-  border: 1px solid rgb(37.7432432432, 89.3513513514, 133.2567567568);
+  border: 1px solid #0036aa;
   display: flex;
   max-height: 100%;
   min-height: 20px;
@@ -903,7 +905,7 @@ button.rbc-input::-moz-focus-inner {
   right: 0;
 }
 .rbc-day-slot .rbc-event, .rbc-day-slot .rbc-background-event {
-  border: 1px solid rgb(37.7432432432, 89.3513513514, 133.2567567568);
+  border: 1px solid #0036aa;
   display: flex;
   max-height: 100%;
   min-height: 20px;

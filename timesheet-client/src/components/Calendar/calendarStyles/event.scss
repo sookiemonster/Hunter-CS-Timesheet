@@ -19,7 +19,7 @@
   }
 
   &.rbc-selected {
-    background-color: darken($event-bg, 10%);
+    background-color: $event-bg, 0%;
   }
 
   &:focus {
@@ -29,7 +29,8 @@
 
 .rbc-event-label {
   // @extend .rbc-ellipsis;
-  font-size: 60%;
+  display: block;
+  font-size: calc( 50% + 0.2vw);
 }
 
 .rbc-event-overlaps {
