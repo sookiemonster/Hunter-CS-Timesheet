@@ -20,8 +20,10 @@ import { Register } from './pages/Register';
 import { Timesheet } from './pages/Timesheet';
 import { useState, createContext } from 'react';
 import { ForgotPassword } from './pages/ForgotPassword';
-import ScheduleCalendar from './components/Calendar';
+import TimesheetPage from './pages/TimesheetPage';
 import { MouseHistoryProvider } from './components/Calendar/MouseHistoryContext';
+
+
 
 //----Creating global context to hold all info want to pass fown---//
 export const AppContext = createContext({
@@ -37,14 +39,10 @@ function App() {
   return (
     <MantineProvider theme={theme}>
     <div className = "App">
-      {/* <Navbar user={SAMPLE_USER} initial_active={0}/>
-        <LandingPage user={SAMPLE_USER} /> */}
-        <MouseHistoryProvider>
-          <CalendarModificationProvider>
-          <ScheduleCalendar />
+      <Navbar user={SAMPLE_USER} initial_active={0}/>
+        {/* <LandingPage user={SAMPLE_USER} /> */}
+        <TimesheetPage user={SAMPLE_USER}/>
 
-          </CalendarModificationProvider>
-        </MouseHistoryProvider>
       <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
         {/* <Router>
           <Routes>

@@ -1,0 +1,29 @@
+#timesheet-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  gap: 0;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  padding: 80px 5vw;
+}
+#timesheet-container h4 {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.stat-text-container .content {
+  font-weight: bold;
+  color: #4f5eff;
+}
+.stat-text-container .done {
+  color: #50b438;
+}
+.actions-container {
+  position: relative;
+  top: -30px;
+}
+
+/*# sourceMappingURL=styles.css.map */
