@@ -6,7 +6,7 @@ const app = express()
 app.use(express.json());
 const pgp = pgPromise({})
 const db = pgp(process.env.DATABASE_URL)
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8000
 
 /*
   /getUser/:email
@@ -104,7 +104,7 @@ app.get('/timesheet/getDefault/:email', async(req, res) => {
 
   :period_no not currently supported. Currently, just goes into the period_1_2024 db
 */
-app.post('/timesheet/submit/:period_no/:email', async (req,res) => {
+app.post('/timesheet/modify/:period_no/:email', async (req,res) => {
   let email = req.params.email
 
   if (! req.body) {
@@ -172,6 +172,138 @@ app.get('/timesheet/getSubmitted/:period_no/:email', async (req, res) => {
     
     res.status(200).send(data)
   } catch (error) {
+    res.status(500).send(error.toString())
+    return
+  }
+});
+
+/*
+  /timesheet/disapprove/:period_no/:email
+
+  Dissaproves a time sheet from :period_no from :email
+
+  for now :period_no not suppoted
+*/
+app.get('/timesheet/disapprove/:period_no/:email', async (req, res) => {
+  try {
+    let email = req.params.email
+
+    if (! email ) {
+      res.status(200).send([])
+      return
+    }
+    
+    let data = await db.any(`
+      UPDATE ${CURRENT_PERIOD}
+        SET approved = FALSE
+        WHERE email = $1
+        RETURNING *;
+      `, [email])
+    
+    res.status(200).send(data)
+  } catch (error) {
+    res.status(500).send(error.toString())
+    return
+  }
+});
+
+/*
+  /timesheet/approve/:period_no/:email
+
+  Dissaproves a time sheet from :period_no from :email
+
+  for now :period_no not suppoted
+*/
+app.get('/timesheet/approve/:period_no/:email', async (req, res) => {
+  try {
+    let email = req.params.email
+
+    if (! email ) {
+      res.status(400).send(["Error: No email specified"])
+      return
+    }
+    
+    let data = await db.any(`
+      UPDATE ${CURRENT_PERIOD}
+        SET approved = TRUE
+        WHERE email = $1
+        RETURNING *;
+      `, [email])
+    
+    res.status(200).send(data)
+  } catch (error) {
+    console.error(error)
+    res.status(500).send(error.toString())
+    return
+  }
+});
+
+/*
+  /timesheet/isApproved/:period_no/:email
+
+  Returns whether or not a particular time sheet is approved (True/False)
+
+  for now :period_no not suppoted -- will just go to the period defined in the config
+*/
+app.get('/timesheet/isApproved/:period_no/:email', async (req, res) => {
+  try {
+    let email = req.params.email
+
+    if (! email ) {
+      res.status(400).send(["Error: No email specified"])
+      return
+    }
+    
+    let data = await db.any(`
+      SELECT r.approved FROM ${CURRENT_PERIOD} r
+        WHERE email = $1
+        LIMIT 1;
+      `, [email])
+    
+    if (! data) {
+      res.status(404).send([`Error: Timesheet from ${email} not found`])
+      return
+    }
+
+    res.status(200).send(data[0]['approved'])
+  } catch (error) {
+    console.error(error)
+    res.status(500).send(error.toString())
+    return
+  }
+});
+
+
+/*
+  /timesheet/timestamp/:period_no/:email
+
+  Returns NULL if the given timesheet has not been submitted yet, otherwise the value of the submitted_timestamp column
+
+  for now :period_no not suppoted -- will just go to the period defined in the config
+*/
+app.get('/timesheet/timestamp/:period_no/:email', async (req, res) => {
+  try {
+    let email = req.params.email
+
+    if (! email ) {
+      res.status(400).send(["Error: No email specified"])
+      return
+    }
+    
+    let data = await db.any(`
+      SELECT r.submitted_timestamp FROM ${CURRENT_PERIOD} r
+        WHERE email = $1
+        LIMIT 1;
+      `, [email])
+    
+    if (! data) {
+      res.status(200).send(null)
+      return
+    }
+
+    res.status(200).send(data)
+  } catch (error) {
+    console.error(error)
     res.status(500).send(error.toString())
     return
   }
