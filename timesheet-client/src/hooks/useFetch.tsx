@@ -1,16 +1,7 @@
 import { useState, useEffect } from 'react';
 
-interface fetchProps {
-    url:string,
-    attempts?:number,
-    timeout?:number
-}
-
-function useFetch({url, attempts, timeout}:fetchProps) {
-    const DEFAULT_RETRIES = 3;
-    const RETRY_TIMEOUT = timeout || 5000;
-
-    const [retries, setRetries] = useState(DEFAULT_RETRIES);
+export default function useFetch(url:string, max_attempts=3, timeout=5000) {
+    const [retries, setRetries] = useState(max_attempts);
     const [data, setData] = useState(null);
 
     useEffect(() => {
@@ -21,7 +12,7 @@ function useFetch({url, attempts, timeout}:fetchProps) {
                 (err) => {
                     if (retries <= 0) { return; }
                     console.error(err);
-                    setTimeout(() => setRetries(retries - 1), RETRY_TIMEOUT)
+                    setTimeout(() => setRetries(retries - 1), timeout)
                 }
             )
     }, [retries, url])
