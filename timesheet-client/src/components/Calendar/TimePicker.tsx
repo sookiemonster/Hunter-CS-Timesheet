@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Select, SegmentedControl, Stack, Text } from '@mantine/core';
 import { CalendarModificationContext } from "./CalendarModificationContext";
-import './modalStyles.css';
+import './modalStyles/modalStyles.css';
 
 interface TimePickerProps {
     label: 'start' | 'end',

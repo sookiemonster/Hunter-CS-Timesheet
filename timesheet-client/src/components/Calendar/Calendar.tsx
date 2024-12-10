@@ -7,7 +7,7 @@ import {CalendarModificationProvider, CalendarModificationContext} from "./Calen
 import EditorSheet from "./EditorSheet";
 
 // import { useMouse } from '@mantine/hooks';
-import './styles.css'
+import './calendarStyles/styles.css'
 
 import { Calendar, Views, dateFnsLocalizer } from 'react-big-calendar'
 
