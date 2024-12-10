@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Select, SegmentedControl } from '@mantine/core';
+import { Select, SegmentedControl, Stack, Text } from '@mantine/core';
 import { CalendarModificationContext } from "./CalendarModificationContext";
 import './modalStyles.css';
 
 interface TimePickerProps {
     label: 'start' | 'end',
-    setter : any
+    setter : any,
+    hasError?: Boolean
+    showError?: Boolean
 };
 
-export default function TimePicker({label, setter}:TimePickerProps) {
+export default function TimePicker({label, setter, hasError, showError}:TimePickerProps) {
     const { selected } = useContext(CalendarModificationContext);
     const time = (label === 'start') ? selected.start : selected.end;
 
@@ -50,6 +52,7 @@ export default function TimePicker({label, setter}:TimePickerProps) {
     }, [hours, minutes, AM])
     
     return (
+    <Stack>
     <div className="time-container">
         <Select
         placeholder="Select Hour"
@@ -58,6 +61,11 @@ export default function TimePicker({label, setter}:TimePickerProps) {
         onChange={(value) => setHours(value)}
         variant="filled"
         size="sm"
+        error={
+            hasError 
+            ? " "
+            : ""
+        }
         
         checkIconPosition="right"
         allowDeselect={false}
@@ -70,7 +78,8 @@ export default function TimePicker({label, setter}:TimePickerProps) {
         value={minutes}
         onChange={(value) => setMinutes(value)}
         variant="filled"
-        size="sm"        
+        size="sm"
+        error={(hasError) ? " " : null}        
         
         checkIconPosition="right"
         allowDeselect={false}
@@ -79,10 +88,15 @@ export default function TimePicker({label, setter}:TimePickerProps) {
 
         <SegmentedControl 
             data={['AM', 'PM']} 
+            value={AM || 'AM'}
             onChange={(value) => setAM(value)}
             color="softpurple.4"
             size="sm"
             />
     </div>
+    <small style={{color: 'red'}}>
+    {(hasError && showError ? "Start time must be before end." : " ")}
+    </small>
+    </Stack>
     );
 }

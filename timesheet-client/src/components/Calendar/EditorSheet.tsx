@@ -13,6 +13,8 @@ export default function EditorSheet() {
     const [start, setStart] = useState(new Date(1990,1,1,9,0,0));
     const [end, setEnd] = useState(new Date(1990,1,1,10,0,0));
 
+    const [error, setError] = useState(false);
+
     useHotkeys([
         ['Enter', () => {
             if (!selected || !opened) { return; }
@@ -29,33 +31,37 @@ export default function EditorSheet() {
 
     useEffect(() => {
         if (!opened || !selected) { clearTemp(); return; }
+        if (start > end) { setError(true); }
+        else { setError(false); }
         updateTemp(start, end, title);
     }, [opened, start, end])
 
     const submit = () => {
-        saveEdits(start, end, title);
+        if (start < end) {
+            saveEdits(start, end, title);
+        }
     }
 
     return(
     <Modal opened={opened} onClose={() => { close(); clearSelected(); }} centered>
         <Stack>
         <Group>
-            <h3>Shift</h3>
+            <h3 style={{margin: 0, padding: 0}}>Shift</h3>
             <TextInput 
                 description="" 
                 placeholder="Activity" 
                 value={title}
                 onChange={(event) => setTitle(event.currentTarget.value)}></TextInput>
-            
+                
         </Group>
             <div>
                 <small><b>in</b></small>
-                <TimePicker label="start" setter={setStart}/>
+                <TimePicker hasError={error} label="start" setter={setStart}/>
             </div>
             <Divider/>
             <div>
                 <small><b>out</b></small>
-                <TimePicker label="end" setter={setEnd}/>
+                <TimePicker hasError={error} showError={true} label="end" setter={setEnd}/>
             </div>
             <Group>
                 <Button color="softpurple" onClick={() => submit()}>Save</Button>

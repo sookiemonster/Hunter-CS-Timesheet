@@ -2,7 +2,7 @@
   display: grid;
   gap: 2px;
   grid-template-columns: repeat(2, 4.5rem) 6.75rem;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 .time-container input {
   width: 4.5rem;
