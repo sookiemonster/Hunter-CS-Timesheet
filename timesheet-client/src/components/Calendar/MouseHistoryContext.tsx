@@ -17,13 +17,18 @@ export function MouseHistoryProvider(props: PropsWithChildren) {
     const [storedMousePosition, setStoredMousePosition] = useState<Point>(NullPosition);
     const { x, y } = useMouse(); 
 
-    const clampMargin = 350;
-    const padding = 50;
+    const modalWidth = 256;
+    const padding = 100;
+
+    const mouseOnLeft = () => {
+        return x < window.innerWidth / 2;
+    }
 
     const storeCurrentPosition = () => {
-        const allowedViewport = window.innerWidth - clampMargin;
-        console.log("STORING NOW.", x)
-        setStoredMousePosition({'x' : Math.min(allowedViewport, x + padding), 'y': y})
+        setStoredMousePosition({
+            'x': x + ( mouseOnLeft() ? padding : -modalWidth -padding ),
+            'y': y
+        })
         console.log(storedMousePosition);
     }
 
@@ -34,7 +39,7 @@ export function MouseHistoryProvider(props: PropsWithChildren) {
     console.log(x);
     
     const value = {
-        storedMousePosition, storeCurrentPosition, clearMouseStorage };
+        storedMousePosition, storeCurrentPosition, clearMouseStorage, mouseOnLeft };
     return <MouseHistoryContext.Provider value={value}>
         {props.children}
     </MouseHistoryContext.Provider>
