@@ -1,7 +1,7 @@
 //@ts-nocheck
-import React, {useState, useEffect, useMemo, useCallback, useContext } from "react";
+import React, {useState, useEffect, useMemo, useCallback, useContext, useRef } from "react";
 import { useDisclosure } from '@mantine/hooks';
-import { Modal, Button } from '@mantine/core';
+import { Modal, Button, SegmentedControl, Group, Stack } from '@mantine/core';
 
 import {CalendarModificationProvider, CalendarModificationContext} from "./CalendarModificationContext";
 import EditorSheet from "./EditorSheet";
@@ -50,6 +50,19 @@ export default function ScheduleCalendar():JSX.Element {
         }),[]
       )
 
+    const weekOptions = useMemo(
+        () => [
+            {
+                label: 'Week 1',
+                value: 'true'
+            },
+            {
+                label: 'Week 2',
+                value: 'false',
+            }
+        ], []
+    ) 
+
     const handleSelectSlot = useCallback(({ start, end }) => {
         const newEvent = {
             "name": 'New Event',
@@ -66,7 +79,7 @@ export default function ScheduleCalendar():JSX.Element {
         open();
     }, [])
 
-    return <>
+    return <Stack>
         <Calendar
             localizer={localizer}
             toolbar={false}
@@ -89,6 +102,15 @@ export default function ScheduleCalendar():JSX.Element {
 
             style={{ height: 500 }}
         />
+        {/* Segmented control only seems to work with string values */}
+        <Group justify="flex-end">
+        <SegmentedControl 
+            color={"softpurple.4"}
+            data={weekOptions}
+            onChange={(value) => selectWeek(value === 'true')}
+            value={selectedWeekOne.toString()}
+        />
+        </Group>
         <EditorSheet />
-    </>
+    </Stack>
 };
