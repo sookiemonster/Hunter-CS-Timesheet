@@ -63,7 +63,7 @@ export default function ScheduleCalendar():JSX.Element {
         ], []
     ) 
 
-    const handleSelectSlot = useCallback(({ start, end }) => {
+    const handleSelectSlot = ({ start, end }) => {
         const newEvent = {
             "name": 'New Event',
             "start": start,
@@ -73,13 +73,13 @@ export default function ScheduleCalendar():JSX.Element {
         storeCurrentPosition();
         setSelected(newEvent);
         open();
-    })
+    }
     
-    const handleSelectEvent = useCallback((event) => {
+    const handleSelectEvent = (event) => {
         storeCurrentPosition();
         setSelected(event);
         open();
-    }, [])
+    }
 
     return <Stack>
         <Calendar
