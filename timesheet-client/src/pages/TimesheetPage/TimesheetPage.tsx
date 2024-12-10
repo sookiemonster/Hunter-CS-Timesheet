@@ -8,6 +8,18 @@ interface TimesheetPageProps {
     user:User
 }
 
+interface StatTextProps {
+    label:string,
+    text:string,
+    completionState?: 'done' | 'action-needed'
+}
+
+export function StatText({label,text,completionState}:StatTextProps) {
+    return <div className="stat-text-container">
+        <label>{label}</label>:
+        <span className={`content ${completionState}`}> {text}</span>
+    </div>
+}
 
 function TimesheetPage({user}:TimesheetPageProps):JSX.Element {
     return <>

@@ -1,25 +1,13 @@
 import React, { useEffect, useState } from "react";
-import User from "../../state/User";
 
 import PeriodHeader from "../../components/PeriodHeader";
 import { Button, Divider, Group, Space, Stack } from "@mantine/core";
 import ScheduleCalendar from "../../components/Calendar";
 import BoxedStat from "../../components/Stats";
 import { ArrowButton, DefaultButton, IndicatorSymbol } from "../../components/Buttons";
+import { StatText } from "./TimesheetPage";
 import './styles/styles.css'
 
-interface StatTextProps {
-    label:string,
-    text:string,
-    completionState?: 'done' | 'action-needed'
-}
-
-function StatText({label,text,completionState}:StatTextProps) {
-    return <div className="stat-text-container">
-        <label>{label}</label>:
-        <span className={`content ${completionState}`}> {text}</span>
-    </div>
-}
 
 export default function TimesheetPageAdmin():JSX.Element {
     const viewedUser = "DANIEL";
