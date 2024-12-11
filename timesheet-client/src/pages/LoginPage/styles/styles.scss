@@ -16,6 +16,8 @@
 }
 
 #welcome-text-container {
+    padding: 0 3vw;
+
     span {
         display: block;
         text-align: left;
@@ -55,7 +57,7 @@
     .login-button { width: 30%; align-self: flex-end; }
 }
 
-@media only screen and (max-width: 1150px)  {
+@media only screen and (max-width: 1250px)  {
     #login-page-container {
         display: flex;
         flex-direction: column;
