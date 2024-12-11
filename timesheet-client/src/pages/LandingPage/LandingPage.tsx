@@ -12,6 +12,7 @@ import LoginPage from "../LoginPage/LoginPage";
 import Navbar from "../../components/Navbar";
 
 function LandingPageUser():JSX.Element {
+    const navigate = useNavigate();
     const { role } = useContext(UserContext);
     let hasSubmitted = false;
 
@@ -28,14 +29,13 @@ function LandingPageUser():JSX.Element {
         { (role === 'ta')
             ? <>
                 <Group gap={50} style={{ paddingTop: "10px "}} align="center">
-                    <DefaultButton onClick={() => redirect()} text={hasSubmitted ? "Edit" : "Submit" } />
+                    <DefaultButton onClick={() => navigate("/timesheets")} text={hasSubmitted ? "Edit" : "Submit Timesheet" } />
                     <h3 style={{ color: (hasSubmitted) ? "green" : "red"}}>
                         { hasSubmitted
                             ? "You've already submitted for this period."
                             : "You still need to submit for this period."
                         }
                     </h3>
-                    <IndicatorSymbol value={hasSubmitted ? "yes" : "no"}/>
                 </Group>
             </>
             : <></>
@@ -85,14 +85,9 @@ function LandingPage():JSX.Element {
     <LandingBackround/>
     { (!loginStatus) 
         ? <LoginPage />
-        : <>
-            <Navbar ></Navbar>
-            {
-                (role === 'ta')
-                    ? <LandingPageUser/> 
-                    : <LandingPageAdmin/>
-            }
-        </>
+        : (role === 'ta')
+            ? <LandingPageUser/> 
+            : <LandingPageAdmin/>
     }
     </div>
 }

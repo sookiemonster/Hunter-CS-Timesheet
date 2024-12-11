@@ -16,9 +16,9 @@ import LandingPage from './pages/LandingPage/LandingPage';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Register } from './pages/Register';
-import { Timesheet } from './pages/Timesheet';
 import { useState, createContext } from 'react';
 import { UserContext, UserProvider } from './state/User';
+import TimesheetPage from './pages/TimesheetPage';
 
 function App() {
   return (
@@ -26,12 +26,13 @@ function App() {
     <MantineProvider theme={theme}>
       <div className = "App">
         <Router>
+          <Navbar />
           <Routes>
             <Route path ="/" element = {<LandingPage />} /> 
             {/* <Route path ="/forgot-password" element = {<ForgotPassword />} />  */}
             {/* <Route path ="/register" element = {<Register />} />  */}
             {/* <Route path ="/" element = {<Home />} />  */}
-            <Route path ="/timesheets" element = {<Timesheet />} /> 
+            <Route path ="/timesheets" element = {<TimesheetPage />} /> 
             <Route path="*" element = {<h1>Page Not Found</h1>} />
           </Routes>
         </Router>

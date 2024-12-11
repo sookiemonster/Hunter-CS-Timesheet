@@ -1,5 +1,4 @@
 import React, { useState, useCallback, PropsWithChildren, useEffect } from "react";
-import User from "./User";
 
 export const UserContext = React.createContext<any>(null);
 
@@ -22,8 +21,6 @@ export function UserProvider(props: PropsWithChildren) {
         sessionStorage.setItem('role', "");
     }
 
-    console.log("USER", user)
-
     useEffect(() => {
         sessionStorage.setItem('email', email);
     }, [email])
@@ -36,7 +33,7 @@ export function UserProvider(props: PropsWithChildren) {
         sessionStorage.setItem('role', role);
     }, [role])
 
-    const value = { logout, isAdmin, email, setEmail, user, setUser, loginStatus, setloginStatus, role, setRole };
+    const value = { logout, isLoggedIn, isAdmin, email, setEmail, user, setUser, loginStatus, setloginStatus, role, setRole };
     return <UserContext.Provider value={value}>
         {props.children}
     </UserContext.Provider>
