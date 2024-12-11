@@ -1,0 +1,13 @@
+.time-container {
+    $input-width: 4.5rem;
+
+    display: grid;
+    gap: 2px;
+    grid-template-columns: repeat(2, $input-width) calc(1.5 * $input-width);
+    align-items: flex-start;
+
+    input {
+        width: $input-width;
+        text-align: center;
+    }
+}

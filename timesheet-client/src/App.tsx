@@ -3,6 +3,8 @@ import React from 'react';
 import './App.css';
 import PeriodHeader from './components/PeriodHeader';
 import { MantineProvider, useSafeMantineTheme } from '@mantine/core';
+import { CalendarModificationProvider } from './components/Calendar/CalendarModificationContext';
+
 import theme from './Theme';
 import Navbar from './components/Navbar';
 import { SAMPLE_USER } from './state/sample';
@@ -18,6 +20,10 @@ import { Register } from './pages/Register';
 import { Timesheet } from './pages/Timesheet';
 import { useState, createContext } from 'react';
 import { ForgotPassword } from './pages/ForgotPassword';
+import TimesheetPage from './pages/TimesheetPage';
+import { MouseHistoryProvider } from './components/Calendar/MouseHistoryContext';
+
+
 
 //----Creating global context to hold all info want to pass fown---//
 export const AppContext = createContext({
@@ -35,8 +41,10 @@ function App() {
     <MantineProvider theme={theme}>
     <div className = "App">
       <Navbar user={SAMPLE_USER} initial_active={0}/>
-        <LandingPage user={SAMPLE_USER} />
-      <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser, role, setRole}}>
+        {/* <LandingPage user={SAMPLE_USER} /> */}
+        <TimesheetPage user={SAMPLE_USER}/>
+
+      <AppContext.Provider value={{email, setEmail, loginStatus, setloginStatus, user, setUser}}>
         {/* <Router>
           <Routes>
             <Route path ="/login" element = {<Login />} /> 

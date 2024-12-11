@@ -15,7 +15,7 @@ const softpurple: MantineColorsTuple = [
   ];
 
 const theme = createTheme({
-    fontFamily: 'sans-serif',
+    fontFamily: 'Inter, sans-serif',
     headings: { fontFamily: 'Inter, sans-serif' },
 
     colors: {

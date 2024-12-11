@@ -13,10 +13,12 @@
 
 .period-container.small {
   gap: 0 10px;
+  grid-template-rows: 1.5rem 1fr;
 }
 
 .period-container.large {
   gap: 0 20px;
+  grid-template-rows: 1.75rem 1fr;
 }
 
 span.large {
