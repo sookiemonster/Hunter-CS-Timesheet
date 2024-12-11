@@ -83,7 +83,7 @@ export const Login = () =>{
       
 
     }catch(error){
-      console.log("error logging in");
+      console.log("error logging in, user not registered in system");
     
 
     }
