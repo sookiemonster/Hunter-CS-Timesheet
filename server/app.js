@@ -4,6 +4,13 @@ import { CURRENT_PERIOD, PERIOD_DB } from './config.js';
 
 const app = express()
 app.use(express.json());
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 const pgp = pgPromise({})
 const db = pgp(process.env.DATABASE_URL)
 const port = process.env.PORT || 8000
