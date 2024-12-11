@@ -14,7 +14,7 @@ const port = process.env.PORT || 8000
   Returns the user data about a user with a specified email.
 */
 app.get('/users/getUser/:email', async (req, res) => {
-  let email = req.params.email
+  let email = req.params.email.toLowerCase()
 
   try {
     let users = await db.any('SELECT * FROM USERS WHERE email = $1;', [email])
@@ -26,7 +26,7 @@ app.get('/users/getUser/:email', async (req, res) => {
 })
 
 /*
-  /all 
+  /users/all 
 
   Returns all the usernames, emails, and is_admin state in the users table
 
@@ -51,7 +51,7 @@ app.get('/users/all', async (res,req) => {
 app.get('/periods/getCurrentPeriod', async(req, res) => {
   const curr_time = Date.now();
   try {
-    let current_period = await db.any(`SELECT * FROM ${PERIOD_DB} WHERE to_timestamp($1 / 1000.0) BETWEEN start_time AND end_time;`, [curr_time])
+    let current_period = await db.any(`SELECT * FROM ${PERIOD_DB} WHERE to_timestamp($1 / 1000.0) BETWEEN start_time AND end_time LIMIT 1;`, [curr_time])
     res.status(200).send(current_period)
   } catch (error) {
     res.status(500).send(error.toString())
@@ -84,7 +84,12 @@ app.get('/periods/all', async(req, res) => {
 app.get('/periods/getPeriod/:period_no', async(req, res) => {
   const period = req.params.period_no
   try {
-    let current_period = await db.any(`SELECT * FROM ${PERIOD_DB} WHERE period_id = $1;`, [period_no])
+    if (isNaN(Number(period_no))) {
+      // if Period is not a number
+      res.status(422).send(`Error: Period Number ${period} could not be processed as number.`)
+      return
+    }
+    let current_period = await db.any(`SELECT * FROM ${PERIOD_DB} WHERE period_id = $1;`, [period])
     res.status(200).send(current_period)
   } catch (error) {
     res.status(500).send(error.toString())
@@ -98,15 +103,13 @@ app.get('/periods/getPeriod/:period_no', async(req, res) => {
   Returns schedules corresponding to the email from the current period db
 */
 app.get('/timesheet/getDefault/:email', async(req, res) => {
-  const email = req.params.email
+  const email = req.params.email.toLowerCase()
   try {
     let current_period = await db.any(`
-      SELECT ${CURRENT_PERIOD}.email, ${CURRENT_PERIOD}.approved, ${CURRENT_PERIOD}.submitted_timestamp,
-        ${CURRENT_PERIOD}.total_hours, row_to_json(regular_schedule.schedule) AS schedule
-        FROM ${CURRENT_PERIOD}
-        INNER JOIN regular_schedule
-            ON regular_schedule.schedule_id = ${CURRENT_PERIOD}.submitted_schedule_id
-        WHERE ${CURRENT_PERIOD}.email = $1;`, [email])
+      SELECT * from regular_schedule
+      WHERE email = $1 LIMIT 1;`,
+      [email]
+    );
     res.status(200).send(current_period)
   } catch (error) {
     res.status(500).send(error.toString())
@@ -115,46 +118,186 @@ app.get('/timesheet/getDefault/:email', async(req, res) => {
 })
 
 /*
-  /timesheet/setDefault/:period_no/:email
+  /timesheet/setDefault/:period_no/_email
 
-  Updates schedule obj from an email
-
-  :period_no not currently supported. Currently, just goes into the period_1_2024 db
+  Updates default schedule in regular_schedule db
 */
-app.post('/timesheet/modify/:period_no/:email', async (req,res) => {
-  let email = req.params.email
-
-  if (! req.body) {
-    res.status(422).send("Error: No body attatched")
-    return
-  }
+app.post('/timesheet/setDefault/:period_no/:email', async (req, res) => {
   try {
-    let now = Date.now()
-    let schedule_id = await db.any(`
-      SELECT submitted_schedule_id FROM ${CURRENT_PERIOD}
-        WHERE email = $1;
-      `, [email])
-    
-    if (! schedule_id || ! schedule_id[0].submitted_schedule_id) {
-      res.send(404).send(`Error: No submissions from ${email} found.`)
+    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+      res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
       return
     }
-    // the below line is probably written so poorly
-    // however, it works
 
-    const schedule = req.body.map(slot => `'{"start": "${slot.start}", "end": "${slot.end}"}'`).join(',')
-    // update the schedule data
-    await db.none(`
-      UPDATE regular_schedule
-      SET schedule = ROW(${schedule})::schedule_type
-      WHERE schedule_id = $1;
-    `, [schedule_id[0].submitted_schedule_id]);
-    // update timestamp
-    await db.none(`
-      UPDATE ${CURRENT_PERIOD}
-      SET submitted_timestamp = to_timestamp($1 / 1000.0)
-      WHERE submitted_schedule_id = $2;
-    `, [now, schedule_id[0].submitted_schedule_id])
+    await db.any(`
+      INSERT INTO regular_schedule (email, schedule)
+        VALUES ($1, to_jsonb(CAST($2 AS TEXT)))
+        ON CONFLICT(email) DO UPDATE SET schedule = to_jsonb(CAST($2 AS TEXT));
+      `, [req.params.email.toLowerCase(), req.body])
+    
+    res.status(200).send("Success!")
+    return
+  } catch (error) {
+    console.error(error)
+    res.status(500).send(error.toString())
+    return
+  }
+})
+
+/*
+  /submit/{period_no}/{email}
+  → Request body uses a schedule object
+  → Updates the submitted columns to reflect the given body
+  → Updates the timestamp column to be the current time
+*/
+app.post('/timesheet/submit/:period_no/:email', async (req, res) => {
+  try {
+    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+      res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
+      return
+    }
+
+    await db.any(`
+      INSERT INTO period_${req.params.period_no}_2024 (email, approved, submitted_schedule)
+        VALUES ($1, false, to_jsonb(CAST($2 AS TEXT)))
+        ON CONFLICT(email) DO UPDATE SET submitted_schedule = to_jsonb(CAST($2 AS TEXT));
+      `, [req.params.email.toLowerCase(), req.body])
+    
+    res.status(200).send("Success!")
+    return
+  } catch (error) {
+    console.error(error)
+    res.status(500).send(error.toString())
+    return
+  }
+})
+
+/*
+  /timesheet/getSubmitted/:period_no/:email
+
+  Get's a time sheet from an email. GOes into the period_1_2024 db, so period_no not supported yet.
+*/
+app.get('/timesheet/getSubmitted/:period_no/:email', async (req, res) => {
+  try {
+    let email = req.params.email
+    let period_no = req.params.period_no
+    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+      res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
+      return
+    }
+    let data = await db.any(`
+      SELECT submitted_schedule FROM period_${period_no}_2024
+        WHERE email = $1;
+      `, [email.toLowerCase()])
+    
+    res.status(200).send(data)
+  } catch (error) {
+    res.status(500).send(error.toString())
+    return
+  }
+});
+
+/*
+  /timesheet/getLatest/:period_no/:email
+
+  → Return a Schedule object representing the most up to date version of the timesheet, AND a property: {type: EDITED | SUBMISSION | AUTO }
+  If modified is NOT ALL empty → Used the modified columns
+  If submitted is propagated, use submitted 
+  If it was not submitted, send the default timeschedule
+  Send the correct property value based on the above criteria
+*/
+app.get('/timesheet/getLatest/:period_no/:email', async (req, res) => {
+  try {
+    let email = req.params.email
+    let period_no = req.params.period_no
+    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+      res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
+      return
+    }
+    let data = await db.any(`
+      SELECT submitted_schedule, modified_schedule FROM period_${period_no}_2024
+        WHERE email = $1;
+      `, [email.toLowerCase()])
+    
+    let null_list = [null, undefined]
+    if (! data || !data[0] || ! Object.keys(data[0]) || 
+      (null_list.includes(data[0]['modified_schedule']) && null_list.includes(data[0]['submitted_schedule']))
+    ) {
+      // get the default schedule
+      let data = await db.any(`
+        SELECT schedule FROM regular_schedule
+          WHERE email = $1;
+        `, [email])
+      res.status(200).send(data)
+      return
+    } else {
+      // try return modified first, otherwise submitted
+      if (! null_list.includes(data[0]['modified_schedule'])) {
+        res.status(200).send(data[0]['modified_schedule'])
+        return
+      } else {
+        res.status(200).send(data[0]['submitted_schedule'])
+        return        
+      }
+    }
+  } catch (error) {
+    res.status(500).send(error.toString())
+    return
+  }
+});
+
+/*
+  /isModified/{period_no}/{email}
+
+*/
+app.get('/isModified/:period_no/:email', async (req, res) => {
+  try {
+    let email = req.params.email
+    let period_no = req.params.period_no
+    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+      res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
+      return
+    }
+    let data = await db.any(`
+      SELECT schedule_id, modified_schedule from period_${period_no}_2024
+      WHERE email = $1
+      LIMIT 1;
+      `, [email])
+
+    if (! data) {
+      res.status(404).send(`Error: No submission in period ${period_no} from email ${email} found.`)
+      return
+    }
+
+    res.status(200).send(! [null, undefined].includes(data[0]['modified_schedule']))
+
+  } catch (error) {
+    res.status(500).send(error.toString())
+    return
+  }
+});
+
+/*
+  /timesheet/modify/:period_no/:email
+
+  Updates schedule obj from an email
+*/
+app.post('/timesheet/modify/:period_no/:email', async (req,res) => {
+  try {
+    let email = req.params.email
+    let period_no = req.params.period_no
+    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+      res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
+      return
+    }
+
+    let now = Date.now()
+    
+    await db.any(`
+      UPDATE period_${period_no}_2024
+        SET modified_schedule = to_jsonb(CAST($1 as text))
+        WHERE email = $2;
+      `, [req.body, email.toLowerCase()])
     
     res.status(200).send(`Success!`)
   } catch (error) {
@@ -164,35 +307,33 @@ app.post('/timesheet/modify/:period_no/:email', async (req,res) => {
 });
 
 /*
-  /timesheet/getSubmitted/:period_no/:email
+  /timesheet/revert/:period_no/:email
 
-  Get's a time sheet from an email. GOes into the period_1_2024 db, so period_no not supported yet.
+  Turns the modified schedule into null
 */
-app.get('/timesheet/getSubmitted/:period_no/:email', async (req, res) => {
-  let email = req.params.email
-
+app.delete('/timesheet/revert/:period_no/:email', async (req, res) => {
   try {
-    let schedule_id = await db.any(`
-      SELECT submitted_schedule_id FROM ${CURRENT_PERIOD}
-        WHERE email = $1;
-      `, [email])
-    
-    if (! schedule_id || ! schedule_id[0].submitted_schedule_id ) {
-      res.status(200).send([])
+    let email = req.params.email
+    let period_no = req.params.period_no
+    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+      res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
       return
     }
+
+    let now = Date.now()
     
-    let data = await db.any(`
-      SELECT row_to_json(schedule) from regular_schedule
-        WHERE schedule_id = $1;
-      `, [schedule_id[0].submitted_schedule_id])
+    await db.any(`
+      UPDATE period_${period_no}_2024
+        SET modified_schedule = NULL
+        WHERE email = $2;
+      `, [req.body, email.toLowerCase()])
     
-    res.status(200).send(data)
+    res.status(200).send(`Success!`)
   } catch (error) {
+    console.error(error)
     res.status(500).send(error.toString())
-    return
   }
-});
+})
 
 /*
   /timesheet/disapprove/:period_no/:email
@@ -215,7 +356,7 @@ app.get('/timesheet/disapprove/:period_no/:email', async (req, res) => {
         SET approved = FALSE
         WHERE email = $1
         RETURNING *;
-      `, [email])
+      `, [email.toLowerCase()])
     
     res.status(200).send(data)
   } catch (error) {
@@ -245,7 +386,7 @@ app.get('/timesheet/approve/:period_no/:email', async (req, res) => {
         SET approved = TRUE
         WHERE email = $1
         RETURNING *;
-      `, [email])
+      `, [email.toLowerCase()])
     
     res.status(200).send(data)
   } catch (error) {
@@ -275,7 +416,7 @@ app.get('/timesheet/isApproved/:period_no/:email', async (req, res) => {
       SELECT r.approved FROM ${CURRENT_PERIOD} r
         WHERE email = $1
         LIMIT 1;
-      `, [email])
+      `, [email.toLowerCase()])
     
     if (! data) {
       res.status(404).send([`Error: Timesheet from ${email} not found`])
@@ -311,7 +452,7 @@ app.get('/timesheet/timestamp/:period_no/:email', async (req, res) => {
       SELECT r.submitted_timestamp FROM ${CURRENT_PERIOD} r
         WHERE email = $1
         LIMIT 1;
-      `, [email])
+      `, [email.toLowerCase()])
     
     if (! data) {
       res.status(200).send(null)
@@ -325,6 +466,31 @@ app.get('/timesheet/timestamp/:period_no/:email', async (req, res) => {
     return
   }
 });
+
+/*
+  /timesheet/all/:period_no
+
+  Returns all of the timesheet data from a particular period_no
+*/
+app.get('/timesheet/all/:period_no', async (req, res) => {
+  try {
+    let period_no = req.params.period_no
+
+    if (isNaN(Number(period_no))) {
+      res.status(422).send(`Error: Period_no ${period_no} is not a number`)
+      return
+    }
+
+    let table_name = `period_${period_no}_2024`;
+    let data = await db.any(`SELECT * FROM ${table_name}`);
+
+    res.status(200).send(data)
+    return
+  } catch (error) {
+    res.status(500).send(`The error could be that the period_no you entered may have not been valid. Error: ${error}`)    
+    return
+  }
+})
 
 app.listen(port, () => {
   // catching common error
