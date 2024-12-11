@@ -13,7 +13,7 @@ const port = process.env.PORT || 8000
 
   Returns the user data about a user with a specified email.
 */
-app.get('/getUser/:email', async (req, res) => {
+app.get('/users/getUser/:email', async (req, res) => {
   let email = req.params.email
 
   try {
@@ -32,7 +32,7 @@ app.get('/getUser/:email', async (req, res) => {
 
   You should probably disable this if/when you deploy this. 
 */
-app.get('/all', async (res,req) => {
+app.get('/users/all', async (res,req) => {
   try {
     let users = await db.any('SELECT * FROM USERS;')
     res.status(200).send(users)
@@ -53,6 +53,23 @@ app.get('/periods/getCurrentPeriod', async(req, res) => {
   try {
     let current_period = await db.any(`SELECT * FROM ${PERIOD_DB} WHERE to_timestamp($1 / 1000.0) BETWEEN start_time AND end_time;`, [curr_time])
     res.status(200).send(current_period)
+  } catch (error) {
+    res.status(500).send(error.toString())
+    return
+  }
+})
+
+/*
+  /periods/all
+
+  Returns the data of all the periods in 2024.
+
+  Draws data from periods_2024
+*/
+app.get('/periods/all', async(req, res) => {
+  try {
+    let data = await db.any(`SELECT * FROM ${PERIOD_DB};`)
+    res.status(200).send(data)
   } catch (error) {
     res.status(500).send(error.toString())
     return
