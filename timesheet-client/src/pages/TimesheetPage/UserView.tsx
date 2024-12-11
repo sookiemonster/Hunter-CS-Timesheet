@@ -28,7 +28,7 @@ export default function TimesheetPageAdmin():JSX.Element {
     <div id="timesheet-container">
         <Group>
             <PeriodHeader font_size="small"/>
-            <StatText label="Employee" text={viewedUser} />
+            <StatText label="Employee" content={viewedUser} />
             <Divider orientation="vertical" />
             <Group gap={10}>
                 <b>Edited by admin? </b>
@@ -43,8 +43,8 @@ export default function TimesheetPageAdmin():JSX.Element {
         </div>
         <Group className="actions-container">
             <Stack gap={0} align="flex-start">
-                <StatText completionState={isDefault ? 'done' : 'action-needed'} label={"Differs from default"} text={ isDefault ? 'No' : 'Yes'} />
-                <StatText completionState={isApproved ? 'done' : 'action-needed'} label={"Approved"} text={ isApproved ? 'Yes' : 'No'} />
+                <StatText completionState={isDefault ? 'done' : 'action-needed'} label={"Differs from default"} content={ isDefault ? 'No' : 'Yes'} />
+                <StatText completionState={isApproved ? 'done' : 'action-needed'} label={"Approved"} content={ isApproved ? 'Yes' : 'No'} />
                 <BoxedStat variant="circle" size="small" stat={hoursWorked.toString()} label="Total Hours Worked"/>
                 <Space h='md' />
                 <Group>
@@ -54,8 +54,8 @@ export default function TimesheetPageAdmin():JSX.Element {
             </Stack>
             <Divider orientation="vertical" />
             <Stack gap={2} align="flex-start">
-                <StatText label="Hours (Week 1)" text={h1.toString()}/>
-                <StatText label="Hours (Week 2)" text={h2.toString()}/>
+                <StatText label="Hours (Week 1)" content={h1.toString()}/>
+                <StatText label="Hours (Week 2)" content={h2.toString()}/>
                 <i>{ timestamp ? "Submitted: " : "" }{timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString() }</i>
             </Stack>
         </Group>

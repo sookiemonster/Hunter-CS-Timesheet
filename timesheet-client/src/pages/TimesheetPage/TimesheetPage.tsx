@@ -9,14 +9,14 @@ import LandingBackround from "../LandingPage/LandingBackground";
 
 interface StatTextProps {
     label:string,
-    text:string,
+    content:string | JSX.Element,
     completionState?: 'done' | 'action-needed'
 }
 
-export function StatText({label,text,completionState}:StatTextProps) {
+export function StatText({label,content,completionState}:StatTextProps) {
     return <div className="stat-text-container">
         <label>{label}</label>:
-        <span className={`content ${completionState}`}> {text}</span>
+        <span className={`content ${completionState}`}> {content}</span>
     </div>
 }
 

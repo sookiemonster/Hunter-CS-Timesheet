@@ -1,20 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import PeriodHeader from "../../components/PeriodHeader";
-import { Button, Divider, Group, Space, Stack } from "@mantine/core";
+import { Button, Divider, Group, Loader, Space, Stack } from "@mantine/core";
 import ScheduleCalendar from "../../components/Calendar";
 import BoxedStat from "../../components/Stats";
 import { ArrowButton, DefaultButton, IndicatorSymbol } from "../../components/Buttons";
 import { StatText } from "./TimesheetPage";
 import './styles/styles.css'
 
+import { ControlContext } from "../../state/Control.tsx/ControlContext";
+import { useFetchLocal } from "../../state/hooks";
+import { User } from "../../state/User";
+
 
 export default function TimesheetPageAdmin():JSX.Element {
-    const viewedUser = "DANIEL";
-    const isDefault = true;
-    const isEdited = true;
-    const isApproved = false;
+    const { selectedEmail } = useContext(ControlContext);
+    const { data: viewedUser} = useFetchLocal<User>(`/users/getUser/${selectedEmail}`);
+    // const latestSchedule
+
+    // const latestSchedule = {};
+    // const latestSchedule = useFetchLocal('/timesheets/')
     
+    const isEdited = false;
+    const isDefault = false;
+    const isApproved = false;
+
     const h1 = 10;
     const h2 = 10;
     const hoursWorked = h1 + h2;
@@ -29,7 +39,11 @@ export default function TimesheetPageAdmin():JSX.Element {
     <div id="timesheet-container">
         <Group>
             <PeriodHeader font_size="small"/>
-            <StatText label="Employee" text={viewedUser} />
+            <StatText label="Employee" 
+                content={viewedUser 
+                        ? viewedUser.full_name
+                        : <Loader style={{ paddingLeft: 5 }} size={18} />
+                 } />
             <Divider orientation="vertical" />
             <Group gap={10}>
                 <b>Edited? </b>
@@ -47,7 +61,7 @@ export default function TimesheetPageAdmin():JSX.Element {
         </div>
         <Group className="actions-container">
             <Stack gap={0} align="flex-start">
-                <StatText completionState={isDefault ? 'done' : 'action-needed'} label={"Auto-generated"} text={ isDefault ? 'Yes' : 'No'} />
+                <StatText completionState={isDefault ? 'done' : 'action-needed'} label={"Auto-generated"} content={ isDefault ? 'Yes' : 'No'} />
                 <BoxedStat variant="circle" size="small" stat={hoursWorked.toString()} label="Total Hours Worked"/>
                 <Space h='md' />
                 <Group>
@@ -59,8 +73,8 @@ export default function TimesheetPageAdmin():JSX.Element {
             </Stack>
             <Divider orientation="vertical" />
             <Stack gap={2} align="flex-start">
-                <StatText label="Hours (Week 1)" text={h1.toString()}/>
-                <StatText label="Hours (Week 2)" text={h2.toString()}/>
+                <StatText label="Hours (Week 1)" content={h1.toString()}/>
+                <StatText label="Hours (Week 2)" content={h2.toString()}/>
                 <i>{timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString() }</i>
             </Stack>
         </Group>
