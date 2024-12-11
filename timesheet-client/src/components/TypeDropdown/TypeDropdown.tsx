@@ -50,14 +50,14 @@ function TypeDropdown({list, useParam, label, placeholder, onSelect}:TypeDropdow
           <Combobox
             onOptionSubmit={(optionValue) => {
               // Find the original object corresponding to this displayed item
-              const refValue = (
+              const targetObject = (
                 list.find((item) => {
                   return useParam
                     ? item[useParam]
                     : item
                 })
               );
-              setReferencedValue(referencedValue);
+              setReferencedValue(targetObject);
               setInputValue(optionValue);
               combobox.closeDropdown();
             }}
