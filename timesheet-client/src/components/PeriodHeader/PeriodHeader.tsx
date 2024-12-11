@@ -19,7 +19,7 @@ interface PeriodSelectorProps {
 function PeriodSelector({size}:PeriodSelectorProps):JSX.Element {
     const { selectPeriod } = useContext(ControlContext);
     const { data:allPeriods, loading:allPeriodsLoading, error:allPeriodsError, refetch:allPeriodsRefetch, abort:allAbort } = useFetchLocal<PayrollPeriod[]>(
-      "/periods/getCurrentPeriod"
+      "/periods/all"
     );
 
     const maxPerColumn = 4;
