@@ -27,8 +27,8 @@ export function ControlProvider(props:PropsWithChildren){
     }
 
     const selectEmail = (email:string) => {
-        setSelectedEmail(email);
         sessionStorage.setItem('employee', email);
+        setSelectedEmail(email);
     }
 
     const value = { selectedPeriod, selectPeriod, selectEmail, selectedEmail };

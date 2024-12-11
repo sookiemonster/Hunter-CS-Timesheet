@@ -16,10 +16,12 @@ import { User } from "../../state/User";
 export default function TimesheetPageAdmin():JSX.Element {
     const { selectedEmail } = useContext(ControlContext);
     const { data: viewedUser} = useFetchLocal<User>(`/users/getUser/${selectedEmail}`);
-    // const latestSchedule
-
     // const latestSchedule = {};
-    // const latestSchedule = useFetchLocal('/timesheets/')
+    const { data:latestSchedule} = useFetchLocal<any>(
+        `/timesheet/getDefault/${selectedEmail}/`
+    );
+
+    console.log("LATEST",latestSchedule);
     
     const isEdited = false;
     const isDefault = false;

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useState } from 'react';
 import { Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { ArrowButton } from '../Buttons';
@@ -28,7 +28,7 @@ function TypeDropdown({list, useParam, label, placeholder, onSelect}:TypeDropdow
     )
     
     const [inputValue, setInputValue] = useState("");
-    const [referencedValue, setReferencedValue] = useState<any>(null);
+    const referencedValue = useRef<any>(null);
     const shouldFilterOptions = !list.some((item) => item === inputValue);
 
     const filteredOptions = shouldFilterOptions
@@ -42,7 +42,7 @@ function TypeDropdown({list, useParam, label, placeholder, onSelect}:TypeDropdow
     ));
 
     const executeAction = onSelect
-      ? <ArrowButton disabled={!displayList.includes(inputValue)} direction='right' onClick={() => onSelect(referencedValue)} />
+      ? <ArrowButton disabled={!displayList.includes(inputValue)} direction='right' onClick={() => onSelect(referencedValue.current)} />
       : <></>;
 
       return (
@@ -53,11 +53,13 @@ function TypeDropdown({list, useParam, label, placeholder, onSelect}:TypeDropdow
               const targetObject = (
                 list.find((item) => {
                   return useParam
-                    ? item[useParam]
-                    : item
+                    ? item[useParam] === optionValue
+                    : item === optionValue
                 })
               );
-              setReferencedValue(targetObject);
+              console.log(targetObject);
+              // console.log(optionValue)
+              referencedValue.current = targetObject;
               setInputValue(optionValue);
               combobox.closeDropdown();
             }}
