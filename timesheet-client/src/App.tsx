@@ -19,25 +19,28 @@ import { Register } from './pages/Register';
 import { useState, createContext } from 'react';
 import { UserContext, UserProvider } from './state/User';
 import TimesheetPage from './pages/TimesheetPage';
+import { ControlProvider } from './state/Control.tsx/ControlContext';
 
 function App() {
   return (
     <UserProvider>
-    <MantineProvider theme={theme}>
-      <div className = "App">
-        <Router>
-          <Navbar />
-          <Routes>
-            <Route path ="/" element = {<LandingPage />} /> 
-            {/* <Route path ="/forgot-password" element = {<ForgotPassword />} />  */}
-            {/* <Route path ="/register" element = {<Register />} />  */}
-            {/* <Route path ="/" element = {<Home />} />  */}
-            <Route path ="/timesheets" element = {<TimesheetPage />} /> 
-            <Route path="*" element = {<h1>Page Not Found</h1>} />
-          </Routes>
-        </Router>
-      </div>
-    </MantineProvider>
+      <ControlProvider>
+        <MantineProvider theme={theme}>
+          <div className = "App">
+            <Router>
+              <Navbar />
+              <Routes>
+                <Route path ="/" element = {<LandingPage />} /> 
+                {/* <Route path ="/forgot-password" element = {<ForgotPassword />} />  */}
+                {/* <Route path ="/register" element = {<Register />} />  */}
+                {/* <Route path ="/" element = {<Home />} />  */}
+                <Route path ="/timesheets" element = {<TimesheetPage />} /> 
+                <Route path="*" element = {<h1>Page Not Found</h1>} />
+              </Routes>
+            </Router>
+          </div>
+        </MantineProvider>
+      </ControlProvider>
     </UserProvider>
   );
 }
