@@ -3,14 +3,15 @@ import './styles.css'
 import PeriodHeader from "../../components/PeriodHeader";
 import TypeDropdown from "../../components/TypeDropdown";
 import LandingBackround from "./LandingBackground";
-import { Group, Indicator } from "@mantine/core";
+import { Group, Indicator, Loader } from "@mantine/core";
 import { DefaultButton, IndicatorSymbol } from "../../components/Buttons";
-import { UserContext } from "../../state/User";
+import { User, UserContext } from "../../state/User";
 import { useNavigate, Link } from 'react-router-dom';
 
 import LoginPage from "../LoginPage/LoginPage";
 import Navbar from "../../components/Navbar";
 import { ControlContext } from "../../state/Control.tsx/ControlContext";
+import { useFetchLocal } from "../../state/hooks";
 
 function LandingPageUser():JSX.Element {
     const navigate = useNavigate();
@@ -49,13 +50,8 @@ function LandingPageUser():JSX.Element {
 function LandingPageAdmin():JSX.Element {
     const { role } = useContext(UserContext);
     const { selectEmail } = useContext(ControlContext);
+    const { data:employee_list } = useFetchLocal<User[]>('/users/all');
     const nav = useNavigate();
-
-    let all_employees = Array.from({length: 10}, (v, k) => `employee${k+1}@hunter.cuny.edu`); 
-
-    useEffect(() => {
-        // set all employees
-    }, []);
 
     const foo = (s:string) => { console.log(s); }
     
@@ -67,7 +63,10 @@ function LandingPageAdmin():JSX.Element {
             ? <>
             <Group className="standard-prompt">
                 <h2>Select an <span className="underline">Employee</span> to get started</h2>
-                <TypeDropdown list={all_employees} onSelect={(s) => { selectEmail(s); nav("/timesheets"); }} placeholder="Employee"/>
+                { employee_list 
+                    ? <TypeDropdown list={employee_list} useParam={'full_name'} onSelect={(userObj) => { selectEmail(userObj.email); nav("/timesheets"); }} placeholder="Employee"/>
+                    : <Loader />
+                }
             </Group>
             <span className="alternate-prompt">
                 or <a href="/timesheets">view all timesheets submitted for this period</a>

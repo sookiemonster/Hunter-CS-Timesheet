@@ -1,7 +1,8 @@
 interface User {
-    id?:any,
+    user_id:number,
+    full_name:string
     email:String,
-    isAdmin:Boolean
+    is_admin:Boolean
 }
 
 export default User;
