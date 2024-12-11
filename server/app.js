@@ -6,8 +6,8 @@ const app = express()
 app.use(express.json());
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  // res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
@@ -39,7 +39,7 @@ app.get('/users/getUser/:email', async (req, res) => {
 
   You should probably disable this if/when you deploy this. 
 */
-app.get('/users/all', async (res,req) => {
+app.get('/users/all', async (req, res) => {
   try {
     let users = await db.any('SELECT * FROM USERS;')
     res.status(200).send(users)
