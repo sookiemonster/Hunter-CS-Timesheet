@@ -152,7 +152,8 @@ app.post('/timesheet/setDefault/:period_no/:email', async (req, res) => {
 */
 app.post('/timesheet/submit/:period_no/:email', async (req, res) => {
   try {
-    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+
+    if (! req.body || isNaN(Number(req.params.period_no)) || ! req.params.email) {
       res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
       return
     }
