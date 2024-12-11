@@ -82,6 +82,7 @@ export function CalendarModificationProvider(props: PropsWithChildren) {
 
     const value = { 
         weekOneEvents, weekTwoEvents,
+        setWeekOneEvents, setWeekTwoEvents,
         selected, setSelected, deleteSelected, clearSelected,
         opened, open, close, saveEdits, 
         selectedWeekOne, selectWeek, temporaryEvents, clearTemp, updateTemp };

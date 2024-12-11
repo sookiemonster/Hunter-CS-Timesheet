@@ -6,6 +6,7 @@ import TimesheetPageUser from "./UserView";
 import { UserContext } from "../../state/User";
 import { useNavigate } from "react-router-dom";
 import LandingBackround from "../LandingPage/LandingBackground";
+import { CalendarModificationProvider } from "../../components/Calendar/CalendarModificationContext";
 
 interface StatTextProps {
     label:string,
@@ -28,9 +29,11 @@ function TimesheetPage():JSX.Element {
 
     console.log("updating");
 
-    return <>
-    {isAdmin() ? <TimesheetPageAdmin/> : <TimesheetPageUser/>}
-    </>
+    return (
+    <CalendarModificationProvider>
+        {isAdmin() ? <TimesheetPageAdmin/> : <TimesheetPageUser/>}
+    </CalendarModificationProvider>
+    )
 }
 
 export default TimesheetPage;

@@ -11,9 +11,14 @@ import './styles/styles.css'
 import { ControlContext } from "../../state/Control.tsx/ControlContext";
 import { useFetchLocal } from "../../state/hooks";
 import { User } from "../../state/User";
+import { convertToCalendar } from "../../state/Schedule";
+import { CalendarModificationContext } from "../../components/Calendar/CalendarModificationContext";
 
 
 export default function TimesheetPageAdmin():JSX.Element {
+    const {setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
+    const [scheduleLoading, setScheduleLoading] = useState(true);
+
     const { selectedEmail } = useContext(ControlContext);
     const { data: viewedUser} = useFetchLocal<User>(`/users/getUser/${selectedEmail}`);
     // const latestSchedule = {};
@@ -21,7 +26,15 @@ export default function TimesheetPageAdmin():JSX.Element {
         `/timesheet/getDefault/${selectedEmail}/`
     );
 
-    console.log("LATEST",latestSchedule);
+    useEffect(() => {
+        // No response.
+        if (!latestSchedule) { return; }
+        // No valid schedule returned.
+        if (!latestSchedule[0]?.schedule) { setScheduleLoading(false); return; }
+        const formatted = convertToCalendar(latestSchedule[0].schedule);
+        setWeekOneEvents(formatted.Week1);
+        setWeekTwoEvents(formatted.Week2);
+    }, [latestSchedule]);
     
     const isEdited = false;
     const isDefault = false;
