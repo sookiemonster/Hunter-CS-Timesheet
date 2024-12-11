@@ -25,7 +25,10 @@ app.get('/users/getUser/:email', async (req, res) => {
 
   try {
     let users = await db.any('SELECT * FROM USERS WHERE email = $1;', [email])
-    res.status(200).send(users)
+    if (users.length === 0) {
+      res.status(404).send("User not found.")
+    }
+    res.status(200).send(users[0])
   } catch (error) {
     res.status(500).send(error.toString())
     return
