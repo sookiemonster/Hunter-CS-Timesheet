@@ -3,10 +3,8 @@ import './styles.css'
 import { useState, useEffect } from 'react';
 import { Burger, Text, Group, Title, Button } from '@mantine/core';
 
-import { useDisclosure } from '@mantine/hooks';
-import { User } from "../../state/User";
+import { UserContext } from "../../state/User";
 interface NavbarProps {
-    user:User;
     initial_active:number
 }
 
@@ -27,8 +25,9 @@ function LogoutIcon():JSX.Element {
     </div>
 }
 
-function Navbar({user, initial_active}:NavbarProps):JSX.Element {
-    const links = (user.isAdmin) ? admin_links : user_links;
+function Navbar({initial_active}:NavbarProps):JSX.Element {
+    const { isAdmin, email, } = useContext(UserContext);
+    const links = (isAdmin) ? admin_links : user_links;
     const [active, setActive] = useState(links[initial_active].link);
  
     const items = links.map((link) => (
@@ -51,8 +50,8 @@ function Navbar({user, initial_active}:NavbarProps):JSX.Element {
             <Group gap={5} justify="flex-end">
             {items}
             </Group>
-            <Text color="gray" size="sm">
-                {user.email}
+            <Text c="gray" size="sm">
+                {email}
             </Text>
             <a href="/login">
             <Button variant="transparent">

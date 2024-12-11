@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import PeriodHeader from './components/PeriodHeader';
@@ -19,9 +19,7 @@ import { Login } from './pages/LoginPage/LoginSheet';
 import { Register } from './pages/Register';
 import { Timesheet } from './pages/Timesheet';
 import { useState, createContext } from 'react';
-import { UserProvider } from './state/User';
-import LoginPage from './pages/LoginPage/LoginPage';
-
+import { UserContext, UserProvider } from './state/User';
 
 function App() {
   return (
@@ -30,12 +28,12 @@ function App() {
       <div className = "App">
         <Router>
           <Routes>
-            <Route path ="/" element = {<LoginPage />} /> 
-            {/* <Route path ="/forgot-password" element = {<ForgotPassword />} /> 
-            <Route path ="/register" element = {<Register />} /> 
-            <Route path ="/" element = {<Home />} /> 
-            <Route path ="/timesheet" element = {<Timesheet />} /> 
-            <Route path="*" element = {<h1>Page Not Found</h1>} /> */}
+            <Route path ="/" element = {<LandingPage />} /> 
+            {/* <Route path ="/forgot-password" element = {<ForgotPassword />} />  */}
+            {/* <Route path ="/register" element = {<Register />} />  */}
+            {/* <Route path ="/" element = {<Home />} />  */}
+            <Route path ="/timesheets" element = {<Timesheet />} /> 
+            <Route path="*" element = {<h1>Page Not Found</h1>} />
           </Routes>
         </Router>
       </div>

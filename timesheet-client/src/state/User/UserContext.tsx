@@ -9,7 +9,10 @@ export function UserProvider(props: PropsWithChildren) {
     const [loginStatus, setloginStatus] = useState(null);
     const [role, setRole] = useState("");
 
-    const value = { email, setEmail, user, setUser, loginStatus, setloginStatus, role, setRole };
+    const isLoggedIn = () => { return loginStatus; }
+    const isAdmin = () => { return role === 'admin' }
+
+    const value = { isAdmin, email, setEmail, user, setUser, loginStatus, setloginStatus, role, setRole };
     return <UserContext.Provider value={value}>
         {props.children}
     </UserContext.Provider>
