@@ -3,10 +3,9 @@ import './styles.css'
 import { useState, useEffect } from 'react';
 import { Burger, Text, Group, Title, Button } from '@mantine/core';
 
+import { useLocation } from 'react-router-dom';
 import { UserContext } from "../../state/User";
-interface NavbarProps {
-    initial_active:number
-}
+import { useNavigate } from "react-router-dom";
 
 const user_links = [
   { link: '/', label: 'Home' },
@@ -25,20 +24,18 @@ function LogoutIcon():JSX.Element {
     </div>
 }
 
-function Navbar({initial_active}:NavbarProps):JSX.Element {
-    const { isAdmin, email, } = useContext(UserContext);
+function Navbar():JSX.Element {
+    const { isAdmin, email, logout } = useContext(UserContext);
     const links = (isAdmin) ? admin_links : user_links;
-    const [active, setActive] = useState(links[initial_active].link);
+    
+    const location = useLocation();
+    const navigate = useNavigate(); //allows to navigate from one page to another
  
     const items = links.map((link) => (
         <a key={link.label}
             href={link.link}
             className="link"
-            data-active={active === link.link || undefined}
-            onClick={(event) => {
-                event.preventDefault();
-                setActive(link.link);
-            }}
+            data-active={location.pathname.includes(link.link) || undefined}
         >
         {link.label}
         </a>
@@ -53,11 +50,9 @@ function Navbar({initial_active}:NavbarProps):JSX.Element {
             <Text c="gray" size="sm">
                 {email}
             </Text>
-            <a href="/login">
-            <Button variant="transparent">
+            <Button onClick={() => { logout(); navigate("/") }} variant="transparent">
                 <LogoutIcon/>
             </Button>
-            </a>
             {/* <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" /> */}
         </header>
     );

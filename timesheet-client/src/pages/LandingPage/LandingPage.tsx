@@ -86,7 +86,7 @@ function LandingPage():JSX.Element {
     { (!loginStatus) 
         ? <LoginPage />
         : <>
-            <Navbar initial_active={0} ></Navbar>
+            <Navbar ></Navbar>
             {
                 (role === 'ta')
                     ? <LandingPageUser/> 

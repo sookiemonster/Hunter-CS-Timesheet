@@ -5,8 +5,9 @@ import { SAMPLE_USER } from '../state/sample';
 import BoxedStat from '../components/Stats';
 
 import { useContext } from "react";
+import { UserContext } from '../state/User';
 
 export const Timesheet = () =>{
-  
-  return <>awdji</>
+  const { role } = useContext(UserContext)
+  return <>{role}</>
 };
