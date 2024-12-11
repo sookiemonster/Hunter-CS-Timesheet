@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import User from "../../state/User";
+import User from "../../state/User/User";
 
 import PeriodHeader from "../../components/PeriodHeader";
 import { Button, Divider, Group, Space, Stack } from "@mantine/core";

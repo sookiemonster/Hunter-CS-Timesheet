@@ -4,10 +4,7 @@ import { useState, useEffect } from 'react';
 import { Burger, Text, Group, Title, Button } from '@mantine/core';
 
 import { useDisclosure } from '@mantine/hooks';
-import User from "../../state/User";
-
-import { AppContext } from "../../App";
-
+import { User } from "../../state/User";
 interface NavbarProps {
     user:User;
     initial_active:number

@@ -1,4 +1,4 @@
-import User from "./User";
+import User from "./User/User";
 
 const SAMPLE_USER:User = {
     email: "daniel.sooknanan16@myhunter.cuny.edu",
