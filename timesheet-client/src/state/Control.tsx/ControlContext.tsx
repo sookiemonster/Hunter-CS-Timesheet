@@ -1,11 +1,13 @@
-import React, { useState, useCallback, PropsWithChildren, useEffect } from "react";
+import React, { useState, PropsWithChildren } from "react";
 import PayrollPeriod, { NULL_PERIOD } from "../../components/PeriodHeader/PayrollPeriod";
 
 
 export const ControlContext = React.createContext<any>(null);
 
 export function ControlProvider(props:PropsWithChildren){    
-    const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [selectedEmail, setSelectedEmail] = useState(
+        sessionStorage.employee || ""
+    );
     const [selectedPeriod, setSelectedPeriod] = useState<PayrollPeriod>(
         () => {
             try {
@@ -17,12 +19,19 @@ export function ControlProvider(props:PropsWithChildren){
         }
     );
 
+    console.log(selectedEmail);
+
     const selectPeriod = (p:PayrollPeriod) => {
         sessionStorage.setItem('period', JSON.stringify(p));
         setSelectedPeriod(p);
     }
 
-    const value = { selectedPeriod, selectPeriod, selectedEmployee, setSelectedEmployee };
+    const selectEmail = (email:string) => {
+        setSelectedEmail(email);
+        sessionStorage.setItem('employee', email);
+    }
+
+    const value = { selectedPeriod, selectPeriod, selectEmail, selectedEmail };
     return <ControlContext.Provider value={value}>
         {props.children}
     </ControlContext.Provider>

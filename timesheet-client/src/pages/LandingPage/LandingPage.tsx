@@ -10,6 +10,7 @@ import { useNavigate, Link } from 'react-router-dom';
 
 import LoginPage from "../LoginPage/LoginPage";
 import Navbar from "../../components/Navbar";
+import { ControlContext } from "../../state/Control.tsx/ControlContext";
 
 function LandingPageUser():JSX.Element {
     const navigate = useNavigate();
@@ -47,16 +48,16 @@ function LandingPageUser():JSX.Element {
 
 function LandingPageAdmin():JSX.Element {
     const { role } = useContext(UserContext);
+    const { selectEmail } = useContext(ControlContext);
+    const nav = useNavigate();
 
-    let all_employees = Array.from({length: 10}, (v, k) => `employee ${k+1}`); 
+    let all_employees = Array.from({length: 10}, (v, k) => `employee${k+1}@hunter.cuny.edu`); 
 
     useEffect(() => {
         // set all employees
     }, []);
 
-    const foo = (s:string) => {
-        console.log(s);
-    }
+    const foo = (s:string) => { console.log(s); }
     
     return (
     <div id="landing-container">
@@ -66,7 +67,7 @@ function LandingPageAdmin():JSX.Element {
             ? <>
             <Group className="standard-prompt">
                 <h2>Select an <span className="underline">Employee</span> to get started</h2>
-                <TypeDropdown list={all_employees} onSelect={foo} placeholder="Employee"/>
+                <TypeDropdown list={all_employees} onSelect={(s) => { selectEmail(s); nav("/timesheets"); }} placeholder="Employee"/>
             </Group>
             <span className="alternate-prompt">
                 or <a href="/timesheets">view all timesheets submitted for this period</a>

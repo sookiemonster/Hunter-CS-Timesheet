@@ -69,8 +69,6 @@ function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JS
       selectPeriod(currentPeriod[0]);
     }, [currentPeriod, selectedPeriod])
 
-    console.log(selectedPeriod)
-
     return (
         <div className={'period-container ' + render_size}>
           { (selectedPeriod !== NULL_PERIOD) 
