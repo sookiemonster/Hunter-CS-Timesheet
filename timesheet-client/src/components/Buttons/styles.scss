@@ -19,4 +19,5 @@
     &.invert.yes { background-color: $red;}
     &.no { background-color: $red; }
     &.yes { background-color: $green; }
+    &.default { background-color: $primary;}
 }

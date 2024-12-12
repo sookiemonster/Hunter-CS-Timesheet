@@ -165,5 +165,12 @@ export function calendarToResponse(weekOneEvents:DatedShift[], weekTwoEvents:Dat
         
         result.Week1[day as keyof WeeklyBreakdown].push(shiftToResponse(shift));
     }
+
+    for (const index in weekTwoEvents) {
+        const shift = weekTwoEvents[index];
+        const day = getDayName(shift.start.getDay());
+        
+        result.Week2[day as keyof WeeklyBreakdown].push(shiftToResponse(shift));
+    }
     return result;
 }

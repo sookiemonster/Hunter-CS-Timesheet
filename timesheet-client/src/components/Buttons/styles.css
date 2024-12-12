@@ -23,5 +23,8 @@
 .indicator.yes {
   background-color: #50b438;
 }
+.indicator.default {
+  background-color: #4f5eff;
+}
 
 /*# sourceMappingURL=styles.css.map */

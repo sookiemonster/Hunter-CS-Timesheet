@@ -465,8 +465,8 @@ app.get('/timesheet/timestamp/:period_no/:email', async (req, res) => {
         LIMIT 1;
       `, [email.toLowerCase()])
     
-    if (! data) {
-      res.status(200).send(null)
+    if (!data || data.length === 0) {
+      res.status(200).send(false)
       return
     }
 

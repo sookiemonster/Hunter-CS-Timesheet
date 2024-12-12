@@ -1,2 +1,2 @@
-import fetchLocal from "./fetchLocal";
-export {fetchLocal};
+import {fetchLocal, fetchLocalWithBody} from "./fetchLocal";
+export {fetchLocal, fetchLocalWithBody};

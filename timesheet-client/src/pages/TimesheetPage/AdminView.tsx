@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useMemo } from "react";
 
 import PeriodHeader from "../../components/PeriodHeader";
 import { Button, Divider, Group, Loader, LoadingOverlay, Space, Stack } from "@mantine/core";
@@ -16,11 +16,11 @@ import { CalendarModificationContext } from "../../components/Calendar/CalendarM
 import { calendarToResponse } from "../../state/Schedule/Schedule";
 import { useDisclosure } from '@mantine/hooks';
 import { useModifiedFetchLocal} from "../../state/hooks";
-import { fetchLocal } from "../../state/Util";
+import { fetchLocal, fetchLocalWithBody } from "../../state/Util";
 
 export default function TimesheetPageAdmin():JSX.Element {
     const { selectedPeriod }= useContext(ControlContext)
-    const { weekOneEvents, weekTwoEvents, setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
+    const { weekOneEvents, weekTwoEvents, isEdited, setIsEdited, weekOneHours, weekTwoHours, setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
 
     const [scheduleLoading, setScheduleLoading] = useState(true);
 
@@ -32,12 +32,19 @@ export default function TimesheetPageAdmin():JSX.Element {
     const latestEndpoint = { endpoint: `/timesheet/getLatest/${selectedPeriod.period_id}/${selectedEmail}/` }
     const { data:latestSchedule, restart:refetchLatest } = useModifiedFetchLocal<any>(latestEndpoint);
 
+    const defaultEndpoint = { endpoint: `/timesheet/getDefault/${selectedEmail}/` }
+    const { data:defaultSchedule, restart: refetchDefault } = useModifiedFetchLocal<any>(defaultEndpoint)
+
     const approvalEndpoint = { endpoint: `/timesheet/isApproved/${selectedPeriod.period_id}/${selectedEmail}/` }
     const { data:isApproved, refetch:refetchApproval } = useModifiedFetchLocal<any>(approvalEndpoint)
+
+    const timestampEndpoint = { endpoint: `/timesheet/timestamp/${selectedPeriod.period_id}/${selectedEmail}/` }
+    const { data:timestamp, refetch:refetchTimestamp } = useModifiedFetchLocal<any>(timestampEndpoint);
 
     // When new user is selected, refetch their user data
     useEffect(() => {
         refetchViewedUser();
+        refetchDefault();
     }, [selectedEmail]);
 
     // When a new user / period is selected, fetch the schedule
@@ -60,18 +67,17 @@ export default function TimesheetPageAdmin():JSX.Element {
         setWeekOneEvents(formatted.Week1);
         setWeekTwoEvents(formatted.Week2);
     }, [latestSchedule]);
-    
-    const isEdited = false;
-    const isDefault = false;
-
-    const h1 = 10;
-    const h2 = 10;
-    const hoursWorked = h1 + h2;
-    const timestamp = new Date();
 
     const goToPrevious = () => {}
     const goToNext = () => {}
-    const enableChanges = () => {}
+    const saveEdits = () => {
+        console.log(calendarToResponse(weekOneEvents, weekTwoEvents))
+        fetchLocalWithBody(`/timesheet/modify/${selectedPeriod.period_id}/${selectedEmail}`, calendarToResponse(weekOneEvents, weekTwoEvents))
+            .then(() => {
+                setIsEdited(false);
+            })
+            .catch(() => console.error("error."))
+    }
     const approve = () => {
         fetchLocal(`/timesheet/approve/${selectedPeriod.period_id}/${selectedEmail}`)
             .then(() => {
@@ -91,11 +97,6 @@ export default function TimesheetPageAdmin():JSX.Element {
                  } />
             <Divider orientation="vertical" />
             <Group gap={10}>
-                <b>Edited? </b>
-                <IndicatorSymbol showValue={true} value={isEdited ? 'yes' : 'no'} />
-            </Group>
-            <Divider orientation="vertical" />
-            <Group gap={10}>
                 <b>Approved? </b>
                 <IndicatorSymbol showValue={true} value={isApproved ? 'yes' : 'no'} />
             </Group>
@@ -105,23 +106,39 @@ export default function TimesheetPageAdmin():JSX.Element {
             <ScheduleCalendar />
             <LoadingOverlay visible={scheduleLoading} />
         </div>
-        <Group className="actions-container">
-            <Stack gap={0} align="flex-start">
-                <StatText completionState={isDefault ? 'done' : 'action-needed'} label={"Auto-generated"} content={ isDefault ? 'Yes' : 'No'} />
-                <BoxedStat variant="circle" size="small" stat={hoursWorked.toString()} label="Total Hours Worked"/>
-                <Space h='md' />
+        <Group className="actions-container" align="flex-start">
+            <Stack gap={20} >
+                {/* <StatText completionState={isDefault ? 'done' : 'action-needed'} label={"Default Hours"} content={ isDefault ? 'Yes' : 'No'} /> */}
+                {/* <Space h='md' /> */}
                 <Group>
                     <ArrowButton direction="left" onClick={() => goToPrevious()} />
-                    {/* <Button variant="outline" onClick={() => enableChanges()}>Edit</Button> */}
+                    {
+                        isEdited
+                        ? <Button variant="outline" onClick={() => saveEdits()}>Save Changes</Button>
+                        : <></>
+                    }
                     <DefaultButton text="Approve" onClick={() => approve()} />
                     <ArrowButton direction="right" onClick={() => goToNext()} />
                 </Group>
+                {
+                isEdited
+                ? <Group gap={10} justify="center">
+                    <b>Edited </b>
+                    <IndicatorSymbol noImplication={true} showValue={true} value={isEdited ? 'yes' : 'no'} />
+                </Group>
+                : <></>
+                }
             </Stack>
             <Divider orientation="vertical" />
             <Stack gap={2} align="flex-start">
-                <StatText label="Hours (Week 1)" content={h1.toString()}/>
-                <StatText label="Hours (Week 2)" content={h2.toString()}/>
-                <i>{timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString() }</i>
+                <StatText label="Hours (Week 1)" content={weekOneHours.toString()}/>
+                <StatText label="Hours (Week 2)" content={weekTwoHours.toString()}/> 
+                <BoxedStat variant="circle" size="small" stat={(weekOneHours + weekTwoHours).toString()} label="Total Hours Worked"/>
+                { 
+                    (timestamp?.submitted_timestamp) 
+                    ? <i>{timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString() }</i>
+                    : <></>
+                }
             </Stack>
         </Group>
     </div>
