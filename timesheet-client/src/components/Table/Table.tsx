@@ -1,5 +1,5 @@
-import React, {useContext, useMemo} from 'react';
-import { Table } from '@mantine/core';
+import React, {useState, useContext, useMemo, useEffect} from 'react';
+import { Table, Group, LoadingOverlay, Loader } from '@mantine/core';
 import { IndicatorSymbol } from '../Buttons';
 import { ControlContext } from '../../state/Control.tsx/ControlContext';
 import { useFetchLocal, useModifiedFetchLocal } from '../../state/hooks';
@@ -11,23 +11,54 @@ interface Row {
     full_name:string,
     email:string,
     timestamp: string,
-    approved:Boolean,
+    approved:boolean,
+}
+
+interface TimesheetData {
+    email:string,
+    submitted_timestamp:string
+    approved:boolean,
 }
 
 export default function Tabular() {
     const navigate = useNavigate();
-    const { selectedEmail, selectEmail, selectedPeriod } = useContext(ControlContext);
+    const { selectEmail, selectedPeriod } = useContext(ControlContext);
 
-    const { data:allUsers, loading:allUsersLoading  } = useFetchLocal<User[]>("/users/all");
+    const { data:allUsers, loading:allUsersLoading, restart:refetchUsers } = useFetchLocal<User[]>("/users/all");
 
-    const allTimesheetsEndpoint = { endpoint: '/timesheet/all/:period_no'};
-    const allTimesheetData = useModifiedFetchLocal<any>(allTimesheetsEndpoint)
+    const allTimesheetsEndpoint = { endpoint: `/timesheet/all/${selectedPeriod.period_id}`};
+    const { data:allTimesheetData, refetch:refetchTimesheets} = useModifiedFetchLocal<TimesheetData[]>(allTimesheetsEndpoint)
 
-    console.log(allUsers);
-    console.log(allTimesheetData);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const constructData = useMemo(() => {
-        
+    useEffect(() => {
+        setIsLoading(true);
+        refetchUsers();
+        refetchTimesheets();
+    }, [selectedPeriod])
+
+    const data = useMemo(():Row[] => {
+        if (!allUsers || !allTimesheetData) { return []; }
+        const result:Row[] = [];
+        allUsers.forEach((userInfo) => {
+            // find if we have a submitted timesheet
+            const found = allTimesheetData.find((sheet) => userInfo.email == sheet.email )
+            const formatted:Row = {
+                full_name: userInfo.full_name,
+                email: userInfo.email as string,
+                timestamp: "Unsubmitted",
+                approved: false
+            }
+            if (found) {
+                formatted.timestamp = (new Date(found.submitted_timestamp)).toLocaleDateString();
+                formatted.approved = found.approved
+            }
+            result.push(formatted);
+        })
+
+        setIsLoading(false);
+
+        return result;
     }, [allUsers, allTimesheetData])
 
     const handleClick = (email:string) => {
@@ -35,18 +66,13 @@ export default function Tabular() {
         navigate("/timesheets");
     }
 
-    const data:Row[] = [];
     const rows = useMemo(
         () => data.map((element:Row) => {
-            <Table.Tr key={element.email} onClick={() => handleClick(element.email)}>
+            return <Table.Tr className='row' key={element.email} onClick={() => handleClick(element.email)}>
                 <Table.Td>{element.full_name}</Table.Td>
                 <Table.Td>{element.email}</Table.Td>
-                <Table.Td>
-                    {
-                        element.timestamp
-                        ? element.timestamp
-                        : <IndicatorSymbol value={'no'} />
-                    }
+                <Table.Td className={`${element.timestamp === "Unsubmitted" ? "none" : ""}`}>
+                    {element.timestamp}
                 </Table.Td>
                 <Table.Td>
                     <IndicatorSymbol value={element.approved ? 'yes' : 'no'} />
@@ -55,15 +81,20 @@ export default function Tabular() {
     }), [data]);
 
     return <div id="table-container">
-        <Table>
-            <Table.Thead>
-                <Table.Tr>
-                    <Table.Th>Employee</Table.Th>
-                    <Table.Th>Submitted</Table.Th>
-                    <Table.Th>Approved</Table.Th>
-                </Table.Tr>
-            </Table.Thead>
-            {/* <Table.Tbody>{rows}</Table.Tbody> */}
-        </Table>
+        { isLoading 
+            ? <Loader />
+            : <Table>
+                <Table.Thead>
+                    <Table.Tr>
+                        <Table.Th>Employee</Table.Th>
+                        <Table.Th>Email</Table.Th>
+                        <Table.Th>Submitted</Table.Th>
+                        <Table.Th>Approved</Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>{rows}</Table.Tbody>
+            </Table>
+            
+        }
     </div>
 }

@@ -1,4 +1,25 @@
+@import '../../../Theme/variables';
+
 #table-container {
     width: 100%;
     height: 100%;
+}
+
+.row {
+    text-align: left; 
+    cursor: pointer;
+
+    transition: background-color 0.1s ease-out;
+
+    &:hover {
+        // see primary transparent in variables, but linking not wroking
+        background-color: rgba(79, 94, 255, 0.3);
+    }
+    
+    .unsubmitted {
+        color: gray;
+    }
+    .submitted {
+        font-weight: 600;
+    }
 }

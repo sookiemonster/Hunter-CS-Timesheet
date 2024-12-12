@@ -5,11 +5,13 @@ import PeriodHeader from "../../components/PeriodHeader";
 import Tabular from "../../components/Table";
 import "./styles/styles.css"
 import { Space } from "@mantine/core";
+import LandingBackround from "../LandingPage/LandingBackground";
 
 export default function EmployeePage() {
     const { isAdmin } = useContext(UserContext);
 
     return (
+        <>
         <div id="employee-page-container">
             {!isAdmin() 
                 ? <></>
@@ -21,5 +23,6 @@ export default function EmployeePage() {
                 </>
             }
         </div>
+        </>
     )
 }

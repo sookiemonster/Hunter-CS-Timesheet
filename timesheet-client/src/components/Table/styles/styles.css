@@ -3,4 +3,19 @@
   height: 100%;
 }
 
+.row {
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.1s ease-out;
+}
+.row:hover {
+  background-color: rgba(79, 94, 255, 0.3);
+}
+.row .unsubmitted {
+  color: gray;
+}
+.row .submitted {
+  font-weight: 600;
+}
+
 /*# sourceMappingURL=styles.css.map */
