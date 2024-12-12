@@ -88,7 +88,7 @@ function LandingPageAdmin():JSX.Element {
                 }
             </Group>
             <span className="alternate-prompt">
-                or <a href="/timesheets">view all timesheets submitted for this period</a>
+                or <a href="/employees">view all timesheets submitted for this period</a>
             </span>
             </>
             : <></>
