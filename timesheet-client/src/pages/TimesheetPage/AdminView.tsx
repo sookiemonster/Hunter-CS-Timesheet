@@ -9,12 +9,10 @@ import { StatText } from "./TimesheetPage";
 import './styles/styles.css'
 
 import { ControlContext } from "../../state/Control.tsx/ControlContext";
-import { useFetchLocal } from "../../state/hooks";
 import { User } from "../../state/User";
 import { convertToCalendar } from "../../state/Schedule";
 import { CalendarModificationContext } from "../../components/Calendar/CalendarModificationContext";
 import { calendarToResponse } from "../../state/Schedule/Schedule";
-import { useDisclosure } from '@mantine/hooks';
 import { useModifiedFetchLocal} from "../../state/hooks";
 import { fetchLocal, fetchLocalWithBody } from "../../state/Util";
 

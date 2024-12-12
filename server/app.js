@@ -128,16 +128,15 @@ app.get('/timesheet/getDefault/:email', async(req, res) => {
 })
 
 /*
-  /timesheet/setDefault/:period_no/_email
+  /timesheet/setDefault/:email
 
   Updates default schedule in regular_schedule db
 */
-app.post('/timesheet/setDefault/:period_no/:email', async (req, res) => {
-  const period_no = req.params.period_no;
+app.post('/timesheet/setDefault/:email', async (req, res) => {
   const email = req.params.email;
 
   try {
-    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+    if (! req.body || !email) {
       res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
       return
     }
@@ -490,7 +489,7 @@ app.get('/timesheet/timestamp/:period_no/:email', async (req, res) => {
       `, [email.toLowerCase()])
     
     if (!data || data.length === 0) {
-      res.status(200).send(null)
+      res.status(200).send(false)
       return
     }
 

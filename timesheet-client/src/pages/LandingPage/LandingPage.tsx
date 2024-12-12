@@ -3,13 +3,12 @@ import './styles.css'
 import PeriodHeader from "../../components/PeriodHeader";
 import TypeDropdown from "../../components/TypeDropdown";
 import LandingBackround from "./LandingBackground";
-import { Group, Indicator, Loader } from "@mantine/core";
-import { DefaultButton, IndicatorSymbol } from "../../components/Buttons";
+import { Group, Loader } from "@mantine/core";
+import { DefaultButton } from "../../components/Buttons";
 import { User, UserContext } from "../../state/User";
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import LoginPage from "../LoginPage/LoginPage";
-import Navbar from "../../components/Navbar";
 import { ControlContext } from "../../state/Control.tsx/ControlContext";
 import { useFetchLocal, useModifiedFetchLocal } from "../../state/hooks";
 
@@ -18,10 +17,8 @@ function LandingPageUser():JSX.Element {
     const { role, email:selfEmail } = useContext(UserContext);
     const { selectEmail, selectedPeriod } = useContext(ControlContext);
 
-    const [loading, setIsLoading] = useState(true);
-
     const timestampEndpoint = { endpoint: `/timesheet/timestamp/${selectedPeriod.period_id}/${selfEmail}`}
-    const { data:timestamp, refetch:refetchTimestamp } = useModifiedFetchLocal<any>(timestampEndpoint) 
+    const { data:timestamp, loading, refetch:refetchTimestamp } = useModifiedFetchLocal<any>(timestampEndpoint) 
 
     // Select the email of the user to be the one viewed. 
     useEffect(() => {
@@ -30,12 +27,18 @@ function LandingPageUser():JSX.Element {
         refetchTimestamp();
     }, [selfEmail]);
 
+    useEffect(() => {
+        if (!selectedPeriod) { return; }
+        refetchTimestamp();
+    },[selectedPeriod])
+
 
     const hasSubmitted = useMemo(() => {
-        if (!timestamp || timestamp.length === 0) { return false; }
-        setIsLoading(false);
+        if (loading) { return false; }
+        
+        if (!timestamp) { return false; }
         return timestamp[0].submitted_timestamp != null;
-    }, [timestamp])
+    }, [timestamp, selectedPeriod])
 
     return (
     <div id="landing-container">
@@ -44,7 +47,7 @@ function LandingPageUser():JSX.Element {
         { (role === 'ta')
             ? <>
                 <Group gap={50} style={{ paddingTop: "10px "}} align="center">
-                    <DefaultButton onClick={() => navigate("/timesheets")} text={hasSubmitted ? "Edit" : "Submit Timesheet" } />
+                    <DefaultButton onClick={() => navigate("/timesheets")} text={hasSubmitted ? "View" : "Submit Timesheet" } />
                     <h3 style={{ color: (hasSubmitted) ? "green" : "red"}}>
                         { loading
                             ? <Loader />
