@@ -18,8 +18,10 @@ function LandingPageUser():JSX.Element {
     const { role, email:selfEmail } = useContext(UserContext);
     const { selectEmail, selectedPeriod } = useContext(ControlContext);
 
+    const [loading, setIsLoading] = useState(true);
+
     const timestampEndpoint = { endpoint: `/timesheet/timestamp/${selectedPeriod.period_id}/${selfEmail}`}
-    const { data:timestamp, loading, refetch:refetchTimestamp } = useModifiedFetchLocal<any>(timestampEndpoint) 
+    const { data:timestamp, refetch:refetchTimestamp } = useModifiedFetchLocal<any>(timestampEndpoint) 
 
     // Select the email of the user to be the one viewed. 
     useEffect(() => {
@@ -31,9 +33,10 @@ function LandingPageUser():JSX.Element {
 
     const hasSubmitted = useMemo(() => {
         if (!timestamp || timestamp.length === 0) { return false; }
+        setIsLoading(false);
         return timestamp[0].submitted_timestamp != null;
     }, [timestamp])
-    
+
     return (
     <div id="landing-container">
         <PeriodHeader font_size="large"/>
