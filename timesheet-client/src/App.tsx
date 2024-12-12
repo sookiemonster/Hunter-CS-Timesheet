@@ -15,6 +15,7 @@ import { ForgotPassword } from './pages/ForgotPassword';
 
 import LandingPage from './pages/LandingPage/LandingPage';
 import TimesheetPage from './pages/TimesheetPage';
+import EmployeePage from './pages/EmployeePage';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
                 <Route path ="/" element = {<LandingPage />} /> 
                 <Route path ="/forgot-password" element = {<ForgotPassword />} /> 
                 {/* <Route path ="/register" element = {<Register />} />  */}
-                {/* <Route path ="/" element = {<Home />} />  */}
+                <Route path ="/employees" element = {<EmployeePage />} /> 
                 <Route path ="/timesheets" element = {<TimesheetPage />} /> 
                 <Route path="*" element = {<h1>Page Not Found</h1>} />
               </Routes>

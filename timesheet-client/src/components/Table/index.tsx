@@ -1,1 +1,2 @@
-import React from "react";
+import Tabular from "./Table";
+export default Tabular;
