@@ -8,7 +8,7 @@
 .stat-container {
   display: flex;
   aspect-ratio: 1/1;
-  height: 2rem;
+  width: 2.5rem;
   background-color: #4f5eff;
   border-radius: 5px;
   color: white;

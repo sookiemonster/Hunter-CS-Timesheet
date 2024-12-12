@@ -1,7 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import PayrollPeriod, { NULL_PERIOD } from './PayrollPeriod';
-import { Menu, Button, Group } from '@mantine/core';
+import { Menu, Loader, Group, Stack, Space } from '@mantine/core';
 import './styles.css'
+import { useFetchLocal } from '../../state/hooks';
+import { ControlContext } from '../../state/Control.tsx/ControlContext';
+import { relative } from 'path';
 
 interface PeriodHeaderProps {
     period_no?:number
@@ -10,17 +13,19 @@ interface PeriodHeaderProps {
 }
 
 interface PeriodSelectorProps {
-    periods:number[],
     size:'small' | 'large',
-    select:any
 }
 
-function PeriodSelector({periods, size, select}:PeriodSelectorProps):JSX.Element {
-    const half = Math.ceil(periods.length / 2); // Calculate the halfway point
-    const firstColumn = periods.slice(0, half);
-    const secondColumn = periods.slice(half);
+function PeriodSelector({size}:PeriodSelectorProps):JSX.Element {
+    const { selectPeriod } = useContext(ControlContext);
+    const { data:allPeriods, loading:allPeriodsLoading, error:allPeriodsError, refetch:allPeriodsRefetch, abort:allAbort } = useFetchLocal<PayrollPeriod[]>(
+      "/periods/all"
+    );
 
-    return <Menu shadow='md' width='110'>
+    const maxPerColumn = 4;
+    const columnPx = 50;
+
+    return <Menu shadow='md' width={`${columnPx * maxPerColumn + 5 * maxPerColumn}`}>
     <Menu.Target>
         <div className={`open-selector ${size}`} >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
@@ -32,88 +37,57 @@ function PeriodSelector({periods, size, select}:PeriodSelectorProps):JSX.Element
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '50px 50px', // Two equal-width columns
+            gridTemplateColumns: `repeat(${maxPerColumn}, ${columnPx}px)`, // Two equal-width columns
           }}
           >
-          {/* First Column */}
-          <div>
-            {firstColumn.map((item, index) => (
-              <Menu.Item onClick={() => select(item)} className='selector-item' component='div' key={index}>{item}</Menu.Item>
-            ))}
-          </div>
-          {/* Second Column */}
-          <div>
-            {secondColumn.map((item, index) => (
-              <Menu.Item onClick={() => select(item)} className='selector-item' component='div' key={index}>{item}</Menu.Item>
-            ))}
-          </div>
+          { allPeriods 
+              ? allPeriods.map((item, index) => {
+                  return <Menu.Item onClick={() => selectPeriod(item)} className='selector-item' component='div' key={index}>{item.period_id}</Menu.Item>
+              })
+              : <Loader />
+        }
         </div>
       </Menu.Dropdown>
     </Menu>
 }
 
 function PeriodHeader({period_no, font_size, show_current}:PeriodHeaderProps):JSX.Element {
+    // Defualts & utils
     const render_size = (font_size == 'small') ? "small" : "large";
-    
-    const [isLoading, setIsLoading] = useState(true);
-    const [period, setPeriod] = useState(NULL_PERIOD);
-
-    const allPeriods = useMemo(() => {
-        // getAllPeriods();
-        return [1,2,3,4,5,6,7,8,9,10,11];
-    }, []);
-
-    const selectPeriod = (n:number) => {
-      setIsLoading(true);
-      const rendered_period:PayrollPeriod = {
-        period_no: 7,
-        start: new Date("10/4/2024"),
-        end: new Date("10/4/2024"),
-        is_current: true
-      }
-      // rendered_period = await getPeriod(period_no);
-      // then...
-      setPeriod(rendered_period);
-      setIsLoading(false);
+    const stringifyDate = (s:string) => { 
+      const d = new Date(s);
+      return d.toLocaleString('default', { month: 'long', day:"numeric", year: 'numeric' }) 
     }
-    
-    useEffect(() => {
-        // Get current period on load, if not provided
-        let rendered_period = NULL_PERIOD;
-        if (period_no) {
-            // rendered_period = await getPeriod(period_no);
-        } else {
-            // rendered_period = await getCurrentPeriod();
-        }
 
-        // period_no =
-        rendered_period = {
-            period_no: 8,
-            start: new Date("10/06/2024"),
-            end: new Date("10/06/2024"),
-            is_current: true
-        }
-        setPeriod(rendered_period);
-        setIsLoading(false);
+    // Data & state
+    const { selectedPeriod, selectPeriod } = useContext(ControlContext);
+    const { data:currentPeriod } = useFetchLocal<PayrollPeriod[]>("/periods/getCurrentPeriod");
 
-    }, [period_no]);
-    
-    let stringifyDate = (date:Date) => {
-        return date.toLocaleString('default', { month: 'long', day:"numeric", year: 'numeric' })
-    }
+    useEffect(()=> {
+      if (selectedPeriod !== NULL_PERIOD) { return; }
+      if (!currentPeriod) { return; }
+      selectPeriod(currentPeriod[0]);
+    }, [currentPeriod, selectedPeriod])
 
     return (
         <div className={'period-container ' + render_size}>
-            <span className={render_size}>
-                { show_current && period.is_current ? "Currently, " : "" }
-                <b>{ stringifyDate(period.start) } - { stringifyDate(period.end) }</b>
-            </span>
-                <h1 className={render_size}>Payroll&nbsp;	
-                    <Group style={{display: 'inline-flex'}}>
-                        Period #{ period.period_no }
-                        <PeriodSelector periods={allPeriods} size={render_size} select={selectPeriod} />
-                    </Group>
-                </h1>
+          { (selectedPeriod !== NULL_PERIOD) 
+            ? <>
+              <span className={render_size}>
+                  { show_current && selectedPeriod.is_current ? "Currently, " : "" }
+                  <b>{ stringifyDate(selectedPeriod.start_time) } - { stringifyDate(selectedPeriod.end_time) }</b>
+              </span>
+              <h1 className={render_size}>Payroll&nbsp;	
+                  <Group style={{display: 'inline-flex'}}>
+                      Period #{ selectedPeriod.period_id }
+                      <PeriodSelector size={render_size} />
+                  </Group>
+              </h1>
+              </>
+            : <Stack>
+              <Loader style={{ position: 'relative', top:-20 }}size={50} color='softpurple.4'/>
+              </Stack>
+            }
         </div>
     )
 }

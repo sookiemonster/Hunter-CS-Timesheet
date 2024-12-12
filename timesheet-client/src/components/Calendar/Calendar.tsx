@@ -121,10 +121,7 @@ export function ScheduleCalendarComponent():JSX.Element {
 export default function ScheduleCalendar() {
     return (
         <MouseHistoryProvider>
-            <CalendarModificationProvider>
             <ScheduleCalendarComponent />
-
-            </CalendarModificationProvider>
         </MouseHistoryProvider>
     )
 }

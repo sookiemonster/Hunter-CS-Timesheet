@@ -4,6 +4,13 @@ import { PERIOD_DB } from './config.js';
 
 const app = express()
 app.use(express.json());
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 const pgp = pgPromise({})
 const db = pgp(process.env.DATABASE_URL)
 const port = process.env.PORT || 8000
@@ -18,7 +25,10 @@ app.get('/users/getUser/:email', async (req, res) => {
 
   try {
     let users = await db.any('SELECT * FROM USERS WHERE email = $1;', [email])
-    res.status(200).send(users)
+    if (users.length === 0) {
+      res.status(404).send("User not found.")
+    }
+    res.status(200).send(users[0])
   } catch (error) {
     res.status(500).send(error.toString())
     return
@@ -118,13 +128,15 @@ app.get('/timesheet/getDefault/:email', async(req, res) => {
 })
 
 /*
-  /timesheet/setDefault/:period_no/_email
+  /timesheet/setDefault/:email
 
   Updates default schedule in regular_schedule db
 */
-app.post('/timesheet/setDefault/:period_no/:email', async (req, res) => {
+app.post('/timesheet/setDefault/:email', async (req, res) => {
+  const email = req.params.email;
+
   try {
-    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+    if (! req.body || !email) {
       res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
       return
     }
@@ -160,11 +172,11 @@ app.post('/timesheet/submit/:period_no/:email', async (req, res) => {
 
     await db.any(`
       INSERT INTO period_${req.params.period_no}_2024 (email, approved, submitted_timestamp, submitted_schedule)
-        VALUES ($1, true, to_timestamp($2 / 1000.0), to_jsonb(CAST($3 AS TEXT)))
+        VALUES ($1, false, to_timestamp($2 / 1000.0), to_jsonb(CAST($3 AS TEXT)))
         ON CONFLICT(email) DO 
         UPDATE SET 
           submitted_schedule = to_jsonb(CAST($3 AS TEXT)),
-          approved = true,
+          approved = false,
           submitted_timestamp = to_timestamp($2 / 1000.0);
       `, [req.params.email.toLowerCase(), Date.now(), req.body])
     
@@ -252,10 +264,10 @@ app.get('/timesheet/getLatest/:period_no/:email', async (req, res) => {
 });
 
 /*
-  /isModified/{period_no}/{email}
+  /timesheet/isModified/{period_no}/{email}
 
 */
-app.get('/isModified/:period_no/:email', async (req, res) => {
+app.get('/timesheet/isModified/:period_no/:email', async (req, res) => {
   try {
     let email = req.params.email
     let period_no = req.params.period_no
@@ -269,8 +281,8 @@ app.get('/isModified/:period_no/:email', async (req, res) => {
       LIMIT 1;
       `, [email])
 
-    if (! data) {
-      res.status(404).send(`Error: No submission in period ${period_no} from email ${email} found.`)
+    if (!data || data.length === 0) {
+      res.status(200).send(false)
       return
     }
 
@@ -439,8 +451,9 @@ app.get('/timesheet/isApproved/:period_no/:email', async (req, res) => {
         LIMIT 1;
       `, [email.toLowerCase()])
     
-    if (! data) {
-      res.status(404).send([`Error: Timesheet from ${email} not found`])
+    if (!data || data.length === 0) {
+      // res.status(404).send([`Error: Timesheet from ${email} not found`])
+      res.status(200).send(false);
       return
     }
 
@@ -475,8 +488,8 @@ app.get('/timesheet/timestamp/:period_no/:email', async (req, res) => {
         LIMIT 1;
       `, [email.toLowerCase()])
     
-    if (data.length === 0) {
-      res.status(200).send(null)
+    if (!data || data.length === 0) {
+      res.status(200).send(false)
       return
     }
 

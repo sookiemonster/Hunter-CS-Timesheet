@@ -20,7 +20,6 @@ function Blob({x, y}: Point) {
                 "x" : (Math.random()) * 80,
                 "y" : (Math.random()) * 80
             }
-            console.log(newPosition);
             setPosition(newPosition);
         }, redrawRate);
     
@@ -41,8 +40,8 @@ export default function LandingBackround():JSX.Element {
     
     return (
     <div className="blob-container">
-        { startPositions.map(pair => {
-            return <Blob x={pair[0]} y={pair[1]} />
+        { startPositions.map((pair, index) => {
+            return <Blob key={index} x={pair[0]} y={pair[1]} />
         })}
     </div>
     );
