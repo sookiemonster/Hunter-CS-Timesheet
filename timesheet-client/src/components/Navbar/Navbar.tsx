@@ -27,7 +27,7 @@ function LogoutIcon():JSX.Element {
 
 function Navbar():JSX.Element {
     const { isLoggedIn, isAdmin, email, logout } = useContext(UserContext);
-    const links = (isAdmin) ? admin_links : user_links;
+    const links = (isAdmin()) ? admin_links : user_links;
     
     const location = useLocation();
     const navigate = useNavigate(); //allows to navigate from one page to another
