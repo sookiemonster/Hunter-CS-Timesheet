@@ -172,11 +172,11 @@ app.post('/timesheet/submit/:period_no/:email', async (req, res) => {
 
     await db.any(`
       INSERT INTO period_${req.params.period_no}_2024 (email, approved, submitted_timestamp, submitted_schedule)
-        VALUES ($1, true, to_timestamp($2 / 1000.0), to_jsonb(CAST($3 AS TEXT)))
+        VALUES ($1, false, to_timestamp($2 / 1000.0), to_jsonb(CAST($3 AS TEXT)))
         ON CONFLICT(email) DO 
         UPDATE SET 
           submitted_schedule = to_jsonb(CAST($3 AS TEXT)),
-          approved = true,
+          approved = false,
           submitted_timestamp = to_timestamp($2 / 1000.0);
       `, [req.params.email.toLowerCase(), Date.now(), req.body])
     

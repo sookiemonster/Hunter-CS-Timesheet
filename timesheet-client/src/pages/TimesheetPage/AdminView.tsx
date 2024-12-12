@@ -38,6 +38,7 @@ export default function TimesheetPageAdmin():JSX.Element {
 
     const timestampEndpoint = { endpoint: `/timesheet/timestamp/${selectedPeriod.period_id}/${selectedEmail}/` }
     const { data:timestamp, refetch:refetchTimestamp } = useModifiedFetchLocal<any>(timestampEndpoint);
+    const isSubmitted = (timestamp && timestamp.length > 0 && timestamp[0]?.submitted_timestamp);
 
     const { data:allUsers, loading:allUsersLoading  } = useFetchLocal<User[]>("/users/all");
     const [indexOfUser, selectIndex] = useState(-1);
@@ -71,7 +72,9 @@ export default function TimesheetPageAdmin():JSX.Element {
     useEffect(() => {
         setIsEdited(false);
         setScheduleLoading(true);
+        refetchApproval();
         refetchLatest();
+        refetchTimestamp();
     }, [selectedPeriod, selectedEmail]);
 
     useEffect(() => {
@@ -160,15 +163,17 @@ export default function TimesheetPageAdmin():JSX.Element {
                         isEdited
                         ? <>
                         <TrashButton  onClick={() => clearEdits()} />
-                        <Button variant="outline" onClick={() => saveEdits()}>Save Changes</Button>
+                        <Button disabled={isApproved} variant="outline" onClick={() => saveEdits()}>Save Changes</Button>
                         </>
                         : <></>
                     }
-                    <Button color="softpurple.4" disabled={isApproved} onClick={() => approve()} >
+                    <Button color="softpurple.4" disabled={isApproved || !isSubmitted} onClick={() => approve()} >
                         {
-                            !isApproved
-                            ? 'Approve'
-                            : 'Approved'
+                            isApproved
+                            ? 'Approved'
+                            : !isSubmitted  
+                                ? 'Unsubmitted'
+                                : 'Approve'
                         }
                         
                     </Button>
@@ -191,7 +196,7 @@ export default function TimesheetPageAdmin():JSX.Element {
                 { 
                     (timestamp && timestamp.length > 0 && timestamp[0]?.submitted_timestamp) 
                     ? <Text size="sm">
-                        <i>Last submission: {(new Date(timestamp[0].submitted_timestamp)).toLocaleDateString()} {(new Date(timestamp[0].submitted_timestamp)).toLocaleTimeString() }</i>
+                        <i>Last submission: {(new Date(timestamp[0].submitted_timestamp)).toLocaleDateString()}</i>
                     </Text>
                     : <></>
                 }
