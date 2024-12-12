@@ -13,15 +13,19 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Run server
 1. Navigate to the root project directory
-2. Run the application with npm 
+2. Install dependencies with npm
+3. Run the application with npm 
 ```bash
+npm i
 npm run server
 ```
 
 Run client web-application:
 1. Navigate to ```timesheets-client```
-2. Run the application with npm
+2. Install dependencies with npm
+3. Run the application with npm
 ```bash
 cd timesheets-client
+npm i
 npm start
 ```
