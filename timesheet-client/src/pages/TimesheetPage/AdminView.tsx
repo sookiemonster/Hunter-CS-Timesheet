@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
 
 import PeriodHeader from "../../components/PeriodHeader";
-import { Button, Divider, Group, Loader, LoadingOverlay, Space, Stack } from "@mantine/core";
+import { Button, Divider, Group, Loader, LoadingOverlay, Space, Stack, Text } from "@mantine/core";
 import ScheduleCalendar from "../../components/Calendar";
 import BoxedStat from "../../components/Stats";
-import { ArrowButton, DefaultButton, IndicatorSymbol } from "../../components/Buttons";
+import { ArrowButton, DefaultButton, IndicatorSymbol, TrashButton } from "../../components/Buttons";
 import { StatText } from "./TimesheetPage";
 import './styles/styles.css'
 
@@ -47,6 +47,7 @@ export default function TimesheetPageAdmin():JSX.Element {
 
     // When a new user / period is selected, fetch the schedule
     useEffect(() => {
+        setIsEdited(false);
         setScheduleLoading(true);
         refetchLatest();
     }, [selectedPeriod, selectedEmail]);
@@ -67,6 +68,13 @@ export default function TimesheetPageAdmin():JSX.Element {
 
     const goToPrevious = () => {}
     const goToNext = () => {}
+
+    const clearEdits = () => {
+        setIsEdited(false);
+        setScheduleLoading(true);
+        refetchLatest();
+    }
+
     const saveEdits = () => {
         console.log(calendarToResponse(weekOneEvents, weekTwoEvents))
         fetchLocalWithBody(`/timesheet/modify/${selectedPeriod.period_id}/${selectedEmail}`, calendarToResponse(weekOneEvents, weekTwoEvents))
@@ -111,10 +119,20 @@ export default function TimesheetPageAdmin():JSX.Element {
                     <ArrowButton direction="left" onClick={() => goToPrevious()} />
                     {
                         isEdited
-                        ? <Button variant="outline" onClick={() => saveEdits()}>Save Changes</Button>
+                        ? <>
+                        <TrashButton  onClick={() => clearEdits()} />
+                        <Button variant="outline" onClick={() => saveEdits()}>Save Changes</Button>
+                        </>
                         : <></>
                     }
-                    <DefaultButton text="Approve" onClick={() => approve()} />
+                    <Button color="softpurple.4" disabled={isApproved} onClick={() => approve()} >
+                        {
+                            !isApproved
+                            ? 'Approve'
+                            : 'Approved'
+                        }
+                        
+                    </Button>
                     <ArrowButton direction="right" onClick={() => goToNext()} />
                 </Group>
                 {
@@ -132,8 +150,10 @@ export default function TimesheetPageAdmin():JSX.Element {
                 <StatText label="Hours (Week 2)" content={weekTwoHours.toString()}/> 
                 <BoxedStat variant="circle" size="small" stat={(weekOneHours + weekTwoHours).toString()} label="Total Hours Worked"/>
                 { 
-                    (timestamp?.submitted_timestamp) 
-                    ? <i>{timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString() }</i>
+                    (timestamp && timestamp.length > 0 && timestamp[0]?.submitted_timestamp) 
+                    ? <Text size="sm">
+                        <i>Last submission: {(new Date(timestamp[0].submitted_timestamp)).toLocaleDateString()} {(new Date(timestamp[0].submitted_timestamp)).toLocaleTimeString() }</i>
+                    </Text>
                     : <></>
                 }
             </Stack>
