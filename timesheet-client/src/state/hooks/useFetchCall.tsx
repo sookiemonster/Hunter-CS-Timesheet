@@ -1,39 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useFetch } from "@mantine/hooks";
-import { response } from "express";
-
 
 export default function useFetchExecutable(endpoint:string, retries = 0) {
-    const attempts = useRef(3);
-    const didError = useRef(false);
-    const completed = useRef(false);
-
     const [data, setData] = useState<any>(undefined);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [shouldExecute, setShouldExecute] = useState(false);
 
     useEffect(() => {
         if (!shouldExecute) { return; }
-        if (attempts.current < 0) { didError.current = true; return; }
         fetch(`http://localhost:8000${endpoint}`)
             .then(response => response.json())
             .then(d => setData(d))
-            .catch(error => didError.current = true)
+            .catch(err=> setError(err))
             .finally(() => {
-                if (!didError.current) {
-                    setShouldExecute(false)
-                    completed.current = true;
-                } else {
-                    attempts.current = attempts.current - 1;
-                }
+                setShouldExecute(false);
+                setLoading(false);
             })
-    }, [shouldExecute, attempts.current])
+    }, [shouldExecute])
 
     const executeFetch = () => {
-        attempts.current = 3;
-        didError.current = false;
-        completed.current = false;
+        setError(null);
+        setLoading(true);
         setShouldExecute(true);
     }
 
-    return { data, didError, executeFetch };
+    return { data, loading, error, executeFetch };
 }

@@ -15,7 +15,8 @@ import { convertToCalendar } from "../../state/Schedule";
 import { CalendarModificationContext } from "../../components/Calendar/CalendarModificationContext";
 import { calendarToResponse } from "../../state/Schedule/Schedule";
 import { useDisclosure } from '@mantine/hooks';
-import {useFetchExecutable} from "../../state/hooks";
+import { useModifiedFetchLocal} from "../../state/hooks";
+import { fetchLocal } from "../../state/Util";
 
 export default function TimesheetPageAdmin():JSX.Element {
     const { selectedPeriod }= useContext(ControlContext)
@@ -24,30 +25,34 @@ export default function TimesheetPageAdmin():JSX.Element {
     const [scheduleLoading, setScheduleLoading] = useState(true);
 
     const { selectedEmail } = useContext(ControlContext);
-    const { data: viewedUser, restart:refetchViewedUser } = useFetchLocal<User>(`/users/getUser/${selectedEmail}`);
-    // const latestSchedule = {};
-    const { data:latestSchedule, restart:refetchLatest } = useFetchLocal<any>(
-        `/timesheet/getDefault/${selectedEmail}/`
-    );
 
-    const { data, executeFetch:fetchApprove } = useFetchExecutable(
-        `/timesheet/approve/${selectedPeriod}/${selectedEmail}/`
-    )
+    const userEndpoint = { endpoint: `/users/getUser/${selectedEmail}` }
+    const { data: viewedUser, restart:refetchViewedUser } = useModifiedFetchLocal<User>(userEndpoint);
+    
+    const latestEndpoint = { endpoint: `/timesheet/getLatest/${selectedPeriod.period_id}/${selectedEmail}/` }
+    const { data:latestSchedule, restart:refetchLatest } = useModifiedFetchLocal<any>(latestEndpoint);
 
+    const approvalEndpoint = { endpoint: `/timesheet/isApproved/${selectedPeriod.period_id}/${selectedEmail}/` }
+    const { data:isApproved, refetch:refetchApproval } = useModifiedFetchLocal<any>(approvalEndpoint)
+
+    // When new user is selected, refetch their user data
     useEffect(() => {
         refetchViewedUser();
     }, [selectedEmail]);
 
+    // When a new user / period is selected, fetch the schedule
     useEffect(() => {
+        setScheduleLoading(true);
         refetchLatest();
     }, [selectedPeriod, selectedEmail]);
 
     useEffect(() => {
+        // console.log(latestSchedule);
         // No response.
         if (!latestSchedule) { return; }
         // No valid schedule returned.
         if (!latestSchedule[0]?.schedule) { 
-            // setScheduleLoading(false);
+            setScheduleLoading(false);
             return; 
         }
         setScheduleLoading(false);
@@ -58,7 +63,6 @@ export default function TimesheetPageAdmin():JSX.Element {
     
     const isEdited = false;
     const isDefault = false;
-    const isApproved = false;
 
     const h1 = 10;
     const h2 = 10;
@@ -69,7 +73,11 @@ export default function TimesheetPageAdmin():JSX.Element {
     const goToNext = () => {}
     const enableChanges = () => {}
     const approve = () => {
-        fetchApprove();
+        fetchLocal(`/timesheet/approve/${selectedPeriod.period_id}/${selectedEmail}`)
+            .then(() => {
+                refetchApproval()
+            })
+            .catch(() => alert("An error has occurred."))
     }
 
     return (

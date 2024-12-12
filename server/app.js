@@ -428,8 +428,9 @@ app.get('/timesheet/isApproved/:period_no/:email', async (req, res) => {
         LIMIT 1;
       `, [email.toLowerCase()])
     
-    if (! data) {
-      res.status(404).send([`Error: Timesheet from ${email} not found`])
+    if (!data?.approved) {
+      // res.status(404).send([`Error: Timesheet from ${email} not found`])
+      res.status(200).send(false);
       return
     }
 
