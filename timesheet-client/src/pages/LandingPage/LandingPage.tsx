@@ -18,24 +18,22 @@ function LandingPageUser():JSX.Element {
     const { role, email:selfEmail } = useContext(UserContext);
     const { selectEmail, selectedPeriod } = useContext(ControlContext);
 
-    const [isLoading, setIsLoading] = useState(true);
-
-    const submitedEndpoint = { endpoint: `/timesheet/timestamp/${selectedPeriod.period_id}/${selfEmail}`}
-    const { data:hasSubmitted, refetch:refetchSubmitted } = useModifiedFetchLocal<any>(submitedEndpoint) 
+    const timestampEndpoint = { endpoint: `/timesheet/timestamp/${selectedPeriod.period_id}/${selfEmail}`}
+    const { data:timestamp, loading, refetch:refetchTimestamp } = useModifiedFetchLocal<any>(timestampEndpoint) 
 
     // Select the email of the user to be the one viewed. 
     useEffect(() => {
         if (!selfEmail) { return; }
         selectEmail(selfEmail);
-        refetchSubmitted();
+        refetchTimestamp();
     }, [selfEmail]);
 
-    useEffect(() => {
-        // Not valid yet
-        // if (hasSubmitted !== true || hasSubmitted !== false) { return; }
-        setIsLoading(false);
-    }, [hasSubmitted])
 
+    const hasSubmitted = useMemo(() => {
+        if (!timestamp || timestamp.length === 0) { return false; }
+        return timestamp[0].submitted_timestamp != null;
+    }, [timestamp])
+    
     return (
     <div id="landing-container">
         <PeriodHeader font_size="large"/>
@@ -45,9 +43,14 @@ function LandingPageUser():JSX.Element {
                 <Group gap={50} style={{ paddingTop: "10px "}} align="center">
                     <DefaultButton onClick={() => navigate("/timesheets")} text={hasSubmitted ? "Edit" : "Submit Timesheet" } />
                     <h3 style={{ color: (hasSubmitted) ? "green" : "red"}}>
-                        { hasSubmitted
-                            ? "You've already submitted for this period."
-                            : "You still need to submit for this period."
+                        { loading
+                            ? <Loader />
+                            : <>
+                            { hasSubmitted
+                                ? "You've already submitted for this period."
+                                : "You still need to submit for this period."
+                            }
+                            </>
                         }
                     </h3>
                 </Group>
