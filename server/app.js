@@ -42,7 +42,7 @@ app.get('/users/getUser/:email', async (req, res) => {
 
   You should probably disable this if/when you deploy this. 
 */
-app.get('/users/all', async (res,req) => {
+app.get('/users/all', async (req,res) => {
   try {
     let users = await db.any('SELECT * FROM USERS;')
     res.status(200).send(users)
@@ -133,6 +133,9 @@ app.get('/timesheet/getDefault/:email', async(req, res) => {
   Updates default schedule in regular_schedule db
 */
 app.post('/timesheet/setDefault/:period_no/:email', async (req, res) => {
+  const period_no = req.params.period_no;
+  const email = req.params.email;
+
   try {
     if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
       res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
