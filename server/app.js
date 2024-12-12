@@ -1,6 +1,6 @@
 import express from 'express';
 import pgPromise from 'pg-promise';
-import { CURRENT_PERIOD, PERIOD_DB } from './config.js';
+import { PERIOD_DB } from './config.js';
 
 const app = express()
 app.use(express.json());
@@ -42,7 +42,7 @@ app.get('/users/getUser/:email', async (req, res) => {
 
   You should probably disable this if/when you deploy this. 
 */
-app.get('/users/all', async (req, res) => {
+app.get('/users/all', async (req,res) => {
   try {
     let users = await db.any('SELECT * FROM USERS;')
     res.status(200).send(users)
@@ -162,7 +162,8 @@ app.post('/timesheet/setDefault/:period_no/:email', async (req, res) => {
 */
 app.post('/timesheet/submit/:period_no/:email', async (req, res) => {
   try {
-    if (! req.body || isNaN(Number(period_no)) || ! req.params.email) {
+
+    if (! req.body || isNaN(Number(req.params.period_no)) || ! req.params.email) {
       res.status(422).send(`Error: Either no body sent, period_no not numeric, or no email specified`)
       return
     }
@@ -355,14 +356,14 @@ app.delete('/timesheet/revert/:period_no/:email', async (req, res) => {
 app.get('/timesheet/disapprove/:period_no/:email', async (req, res) => {
   try {
     let email = req.params.email
-
+    let period_no = req.params.period_no
     if (! email ) {
       res.status(200).send([])
       return
     }
     
     let data = await db.any(`
-      UPDATE ${CURRENT_PERIOD}
+      UPDATE period_${period_no}_2024
         SET approved = FALSE
         WHERE email = $1
         RETURNING *;
@@ -380,23 +381,40 @@ app.get('/timesheet/disapprove/:period_no/:email', async (req, res) => {
 
   Dissaproves a time sheet from :period_no from :email
 
-  for now :period_no not suppoted
+  if the entry doesn't exist, it will 
+
 */
 app.get('/timesheet/approve/:period_no/:email', async (req, res) => {
   try {
     let email = req.params.email
+    let period_no = req.params.period_no
 
     if (! email ) {
       res.status(400).send(["Error: No email specified"])
       return
     }
-    
+
+    // // if the row doesn't exist we'll add a 
+    // let schedule = await db.any(`SELECT schedule from regular_schedule WHERE email = $1;`, [email]);
+    // let schedule_json = JSON.parse(schedule[0]['schedule'])
+
+    let schedule_data = await db.any(`
+      SELECT schedule FROM regular_schedule 
+      WHERE email = $1;
+    `, [email.toLowerCase()])
+
+
+    if (! schedule_data) {
+      return res.status(404).send(["Error: No default schedule found for this email"])
+    }
+
     let data = await db.any(`
-      UPDATE ${CURRENT_PERIOD}
-        SET approved = TRUE
-        WHERE email = $1
-        RETURNING *;
-      `, [email.toLowerCase()])
+      INSERT INTO period_${period_no}_2024 (email, approved, submitted_schedule)
+      VALUES ($1, TRUE, to_jsonb(CAST($2 AS TEXT)))
+      ON CONFLICT (email) DO UPDATE 
+      SET approved = TRUE
+      RETURNING *;
+    `, [email.toLowerCase(), schedule_data[0].schedule])
     
     res.status(200).send(data)
   } catch (error) {
@@ -411,19 +429,18 @@ app.get('/timesheet/approve/:period_no/:email', async (req, res) => {
 
   Returns whether or not a particular time sheet is approved (True/False)
 
-  for now :period_no not suppoted -- will just go to the period defined in the config
 */
 app.get('/timesheet/isApproved/:period_no/:email', async (req, res) => {
   try {
     let email = req.params.email
-
+    let period_no = req.params.period_no
     if (! email ) {
       res.status(400).send(["Error: No email specified"])
       return
     }
     
     let data = await db.any(`
-      SELECT r.approved FROM ${CURRENT_PERIOD} r
+      SELECT r.approved FROM period_${period_no}_2024 r
         WHERE email = $1
         LIMIT 1;
       `, [email.toLowerCase()])
@@ -453,14 +470,14 @@ app.get('/timesheet/isApproved/:period_no/:email', async (req, res) => {
 app.get('/timesheet/timestamp/:period_no/:email', async (req, res) => {
   try {
     let email = req.params.email
-
+    let period_no = req.params.period_no
     if (! email ) {
       res.status(400).send(["Error: No email specified"])
       return
     }
     
     let data = await db.any(`
-      SELECT r.submitted_timestamp FROM ${CURRENT_PERIOD} r
+      SELECT r.submitted_timestamp FROM period_${period_no}_2024 r
         WHERE email = $1
         LIMIT 1;
       `, [email.toLowerCase()])
