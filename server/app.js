@@ -42,7 +42,7 @@ app.get('/users/getUser/:email', async (req, res) => {
 
   You should probably disable this if/when you deploy this. 
 */
-app.get('/users/all', async (req,res) => {
+app.get('/users/all', async (res,req) => {
   try {
     let users = await db.any('SELECT * FROM USERS;')
     res.status(200).send(users)

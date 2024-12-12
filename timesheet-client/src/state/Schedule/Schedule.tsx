@@ -24,7 +24,8 @@ export interface Schedule {
 export interface ShiftOnDay {
     start:Date,
     end:Date,
-    dayNo:number
+    dayNo:number,
+    id: any,
 }
 
 export interface CalendarResponse {
@@ -37,12 +38,10 @@ interface DatedShift {
     end:Date
 }
 
-export function responseToCalendar(serialized:string):CalendarResponse {
+export function responseToCalendar(schedule:any):CalendarResponse {
     // WHAT WHO USES 0-indexing for months???
     const WEEK_START = new Date(2020,0,26);
-    // console.log(WEEK_START);
-
-    const schedule = JSON.parse(serialized);
+    // console.log(typeof(serialized));
     const getDayNumber = (day: string): number => {
         switch (day) {
             case 'Sun': return 0;
@@ -80,7 +79,8 @@ export function responseToCalendar(serialized:string):CalendarResponse {
             const formatted:ShiftOnDay = {
                 'start': start,
                 'end': end,
-                'dayNo':dayNo
+                'dayNo':dayNo,
+                id: crypto.randomUUID()
             };
             result.Week1.push(formatted);
         })
@@ -95,7 +95,9 @@ export function responseToCalendar(serialized:string):CalendarResponse {
             const formatted:ShiftOnDay = {
                 'start': start,
                 'end': end,
-                'dayNo':dayNo
+                'dayNo':dayNo,
+                id: crypto.randomUUID()
+
             };
             result.Week2.push(formatted);
         })
@@ -153,7 +155,7 @@ export function calendarToResponse(weekOneEvents:DatedShift[], weekTwoEvents:Dat
 
         const result:Shift = {
             start: formatTime(s.start),
-            end: formatTime(s.end)
+            end: formatTime(s.end),
         }
 
         return result;

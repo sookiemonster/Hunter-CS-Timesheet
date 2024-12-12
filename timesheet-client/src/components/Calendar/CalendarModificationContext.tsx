@@ -3,7 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { convertToCalendar } from "../../state/Schedule";
 
 interface Event {
-    title:string,
+    title?:string,
     start: Date,
     end: Date,
     id: any,
