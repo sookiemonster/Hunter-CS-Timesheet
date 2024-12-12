@@ -8,19 +8,20 @@ Hunter CS Timesheet is an application that would simply the way in which TA's fi
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Run instructions
+<i>Make sure you have the correct ```.env``` files in the root & client directories.</i>
 
-In the project directory, you can run:
+Run server
+1. Navigate to the root project directory
+2. Run the application with npm 
+```bash
+npm run server
+```
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Run client web-application:
+1. Navigate to ```timesheets-client```
+2. Run the application with npm
+```bash
+cd timesheets-client
+npm start
+```
