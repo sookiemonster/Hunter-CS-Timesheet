@@ -1,2 +1,3 @@
 import useFetchLocal from "./useFetchLocal";
-export { useFetchLocal };
+import useFetchExecutable from "./useFetchCall";
+export { useFetchLocal, useFetchExecutable };

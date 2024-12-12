@@ -1,4 +1,4 @@
-import React, {useState, useCallback, PropsWithChildren } from "react";
+import React, {useState, useCallback, PropsWithChildren, useRef } from "react";
 import { useDisclosure } from '@mantine/hooks';
 import { convertToCalendar } from "../../state/Schedule";
 
@@ -20,6 +20,7 @@ const NullEvent = {
 }
 
 export function CalendarModificationProvider(props: PropsWithChildren) {
+    const editsEnabled = useRef(true);
     const [opened, { open, close }] = useDisclosure(false);
     const [selected, setSelected] = useState<Event>(NullEvent);
 
@@ -80,10 +81,12 @@ export function CalendarModificationProvider(props: PropsWithChildren) {
         setSelected(NullEvent);
     }
 
-    
-    console.log(weekOneEvents);
+    const enableEdits = () => {
+        editsEnabled.current = true;
+    }
 
     const value = { 
+        editsEnabled, enableEdits,
         weekOneEvents, weekTwoEvents,
         setWeekOneEvents, setWeekTwoEvents,
         selected, setSelected, deleteSelected, clearSelected,

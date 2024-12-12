@@ -15,10 +15,11 @@ import { convertToCalendar } from "../../state/Schedule";
 import { CalendarModificationContext } from "../../components/Calendar/CalendarModificationContext";
 import { calendarToResponse } from "../../state/Schedule/Schedule";
 import { useDisclosure } from '@mantine/hooks';
+import {useFetchExecutable} from "../../state/hooks";
 
 export default function TimesheetPageAdmin():JSX.Element {
     const { selectedPeriod }= useContext(ControlContext)
-    const {weekOneEvents, weekTwoEvents, setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
+    const { weekOneEvents, weekTwoEvents, setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
 
     const [scheduleLoading, setScheduleLoading] = useState(true);
 
@@ -28,6 +29,10 @@ export default function TimesheetPageAdmin():JSX.Element {
     const { data:latestSchedule, restart:refetchLatest } = useFetchLocal<any>(
         `/timesheet/getDefault/${selectedEmail}/`
     );
+
+    const { data, executeFetch:fetchApprove } = useFetchExecutable(
+        `/timesheet/approve/${selectedPeriod}/${selectedEmail}/`
+    )
 
     useEffect(() => {
         refetchViewedUser();
@@ -63,7 +68,9 @@ export default function TimesheetPageAdmin():JSX.Element {
     const goToPrevious = () => {}
     const goToNext = () => {}
     const enableChanges = () => {}
-    const approve = () => {}
+    const approve = () => {
+        fetchApprove();
+    }
 
     return (
     <div id="timesheet-container">
@@ -97,7 +104,7 @@ export default function TimesheetPageAdmin():JSX.Element {
                 <Space h='md' />
                 <Group>
                     <ArrowButton direction="left" onClick={() => goToPrevious()} />
-                    <Button variant="outline" onClick={() => enableChanges()}>Edit</Button>
+                    {/* <Button variant="outline" onClick={() => enableChanges()}>Edit</Button> */}
                     <DefaultButton text="Approve" onClick={() => approve()} />
                     <ArrowButton direction="right" onClick={() => goToNext()} />
                 </Group>
