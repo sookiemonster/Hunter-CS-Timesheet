@@ -94,7 +94,7 @@ app.get('/periods/all', async(req, res) => {
 app.get('/periods/getPeriod/:period_no', async(req, res) => {
   const period = req.params.period_no
   try {
-    if (isNaN(Number(period_no))) {
+    if (isNaN(Number(period))) {
       // if Period is not a number
       res.status(422).send(`Error: Period Number ${period} could not be processed as number.`)
       return
@@ -339,8 +339,8 @@ app.delete('/timesheet/revert/:period_no/:email', async (req, res) => {
     await db.any(`
       UPDATE period_${period_no}_2024
         SET modified_schedule = NULL
-        WHERE email = $2;
-      `, [req.body, email.toLowerCase()])
+        WHERE email = $1;
+      `, [email.toLowerCase()])
     
     res.status(200).send(`Success!`)
   } catch (error) {
@@ -486,7 +486,7 @@ app.get('/timesheet/timestamp/:period_no/:email', async (req, res) => {
       `, [email.toLowerCase()])
     
     if (!data || data.length === 0) {
-      res.status(200).send(false)
+      res.status(200).send(null)
       return
     }
 
