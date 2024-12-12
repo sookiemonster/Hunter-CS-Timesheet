@@ -11,6 +11,6 @@
     "react-router-dom": "^7.0.1"
   },
   "scripts": {
-    "server": "node --env-file=.env ./server/app.js"
+    "server": "nodemon --env-file=.env ./server/app.js"
   }
 }
