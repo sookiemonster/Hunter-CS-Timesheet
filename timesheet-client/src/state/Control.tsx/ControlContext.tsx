@@ -4,7 +4,7 @@ import PayrollPeriod, { NULL_PERIOD } from "../../components/PeriodHeader/Payrol
 
 export const ControlContext = React.createContext<any>(null);
 
-export function ControlProvider(props:PropsWithChildren){    
+export function ControlProvider(props:PropsWithChildren){  
     const [selectedEmail, setSelectedEmail] = useState(
         sessionStorage.employee || ""
     );

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useMemo } from "react";
+import React, { useContext, useEffect, useState, useMemo, useCallback } from "react";
 
 import PeriodHeader from "../../components/PeriodHeader";
 import { Button, Divider, Group, Loader, LoadingOverlay, Space, Stack, Text } from "@mantine/core";
@@ -13,11 +13,11 @@ import { User } from "../../state/User";
 import { convertToCalendar } from "../../state/Schedule";
 import { CalendarModificationContext } from "../../components/Calendar/CalendarModificationContext";
 import { calendarToResponse } from "../../state/Schedule/Schedule";
-import { useModifiedFetchLocal} from "../../state/hooks";
+import { useFetchLocal, useModifiedFetchLocal} from "../../state/hooks";
 import { fetchLocal, fetchLocalWithBody } from "../../state/Util";
 
 export default function TimesheetPageAdmin():JSX.Element {
-    const { selectedPeriod }= useContext(ControlContext)
+    const { selectedPeriod, selectEmail }= useContext(ControlContext)
     const { weekOneEvents, weekTwoEvents, isEdited, setIsEdited, weekOneHours, weekTwoHours, setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
 
     const [scheduleLoading, setScheduleLoading] = useState(true);
@@ -38,6 +38,28 @@ export default function TimesheetPageAdmin():JSX.Element {
 
     const timestampEndpoint = { endpoint: `/timesheet/timestamp/${selectedPeriod.period_id}/${selectedEmail}/` }
     const { data:timestamp, refetch:refetchTimestamp } = useModifiedFetchLocal<any>(timestampEndpoint);
+
+    const { data:allUsers, loading:allUsersLoading  } = useFetchLocal<User[]>("/users/all");
+    const [indexOfUser, selectIndex] = useState(-1);
+
+    // When all users are found, we find where we are in our user table and proceed for L/R arrows
+    useEffect(() => {
+        if (allUsersLoading || !allUsers) {return;}
+        const found = allUsers.findIndex((user) => { return user.email === selectedEmail; })
+        if (found < 0) { selectIndex(0); }
+        selectIndex(found);
+    }, [allUsers])
+
+    useEffect(() => {
+        // cannot read all users
+        if (!allUsers) { return; }
+        console.log(indexOfUser);
+        // If we haven't selected a user or if we are already at them, we need not move
+        if (indexOfUser === -1 || indexOfUser === allUsers.findIndex((user) => { return user.email === selectedEmail; })) {
+            return;
+        }
+        selectEmail(allUsers[indexOfUser].email);
+    }, [indexOfUser])
 
     // When new user is selected, refetch their user data
     useEffect(() => {
@@ -66,8 +88,25 @@ export default function TimesheetPageAdmin():JSX.Element {
         setWeekTwoEvents(formatted.Week2);
     }, [latestSchedule]);
 
-    const goToPrevious = () => {}
-    const goToNext = () => {}
+    const goToPrevious = useCallback(() => {
+        if (indexOfUser == -1 || !allUsers) { return; }
+        const isWrapping = (indexOfUser === 0);
+        selectIndex(
+            isWrapping
+                ? allUsers.length - 1
+                : indexOfUser - 1
+        )
+    }, [allUsers, indexOfUser])
+
+    const goToNext = useCallback(() => {
+        if (indexOfUser == -1 || !allUsers) { return; }
+        const isWrapping = (indexOfUser === allUsers.length - 1);
+        selectIndex(
+            isWrapping
+                ? 0
+                : indexOfUser + 1
+        )
+    }, [allUsers, indexOfUser])
 
     const clearEdits = () => {
         setIsEdited(false);
