@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import User from "../../state/User/User";
 
 import PeriodHeader from "../../components/PeriodHeader";
-import { Button, Divider, Group, Space, Stack, Loader } from "@mantine/core";
+import { Button, Divider, Group, Space, Stack, Loader, LoadingOverlay, Text } from "@mantine/core";
 import ScheduleCalendar from "../../components/Calendar";
 import BoxedStat from "../../components/Stats";
 import { ArrowButton, DefaultButton, IndicatorSymbol } from "../../components/Buttons";
@@ -37,7 +37,7 @@ export default function TimesheetPageUser():JSX.Element {
     const timestampEndpoint = { endpoint: `/timesheet/timestamp/${selectedPeriod.period_id}/${selectedEmail}/` }
     const { data:timestamp, refetch:refetchTimestamp } = useModifiedFetchLocal<any>(timestampEndpoint);
 
-    const adminOverrideEndpoint = { endpoint: `/isModified/${selectedPeriod.period_id}/${selectedEmail}`}
+    const adminOverrideEndpoint = { endpoint: `/timesheet/isModified/${selectedPeriod.period_id}/${selectedEmail}`}
     const { data:adminOverrode, loading:adminOverrideLoading, refetch:refetchAdminOverride } = useModifiedFetchLocal<any>(adminOverrideEndpoint);
 
     // When user is selected, fetch their user data
@@ -75,6 +75,7 @@ export default function TimesheetPageUser():JSX.Element {
             })
             .catch(() => console.error("error."))
     }
+    console.log(timestamp);
 
     return (
     <div id="timesheet-container">
@@ -99,19 +100,25 @@ export default function TimesheetPageUser():JSX.Element {
         </Group>
         <Space h='md'/>
         <div id="calendar-container">
+            <LoadingOverlay visible={scheduleLoading} />
             <ScheduleCalendar />
         </div>
         <Group className="actions-container">
             <Stack gap={0} align="flex-start">
                 {
-                    approvalLoading
-                    ? <Loader />
-                    : <StatText completionState={isApproved ? 'done' : 'action-needed'} label={"Approved"} content={ isApproved ? 'Yes' : 'No'} />
+                   <StatText completionState={isApproved ? 'done' : 'action-needed'} label={"Approved"} content={ 
+                        approvalLoading ? <Loader size={18} /> :
+                        isApproved ? 'Yes' : 'No'
+                    } />
                 } 
                 <BoxedStat variant="circle" size="small" stat={(weekOneHours + weekTwoHours).toString()} label="Total Hours Worked"/>
                 <Space h='md' />
+                {
+                    !isApproved
+                    ? <DefaultButton text="Submit" onClick={() => submit()} />
+                    : <></>
+                }
                 <Group>
-                    <DefaultButton text="Submit" onClick={() => submit()} />
                 </Group>
             </Stack>
             <Divider orientation="vertical" />
@@ -119,8 +126,10 @@ export default function TimesheetPageUser():JSX.Element {
                 <StatText label="Hours (Week 1)" content={weekOneHours.toString()}/>
                 <StatText label="Hours (Week 2)" content={weekTwoHours.toString()}/>
                 { 
-                    (timestamp?.submitted_timestamp) 
-                    ? <i>{timestamp.submitted_timestamp.toLocaleDateString()} {timestamp.submitted_timestamp.toLocaleTimeString() }</i>
+                    (timestamp && timestamp.length > 0 && timestamp[0]?.submitted_timestamp) 
+                    ? <Text size="sm">
+                        <i>Last submission: {(new Date(timestamp[0].submitted_timestamp)).toLocaleDateString()} {(new Date(timestamp[0].submitted_timestamp)).toLocaleTimeString() }</i>
+                    </Text>
                     : <></>
                 }
             </Stack>
