@@ -264,10 +264,10 @@ app.get('/timesheet/getLatest/:period_no/:email', async (req, res) => {
 });
 
 /*
-  /isModified/{period_no}/{email}
+  /timesheet/isModified/{period_no}/{email}
 
 */
-app.get('/isModified/:period_no/:email', async (req, res) => {
+app.get('/timesheet/isModified/:period_no/:email', async (req, res) => {
   try {
     let email = req.params.email
     let period_no = req.params.period_no
@@ -281,8 +281,8 @@ app.get('/isModified/:period_no/:email', async (req, res) => {
       LIMIT 1;
       `, [email])
 
-    if (! data) {
-      res.status(404).send(`Error: No submission in period ${period_no} from email ${email} found.`)
+    if (!data || data.length === 0) {
+      res.status(200).send(false)
       return
     }
 
@@ -451,7 +451,7 @@ app.get('/timesheet/isApproved/:period_no/:email', async (req, res) => {
         LIMIT 1;
       `, [email.toLowerCase()])
     
-    if (!data?.approved) {
+    if (!data || data.length === 0) {
       // res.status(404).send([`Error: Timesheet from ${email} not found`])
       res.status(200).send(false);
       return

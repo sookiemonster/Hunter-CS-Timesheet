@@ -19,7 +19,7 @@ import { fetchLocal, fetchLocalWithBody } from "../../state/Util";
 
 export default function TimesheetPageUser():JSX.Element {
     const { selectedPeriod }= useContext(ControlContext)
-    const { weekOneEvents, weekTwoEvents, isEdited, setIsEdited, weekOneHours, weekTwoHours, setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
+    const { weekOneEvents, weekTwoEvents, weekOneHours, weekTwoHours, setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
 
     const [scheduleLoading, setScheduleLoading] = useState(true);
 
@@ -31,26 +31,28 @@ export default function TimesheetPageUser():JSX.Element {
     const latestEndpoint = { endpoint: `/timesheet/getLatest/${selectedPeriod.period_id}/${selectedEmail}/` }
     const { data:latestSchedule, restart:refetchLatest } = useModifiedFetchLocal<any>(latestEndpoint);
 
-    const defaultEndpoint = { endpoint: `/timesheet/getDefault/${selectedEmail}/` }
-    const { data:defaultSchedule, restart: refetchDefault } = useModifiedFetchLocal<any>(defaultEndpoint)
-
     const approvalEndpoint = { endpoint: `/timesheet/isApproved/${selectedPeriod.period_id}/${selectedEmail}/` }
-    const { data:isApproved, refetch:refetchApproval } = useModifiedFetchLocal<any>(approvalEndpoint)
+    const { data:isApproved, loading:approvalLoading, refetch:refetchApproval } = useModifiedFetchLocal<any>(approvalEndpoint)
 
     const timestampEndpoint = { endpoint: `/timesheet/timestamp/${selectedPeriod.period_id}/${selectedEmail}/` }
     const { data:timestamp, refetch:refetchTimestamp } = useModifiedFetchLocal<any>(timestampEndpoint);
 
-    // When new user is selected, refetch their user data
+    const adminOverrideEndpoint = { endpoint: `/isModified/${selectedPeriod.period_id}/${selectedEmail}`}
+    const { data:adminOverrode, loading:adminOverrideLoading, refetch:refetchAdminOverride } = useModifiedFetchLocal<any>(adminOverrideEndpoint);
+
+    // When user is selected, fetch their user data
     useEffect(() => {
         refetchViewedUser();
-        refetchDefault();
     }, [selectedEmail]);
 
-    // When a new user / period is selected, fetch the schedule
+    // When a period is selected, fetch the schedule
     useEffect(() => {
         setScheduleLoading(true);
         refetchLatest();
-    }, [selectedPeriod, selectedEmail]);
+        refetchTimestamp();
+        refetchApproval();
+        refetchAdminOverride();
+    }, [selectedPeriod]);
 
     useEffect(() => {
 
@@ -61,24 +63,18 @@ export default function TimesheetPageUser():JSX.Element {
         }
         setScheduleLoading(false);
         const formatted = convertToCalendar(latestSchedule);
-        console.log("FORM", formatted);
         setWeekOneEvents(formatted.Week1);
         setWeekTwoEvents(formatted.Week2);
     }, [latestSchedule]);
-
-    const goToPrevious = () => {}
-    const goToNext = () => {}
-    const saveEdits = () => {
-        console.log(calendarToResponse(weekOneEvents, weekTwoEvents))
-        fetchLocalWithBody(`/timesheet/modify/${selectedPeriod.period_id}/${selectedEmail}`, calendarToResponse(weekOneEvents, weekTwoEvents))
+    
+    const submit = () => {
+        // console.log(calendarToResponse(weekOneEvents, weekTwoEvents))
+        fetchLocalWithBody(`/timesheet/submit/${selectedPeriod.period_id}/${selectedEmail}`, calendarToResponse(weekOneEvents, weekTwoEvents))
             .then(() => {
-                setIsEdited(false);
+                refetchTimestamp();
             })
             .catch(() => console.error("error."))
     }
-
-    const revert = () => {}
-    const submit = () => {}
 
     return (
     <div id="timesheet-container">
@@ -92,7 +88,11 @@ export default function TimesheetPageUser():JSX.Element {
             <Divider orientation="vertical" />
             <Group gap={10}>
                 <b>Edited by admin? </b>
-                <IndicatorSymbol invert={true} showValue={true} value={isEdited ? 'yes' : 'no'} />
+                {
+                    adminOverrideLoading
+                    ? <Loader />
+                    : <IndicatorSymbol noImplication={true} showValue={true} value={adminOverrode ? 'yes' : 'no'} />
+                }
             </Group>
             <Divider orientation="vertical" />
             
@@ -103,11 +103,14 @@ export default function TimesheetPageUser():JSX.Element {
         </div>
         <Group className="actions-container">
             <Stack gap={0} align="flex-start">
-                <StatText completionState={isApproved ? 'done' : 'action-needed'} label={"Approved"} content={ isApproved ? 'Yes' : 'No'} />
+                {
+                    approvalLoading
+                    ? <Loader />
+                    : <StatText completionState={isApproved ? 'done' : 'action-needed'} label={"Approved"} content={ isApproved ? 'Yes' : 'No'} />
+                } 
                 <BoxedStat variant="circle" size="small" stat={(weekOneHours + weekTwoHours).toString()} label="Total Hours Worked"/>
                 <Space h='md' />
                 <Group>
-                    <Button variant="outline" onClick={() => revert()}>Discard</Button>
                     <DefaultButton text="Submit" onClick={() => submit()} />
                 </Group>
             </Stack>
@@ -117,7 +120,7 @@ export default function TimesheetPageUser():JSX.Element {
                 <StatText label="Hours (Week 2)" content={weekTwoHours.toString()}/>
                 { 
                     (timestamp?.submitted_timestamp) 
-                    ? <i>{timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString() }</i>
+                    ? <i>{timestamp.submitted_timestamp.toLocaleDateString()} {timestamp.submitted_timestamp.toLocaleTimeString() }</i>
                     : <></>
                 }
             </Stack>
