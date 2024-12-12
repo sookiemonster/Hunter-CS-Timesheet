@@ -80,6 +80,9 @@ export function CalendarModificationProvider(props: PropsWithChildren) {
         setSelected(NullEvent);
     }
 
+    
+    console.log(weekOneEvents);
+
     const value = { 
         weekOneEvents, weekTwoEvents,
         setWeekOneEvents, setWeekTwoEvents,

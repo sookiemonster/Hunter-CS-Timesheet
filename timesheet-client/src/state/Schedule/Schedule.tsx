@@ -1,3 +1,6 @@
+import { useContext } from "react"
+import { CalendarModificationContext } from "../../components/Calendar/CalendarModificationContext"
+
 export interface Shift {
     start: string
     end: string
@@ -27,6 +30,11 @@ export interface ShiftOnDay {
 export interface CalendarResponse {
     Week1:ShiftOnDay[]
     Week2:ShiftOnDay[]
+}
+
+interface DatedShift {
+    start:Date,
+    end:Date
 }
 
 export function responseToCalendar(serialized:string):CalendarResponse {
@@ -94,5 +102,68 @@ export function responseToCalendar(serialized:string):CalendarResponse {
     }
 
     console.log("RESULT", result);
+    return result;
+}
+
+export function calendarToResponse(weekOneEvents:DatedShift[], weekTwoEvents:DatedShift[]):Schedule {
+    const result:Schedule = {
+        Week1 : {
+            Sun: [],
+            Mon: [],
+            Tue: [],
+            Wed: [],
+            Thu: [],
+            Fri: [],
+            Sat: []
+        },
+        Week2 : {
+            Sun: [],
+            Mon: [],
+            Tue: [],
+            Wed: [],
+            Thu: [],
+            Fri: [],
+            Sat: []
+        }
+    }
+
+    const getDayName = (dayNumber: number): string => {
+        switch (dayNumber) {
+          case 0: return "Sun";
+          case 1: return "Mon";
+          case 2: return "Tue";
+          case 3: return "Wed";
+          case 4: return "Thu";
+          case 5: return "Fri";
+          case 6: return "Sat";
+          default: return "";
+        }
+    }
+
+    const shiftToResponse = (s:DatedShift):Shift => {
+        const {start, end } = s;
+
+        const formatTimeNumber = (n:number):string => {
+            return n.toString().padStart(2, '0')
+        }
+
+        const formatTime = (d:Date):string => {
+            return `${formatTimeNumber(d.getHours())}:${formatTimeNumber(d.getMinutes())}`
+        }
+
+        const result:Shift = {
+            start: formatTime(s.start),
+            end: formatTime(s.end)
+        }
+
+        return result;
+    }
+    
+    for (const index in weekOneEvents) {
+        const shift = weekOneEvents[index];
+        const day = getDayName(shift.start.getDay());
+        
+        result.Week1[day as keyof WeeklyBreakdown].push(shiftToResponse(shift));
+    }
     return result;
 }

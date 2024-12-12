@@ -13,10 +13,12 @@ import { useFetchLocal } from "../../state/hooks";
 import { User } from "../../state/User";
 import { convertToCalendar } from "../../state/Schedule";
 import { CalendarModificationContext } from "../../components/Calendar/CalendarModificationContext";
+import { calendarToResponse } from "../../state/Schedule/Schedule";
 
 
 export default function TimesheetPageAdmin():JSX.Element {
-    const {setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
+    const { selectedPeriod }= useContext(ControlContext)
+    const {weekOneEvents, weekTwoEvents, setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
     const [scheduleLoading, setScheduleLoading] = useState(true);
 
     const { selectedEmail } = useContext(ControlContext);
@@ -25,6 +27,10 @@ export default function TimesheetPageAdmin():JSX.Element {
     const { data:latestSchedule} = useFetchLocal<any>(
         `/timesheet/getDefault/${selectedEmail}/`
     );
+
+    useEffect(() => {
+        // useFetchLocal<User>()
+    }, [selectedPeriod]);
 
     useEffect(() => {
         // No response.
