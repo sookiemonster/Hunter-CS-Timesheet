@@ -1,13 +1,15 @@
 export default interface PayrollPeriod {
-    period_no:number,
-    start:Date,
-    end:Date,
-    is_current:Boolean
+    period_id: number,
+    start_time: Date,
+    end_time: Date,
+    ts_due_start: Date,
+    ts_due_end: Date,
 };
 
 export const NULL_PERIOD:PayrollPeriod = {
-    period_no: -1,
-    start: new Date(),
-    end: new Date(),
-    is_current: false
+    period_id: 0,
+    start_time: new Date(),
+    end_time: new Date(),
+    ts_due_start: new Date(),
+    ts_due_end: new Date(),
 };

@@ -1,8 +1,9 @@
-import React, {useState, useCallback, PropsWithChildren } from "react";
+import React, {useState, useCallback, PropsWithChildren, useRef, useMemo } from "react";
 import { useDisclosure } from '@mantine/hooks';
+import { convertToCalendar } from "../../state/Schedule";
 
 interface Event {
-    title:string,
+    title?:string,
     start: Date,
     end: Date,
     id: any,
@@ -19,6 +20,7 @@ const NullEvent = {
 }
 
 export function CalendarModificationProvider(props: PropsWithChildren) {
+    const editsEnabled = useRef(true);
     const [opened, { open, close }] = useDisclosure(false);
     const [selected, setSelected] = useState<Event>(NullEvent);
 
@@ -26,11 +28,34 @@ export function CalendarModificationProvider(props: PropsWithChildren) {
     const [weekOneEvents, setWeekOneEvents] = useState<Event[]>([]);
     const [weekTwoEvents, setWeekTwoEvents] = useState<Event[]>([]);
     const [temporaryEvents, setTemporaryEvents] = useState<Event[]>([]);
+
+    const countHours = (list:Event[]) => {
+        if (list.length === 0) { return 0; }
+        return list.reduce((total, event) => {
+            const ms = event.end.getTime() - event.start.getTime();
+            return total + ms;
+        }, 0) / (1000 * 60 * 60);
+    }
+
+    const [isEdited, setIsEdited] = useState(false);
+
+    const weekOneHours = useMemo(() => 
+        countHours(weekOneEvents)
+    , [weekOneEvents])
+
+    const weekTwoHours = useMemo(() => 
+        countHours(weekTwoEvents)
+    , [weekTwoEvents])
+
+    const regularHours = useCallback((defaultHours:any) => {
+        return true;
+    }, [weekOneEvents, weekTwoEvents])
     
     const saveEdits = useCallback(
         (newStart:Date, newEnd:Date, newTitle:string) => {
             const setTargetWeek = (selectedWeekOne) ? setWeekOneEvents : setWeekTwoEvents;
-
+            
+            setIsEdited(true);
             setTargetWeek(prev => {
                 const updatedList = prev.filter(itr => itr.id !== selected.id);
                 const updatedEvent = {
@@ -79,8 +104,16 @@ export function CalendarModificationProvider(props: PropsWithChildren) {
         setSelected(NullEvent);
     }
 
+    const enableEdits = () => {
+        editsEnabled.current = true;
+    }
+
     const value = { 
+        isEdited, setIsEdited,
+        editsEnabled, enableEdits,
         weekOneEvents, weekTwoEvents,
+        setWeekOneEvents, setWeekTwoEvents,
+        weekOneHours, weekTwoHours,
         selected, setSelected, deleteSelected, clearSelected,
         opened, open, close, saveEdits, 
         selectedWeekOne, selectWeek, temporaryEvents, clearTemp, updateTemp };

@@ -1,30 +1,39 @@
-import React, { useEffect, useState } from "react";
-import User from "../../state/User";
+import React, { useContext, useEffect, useState } from "react";
+import User from "../../state/User/User";
 
 import TimesheetPageAdmin from "./AdminView";
 import TimesheetPageUser from "./UserView";
-
-interface TimesheetPageProps {
-    user:User
-}
+import { UserContext } from "../../state/User";
+import { useNavigate } from "react-router-dom";
+import LandingBackround from "../LandingPage/LandingBackground";
+import { CalendarModificationProvider } from "../../components/Calendar/CalendarModificationContext";
 
 interface StatTextProps {
     label:string,
-    text:string,
+    content:string | JSX.Element,
     completionState?: 'done' | 'action-needed'
 }
 
-export function StatText({label,text,completionState}:StatTextProps) {
+export function StatText({label,content,completionState}:StatTextProps) {
     return <div className="stat-text-container">
         <label>{label}</label>:
-        <span className={`content ${completionState}`}> {text}</span>
+        <span className={`content ${completionState}`}> {content}</span>
     </div>
 }
 
-function TimesheetPage({user}:TimesheetPageProps):JSX.Element {
-    return <>
-    {user.isAdmin ? <TimesheetPageAdmin/> : <TimesheetPageUser/>}
-    </>
+function TimesheetPage():JSX.Element {
+    const { isAdmin, isLoggedIn } = useContext(UserContext);
+    const nav = useNavigate();
+
+    if (!isLoggedIn()) { nav("/"); }
+
+    console.log("updating");
+
+    return (
+    <CalendarModificationProvider>
+        {isAdmin() ? <TimesheetPageAdmin/> : <TimesheetPageUser/>}
+    </CalendarModificationProvider>
+    )
 }
 
 export default TimesheetPage;

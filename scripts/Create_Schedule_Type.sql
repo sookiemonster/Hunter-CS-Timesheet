@@ -1,5 +1,10 @@
 /* 
-    Schedule Type 
+    NO LONGER IN USE
+
+    This file just exists in case a bug arises from this type for debugging purposes. (I should
+    have just made this one jsonb object)
+
+    Schedule Type  
 
     This type holds 14 time tables inside of them as text. The text would be formatted as json
     While it would've been nice to define it differently, for the sake of time, it is json.

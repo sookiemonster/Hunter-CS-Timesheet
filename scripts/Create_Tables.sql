@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS regular_schedule (
  schedule_id SERIAL PRIMARY KEY,
  email TEXT,
- schedule schedule_type
+ schedule JSONB,
+ UNIQUE(email)
 );
 
 /*
@@ -37,8 +38,9 @@ CREATE TABLE IF NOT EXISTS period_1_2024 (
  approved BOOLEAN,
  submitted_timestamp TIMESTAMP,
  total_hours NUMERIC,
- submitted_schedule_id INT REFERENCES regular_schedule(schedule_id)
- CONSTRAINT email_unique UNIQUE(email) -- i added this after. It should work though. Haven't ran it. I punched in an alter statement.
+ submitted_schedule JSONB DEFAULT NULL,
+ modified_schedule JSONB DEFAULT NULL,
+ UNIQUE(email) -- i added this after. It should work though. Haven't ran it. I punched in an alter statement.
 );
 
 /* 

@@ -3,13 +3,19 @@ import React from "react";
 
 interface IndicatorProps {
     value:"yes" | "no";
+    noImplication?:Boolean
     showValue?:Boolean
     invert?:Boolean
 }
 
-function IndicatorSymbol({value, showValue, invert}:IndicatorProps) {
+function IndicatorSymbol({value, showValue, invert, noImplication}:IndicatorProps) {
     const shouldShow = (showValue == undefined || showValue === true);
-    return <div className={`indicator ${value} ${invert ? 'invert' : ''}`}>{(shouldShow) ? value[0].toUpperCase() : ""}</div>
+    const classes = (
+        (noImplication) 
+            ? "default"
+            : `${value} ${invert ? 'invert' : ''}`
+    )
+    return <div className={`indicator ${classes}`}>{(shouldShow) ? value[0].toUpperCase() : ""}</div>
 }
 
 export default IndicatorSymbol;

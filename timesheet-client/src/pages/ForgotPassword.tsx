@@ -32,7 +32,7 @@ export const ForgotPassword = () =>{
           />
           <button type = "submit"> Reset Password</button>
       </form>
-      <Link to="/login">Back To Login</Link>
+      <Link to="/">Back To Login</Link>
     </div>
   )
 };

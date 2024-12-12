@@ -1,5 +1,5 @@
 //@ts-nocheck
-import {auth, provider, db} from '../config/firebase'
+import {auth, provider, db} from '../../config/firebase'
 import { signInWithPopup, 
   sendEmailVerification, 
   signInWithEmailAndPassword,
@@ -8,21 +8,17 @@ import { signInWithPopup,
 import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useContext } from "react";
-import { AppContext } from "../App";
-import { doSignInWithEmailAndPassword} from '../config/auth';
+import { UserContext } from '../../state/User';
+import { doSignInWithEmailAndPassword} from '../../config/auth';
 import { query, where, getDocs, collection } from 'firebase/firestore';
 
+import { Button, PasswordInput, Space, Stack, Text, TextInput } from '@mantine/core';
+import './styles/styles.css';
+
 export const Login = () =>{
+  const { email, setEmail, loginStatus, setloginStatus, setUser, user, role, setRole } = useContext(UserContext);
   const navigate = useNavigate(); //allows to navigate from one page to another
-  const {email} = useContext(AppContext);
-  const {setEmail} = useContext(AppContext);
   const [password, setPassword] = useState('');
-  const {loginStatus} = useContext(AppContext);
-  const {setloginStatus} = useContext(AppContext);
-  const {setUser} = useContext(AppContext);
-  const {user} = useContext(AppContext);
-  const {role} = useContext(AppContext);
-  const {setRole} = useContext(AppContext);
 
   //-----fetching user role------//
   const fetchUserRole = async (uid) => {
@@ -83,7 +79,7 @@ export const Login = () =>{
       
 
     }catch(error){
-      console.log("error logging in, user not registered in system");
+      console.log("error logging in");
     
 
     }
@@ -111,38 +107,41 @@ export const Login = () =>{
     }
   };
 ///onSubmit={(e) => { e.preventDefault(); register(); }}
-  return <div>
-  <p>Sign in with your registered email and password</p>
-  <form  onSubmit={signIn}>
-      <div>
-      <label>
-        Email
-        </label>
-          <input
-            type="email"
-            autoComplete='email'
-            required
-            value={email} onChange={(e) => { setEmail(e.target.value) }}
-            />
-      </div>
-      <div>
-          <label>
-              Password
-          </label>
-          <input
-              type="password"
-              autoComplete='new-password'
-              required
-              value={password} onChange={(e) => { setPassword(e.target.value) }}
-            />
-      </div>
+  return (
+    <div id='login-sheet-container'>
+      <Text size='xl' ta='left' fw={700} c="softpurple.3">Login</Text>
+      <form onSubmit={signIn}>
+      <div id="login-sheet-form">
+        <TextInput 
+          variant="filled"
+          description="e.g. john.doe14@myhunter.cuny.edu"
+          label="Email"
+          
+          placeholder='Enter your Hunter email'
+          autoComplete='email'
+          
+          withAsterisk
+          required
+          value={email} onChange={(e) => { setEmail(e.target.value) }}
+          />
+        <Space h='xs' />
+        <PasswordInput 
+          variant="filled"
+          label="Password"
+          placeholder='Enter your password'
+          autoComplete='password'
+          required
+          value={password} onChange={(e) => { setPassword(e.target.value) }}
+          
+          />
 
-      <button type = "submit"> Login</button>
-    </form>
-    
-    <Link to="/forgot-password">Forgot Password?</Link>
-    <p>Sign In With Google</p>
-    <button onClick={signInWithGoogle}>Sign in With Google</button>
-
-  </div>;
+        <small style={{ textAlign: 'right' }}>
+        <Space h='md' />
+        <Link to="/forgot-password">Forgot your password?</Link>
+        </small>
+        <Button className='login-button' color='softpurple.4' type = "submit"> Login</Button>
+        </div>
+      </form>
+    </div>
+  )
 };

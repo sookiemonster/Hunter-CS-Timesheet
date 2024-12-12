@@ -7,27 +7,27 @@
     use at your own risk!    
 */
 
--- Regular_schedule
-INSERT INTO regular_schedule (email, schedule)
-VALUES (
-    'test2@test2.com',
-    ROW(
-        '{"start": "11:00", "end": "12:00"}',  -- sun1
-        '{"start": "08:30", "end": "17:40"}',  -- mon1
-        '{"start": "08:00", "end": "21:00"}',  -- tue1
-        '{"start": "04:00", "end": "17:00"}',  -- wed1
-        '{"start": "03:00", "end": "17:00"}',  -- thu1
-        '{"start": "08:00", "end": "17:00"}',  -- fri1
-        '{"start": "10:00", "end": "14:00"}',  -- sat1
-        '{"start": "08:00", "end": "17:00"}',  -- mon2
-        '{"start": "08:00", "end": "17:00"}',  -- tue2
-        '{"start": "08:00", "end": "17:00"}',  -- wed2
-        '{"start": "08:00", "end": "17:00"}',  -- thu2
-        '{"start": "08:00", "end": "17:00"}',  -- fri2
-        '{"start": "10:00", "end": "14:00"}',  -- sat2
-        '{"start": "09:00", "end": "12:00"}'   -- sun2
-    )::schedule_type -- see Create_Schedule.sql
-);
+-- -- Regular_schedule
+-- INSERT INTO regular_schedule (email, schedule)
+-- VALUES (
+--     'test2@test2.com',
+--     ROW(
+--         '{"start": "11:00", "end": "12:00"}',  -- sun1
+--         '{"start": "08:30", "end": "17:40"}',  -- mon1
+--         '{"start": "08:00", "end": "21:00"}',  -- tue1
+--         '{"start": "04:00", "end": "17:00"}',  -- wed1
+--         '{"start": "03:00", "end": "17:00"}',  -- thu1
+--         '{"start": "08:00", "end": "17:00"}',  -- fri1
+--         '{"start": "10:00", "end": "14:00"}',  -- sat1
+--         '{"start": "08:00", "end": "17:00"}',  -- mon2
+--         '{"start": "08:00", "end": "17:00"}',  -- tue2
+--         '{"start": "08:00", "end": "17:00"}',  -- wed2
+--         '{"start": "08:00", "end": "17:00"}',  -- thu2
+--         '{"start": "08:00", "end": "17:00"}',  -- fri2
+--         '{"start": "10:00", "end": "14:00"}',  -- sat2
+--         '{"start": "09:00", "end": "12:00"}'   -- sun2
+--     )::schedule_type -- see Create_Schedule.sql
+-- );
 
 -- users
 INSERT INTO users (full_name, email, is_admin) VALUES ('first last', 'first_last@email.com', false);

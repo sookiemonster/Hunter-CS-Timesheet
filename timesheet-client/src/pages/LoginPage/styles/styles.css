@@ -1,0 +1,67 @@
+#login-page-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  width: 100%;
+  height: 100%;
+  padding: calc(30px + 2vw);
+  align-items: center;
+  justify-content: center;
+}
+
+#welcome-text-container {
+  padding: 0 3vw;
+}
+#welcome-text-container span {
+  display: block;
+  text-align: left;
+}
+#welcome-text-container #layer-one {
+  font-size: 8rem;
+  color: #4f5eff;
+}
+#welcome-text-container #layer-two {
+  font-weight: bold;
+  font-size: 3rem;
+}
+
+#login-sheet-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border-radius: 30px;
+  width: 450px;
+  padding: 40px 50px 50px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid white;
+}
+
+#login-sheet-form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 8px;
+}
+#login-sheet-form .login-button {
+  width: 30%;
+  align-self: flex-end;
+}
+
+@media only screen and (max-width: 1250px) {
+  #login-page-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  #welcome-text-container span {
+    text-align: center;
+  }
+  #welcome-text-container #layer-one {
+    font-size: 5rem;
+    line-height: 4rem;
+  }
+}
+
+/*# sourceMappingURL=styles.css.map */
