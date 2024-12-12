@@ -19,8 +19,6 @@ export function ControlProvider(props:PropsWithChildren){
         }
     );
 
-    console.log(selectedEmail);
-
     const selectPeriod = (p:PayrollPeriod) => {
         sessionStorage.setItem('period', JSON.stringify(p));
         setSelectedPeriod(p);

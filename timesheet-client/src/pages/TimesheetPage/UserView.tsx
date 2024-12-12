@@ -10,7 +10,7 @@ import { StatText } from "./TimesheetPage";
 import './styles/styles.css'
 
 
-export default function TimesheetPageAdmin():JSX.Element {
+export default function TimesheetPageUser():JSX.Element {
     const viewedUser = "DANIEL";
     const isDefault = true;
     const isEdited = true;

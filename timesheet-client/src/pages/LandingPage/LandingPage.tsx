@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import './styles.css'
 import PeriodHeader from "../../components/PeriodHeader";
 import TypeDropdown from "../../components/TypeDropdown";
@@ -11,18 +11,30 @@ import { useNavigate, Link } from 'react-router-dom';
 import LoginPage from "../LoginPage/LoginPage";
 import Navbar from "../../components/Navbar";
 import { ControlContext } from "../../state/Control.tsx/ControlContext";
-import { useFetchLocal } from "../../state/hooks";
+import { useFetchLocal, useModifiedFetchLocal } from "../../state/hooks";
 
 function LandingPageUser():JSX.Element {
     const navigate = useNavigate();
-    const { role } = useContext(UserContext);
-    let hasSubmitted = false;
+    const { role, email:selfEmail } = useContext(UserContext);
+    const { selectEmail, selectedPeriod } = useContext(ControlContext);
 
-    const redirect = () => console.log("redirect");
+    const [isLoading, setIsLoading] = useState(true);
+
+    const submitedEndpoint = { endpoint: `/timesheet/timestamp/${selectedPeriod.period_id}/${selfEmail}`}
+    const { data:hasSubmitted, refetch:refetchSubmitted } = useModifiedFetchLocal<any>(submitedEndpoint) 
+
+    // Select the email of the user to be the one viewed. 
+    useEffect(() => {
+        if (!selfEmail) { return; }
+        selectEmail(selfEmail);
+        refetchSubmitted();
+    }, [selfEmail]);
 
     useEffect(() => {
-        // set hasSubmitted
-    }, []);
+        // Not valid yet
+        // if (hasSubmitted !== true || hasSubmitted !== false) { return; }
+        setIsLoading(false);
+    }, [hasSubmitted])
 
     return (
     <div id="landing-container">
@@ -53,8 +65,6 @@ function LandingPageAdmin():JSX.Element {
     const { data:employee_list } = useFetchLocal<User[]>('/users/all');
     const nav = useNavigate();
 
-    const foo = (s:string) => { console.log(s); }
-    
     return (
     <div id="landing-container">
         <PeriodHeader font_size="large"/>

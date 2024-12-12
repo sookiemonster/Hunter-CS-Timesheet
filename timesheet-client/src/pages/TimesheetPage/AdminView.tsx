@@ -32,8 +32,6 @@ export default function TimesheetPageAdmin():JSX.Element {
     const latestEndpoint = { endpoint: `/timesheet/getLatest/${selectedPeriod.period_id}/${selectedEmail}/` }
     const { data:latestSchedule, restart:refetchLatest } = useModifiedFetchLocal<any>(latestEndpoint);
 
-    console.log(latestSchedule);
-
     const defaultEndpoint = { endpoint: `/timesheet/getDefault/${selectedEmail}/` }
     const { data:defaultSchedule, restart: refetchDefault } = useModifiedFetchLocal<any>(defaultEndpoint)
 
@@ -56,9 +54,8 @@ export default function TimesheetPageAdmin():JSX.Element {
     }, [selectedPeriod, selectedEmail]);
 
     useEffect(() => {
-        // console.log(latestSchedule);
+
         // No response.
-        console.log("GOTEN", latestSchedule);
         if (!latestSchedule) { 
             setScheduleLoading(false);
             return; 
