@@ -18,5 +18,10 @@ export default function useFetchLocal<T>(endpoint:string) {
         }
     }, [error, data, loading])
 
-    return { data, loading, error, refetch, abort };
+    const restart = () => {
+        attempts.current = 3;
+        refetch();
+    }
+
+    return { data, loading, error, refetch, restart, abort };
 }

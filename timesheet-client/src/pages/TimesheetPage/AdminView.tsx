@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import PeriodHeader from "../../components/PeriodHeader";
-import { Button, Divider, Group, Loader, Space, Stack } from "@mantine/core";
+import { Button, Divider, Group, Loader, LoadingOverlay, Space, Stack } from "@mantine/core";
 import ScheduleCalendar from "../../components/Calendar";
 import BoxedStat from "../../components/Stats";
 import { ArrowButton, DefaultButton, IndicatorSymbol } from "../../components/Buttons";
@@ -14,29 +14,38 @@ import { User } from "../../state/User";
 import { convertToCalendar } from "../../state/Schedule";
 import { CalendarModificationContext } from "../../components/Calendar/CalendarModificationContext";
 import { calendarToResponse } from "../../state/Schedule/Schedule";
-
+import { useDisclosure } from '@mantine/hooks';
 
 export default function TimesheetPageAdmin():JSX.Element {
     const { selectedPeriod }= useContext(ControlContext)
     const {weekOneEvents, weekTwoEvents, setWeekOneEvents, setWeekTwoEvents}= useContext(CalendarModificationContext)
+
     const [scheduleLoading, setScheduleLoading] = useState(true);
 
     const { selectedEmail } = useContext(ControlContext);
-    const { data: viewedUser} = useFetchLocal<User>(`/users/getUser/${selectedEmail}`);
+    const { data: viewedUser, restart:refetchViewedUser } = useFetchLocal<User>(`/users/getUser/${selectedEmail}`);
     // const latestSchedule = {};
-    const { data:latestSchedule} = useFetchLocal<any>(
+    const { data:latestSchedule, restart:refetchLatest } = useFetchLocal<any>(
         `/timesheet/getDefault/${selectedEmail}/`
     );
 
     useEffect(() => {
-        // useFetchLocal<User>()
-    }, [selectedPeriod]);
+        refetchViewedUser();
+    }, [selectedEmail]);
+
+    useEffect(() => {
+        refetchLatest();
+    }, [selectedPeriod, selectedEmail]);
 
     useEffect(() => {
         // No response.
         if (!latestSchedule) { return; }
         // No valid schedule returned.
-        if (!latestSchedule[0]?.schedule) { setScheduleLoading(false); return; }
+        if (!latestSchedule[0]?.schedule) { 
+            // setScheduleLoading(false);
+            return; 
+        }
+        setScheduleLoading(false);
         const formatted = convertToCalendar(latestSchedule[0].schedule);
         setWeekOneEvents(formatted.Week1);
         setWeekTwoEvents(formatted.Week2);
@@ -79,6 +88,7 @@ export default function TimesheetPageAdmin():JSX.Element {
         <Space h='xs'/>
         <div id="calendar-container">
             <ScheduleCalendar />
+            <LoadingOverlay visible={scheduleLoading} />
         </div>
         <Group className="actions-container">
             <Stack gap={0} align="flex-start">
